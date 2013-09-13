@@ -23,7 +23,7 @@ func setupPersistency() {
 	colUsers = dbNulpunt.C("users")
 
 	// ensure that key "username" is unique for collection "users".
-	err := colUsers.EnsureIndex(mgo.Index{
+	err = colUsers.EnsureIndex(mgo.Index{
 		Key:    []string{"username"},
 		Unique: true,
 	})
