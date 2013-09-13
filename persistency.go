@@ -5,10 +5,13 @@ import (
 	"log"
 )
 
+// package-wide shared variables pointing to collections in mongodb
 var (
 	colUsers *mgo.Collection
 )
 
+// setupPersistency sets up database connection and initializes col* variables
+// it also ensures indexes are existing and will give a fatal error when that fails.
 func setupPersistency() {
 	// dial to localhost mongoDB instance
 	mgoConn, err := mgo.Dial("localhost")
