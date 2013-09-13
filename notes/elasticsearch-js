@@ -1,0 +1,5 @@
+We could consider letting the client application (js) interface with elasticsearch directly.
+For this, we might use elastic.js
+
+http://www.fullscale.co/blog/2013/02/28/getting_started_with_elasticsearch_and_AngularJS_searching.html
+https://github.com/fullscale/elastic.js
