@@ -10,7 +10,7 @@ Please view the [issues](https://github.com/nulpunt/nulpunt/issues?state=open) o
 If you want to create something new, make sure the idea was approved by a nulpunt maintainer. It would be sad to have development time spilled on duplicates or features that won't be merged in.
 
 ### How to contribute
-1) Fork this repository on GitHub
+1) Fork this repository on GitHub  
 2) Edit your fork (preferably use a new branch for each feature/bugfix)
 3) Send pull request
 4) ????
