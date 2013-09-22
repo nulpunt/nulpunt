@@ -5,8 +5,8 @@ import (
 	"net/http"
 )
 
-// setupHTTPServer sets up the http.FileServer and other http services.
-func setupHTTPServer() {
+// initHTTPServer sets up the http.FileServer and other http services.
+func initHTTPServer() {
 	// serve static files from http-files on root
 	http.Handle("/", http.FileServer(http.Dir("./http-files/")))
 

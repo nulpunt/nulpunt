@@ -8,11 +8,11 @@ func main() {
 	log.Println("starting nulpunt server application")
 
 	// setup connection to mongodb, check indexes, etc.
-	setupPersistency()
+	initPersistency()
 	log.Println("persistency set up")
 
 	// start a http server
-	setupHTTPServer()
+	initHTTPServer()
 	log.Println("http server set up")
 
 	// all seems good
