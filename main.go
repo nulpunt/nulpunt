@@ -9,11 +9,11 @@ func main() {
 
 	// setup connection to mongodb, check indexes, etc.
 	initPersistency()
-	log.Println("persistency set up")
+	log.Println("persistency initialized")
 
 	// start a http server
 	initHTTPServer()
-	log.Println("http server set up")
+	log.Println("http server initialized")
 
 	// all seems good
 	log.Println("running..")
