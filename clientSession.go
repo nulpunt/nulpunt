@@ -17,6 +17,16 @@ var (
 
 const clientSessionTimeoutDuration = 1 * time.Minute
 
+// ClientSession defines the session for a given client.
+type ClientSession struct {
+	sync.Mutex // extends sync.Mutex: CS is to be locked when in use
+
+	key  string    // key for this CS
+	ping chan bool // ping chan, true keeps CS alive, false destroys CS
+
+	account *Account // authorized account (when not nil)
+}
+
 func newClientSession() *ClientSession {
 	// locking
 	clientSessionsLock.Lock()
@@ -63,14 +73,6 @@ func getClientSession(key string) (*ClientSession, error) {
 
 	// return cs
 	return cs, nil
-}
-
-// ClientSession defines the session for a given client.
-type ClientSession struct {
-	sync.Mutex // extends sync.Mutex: CS is to be locked when in use
-
-	key  string    // key for this CS
-	ping chan bool // ping chan, true keeps CS alive, false destroys CS
 }
 
 // life keeps track of this sessions lifetime (timeout) and cleans up on destory (cs.ping <- false)
