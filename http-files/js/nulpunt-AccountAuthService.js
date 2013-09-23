@@ -1,4 +1,5 @@
 
+
 nulpunt.run(function() {
 	//++ check if there is already authed for given ClientSession
 });
