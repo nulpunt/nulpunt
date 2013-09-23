@@ -8,7 +8,7 @@
 	</head>
 	<body ng-controller="MainCtrl" >
 
-		<nav class="navbar navbar-default navbar-static-top" role="navigation" ng-controller="NavCtrl">
+		<nav class="navbar navbar-default navbar-static-top" role="navigation" ng-controller="NavbarCtrl">
 			<!-- brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
@@ -17,14 +17,14 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#">0.</a>
+				<a class="navbar-brand" href="/#/">0.</a>
 			</div>
 
 			<!-- collect the nav links, forms, and other content for toggling -->
 			<div class="collapse navbar-collapse navbar-ex1-collapse">
 				<ul class="nav navbar-nav">
-					<li ng-class="{active: loc=='home'}" ><a ng-location="/">Home</a></li>
-					<li ng-class="{active: loc=='link'}"><a href="/link">Link</a></li>
+					<li ng-class="{active: loc=='home'}" ><a ng-location="/#/">Home</a></li> <!-- active class deprecated? -->
+					<li ng-class="{active: loc=='topics'}"><a href="/#/topics">Topics</a></li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
 						<ul class="dropdown-menu">
@@ -36,31 +36,35 @@
 						</ul>
 					</li>
 				</ul>
-				<ul class="nav navbar-nav navbar-right">
-					<li><a href="#">New document</a></li>
+				<ul class="nav navbar-nav navbar-right" ng-hide="account.username">
+					<li><a href="/#/sign-in">Sign in</a></li>
+					<li><a href="/#/register">Register</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right" ng-show="account.username">
+					<li><a href="/#/new-document">New document</a></li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle np-nav-account-logo" data-toggle="dropdown">
-							<img src="http://www.gravatar.com/avatar/{{gravatarHash}}?s=40" />
+							<img ng-src="http://www.gravatar.com/avatar/{{gravatarHash}}?s=40" width="40px" height="40px" />
 							<b class="caret"></b>
 						</a>
 						<ul class="dropdown-menu">
-							<li><a href="#">Account</a></li>
-							<li><a href="#">Settings</a></li>
-							<li><a href="#">Logout</a></li>
+							<li><a ng-href="/#/profile/{{account.username}}">Profile</a></li>
+							<li><a href="/#/settings">Settings</a></li>
+							<li><a href="/#/sign-out">Sign out</a></li>
 						</ul>
 					</li>
 				</ul>
 				<form class="navbar-form navbar-right" role="search">
 					<div class="form-group">
-						<input type="text" class="form-control" placeholder="Search">
+						<input type="text" class="form-control" placeholder="Search" ng-model="searchValue" >
 					</div>
-					<button type="submit" class="btn btn-default">Submit</button>
+					<button type="submit" class="btn btn-default" ng-click="search()">Submit</button>
 				</form>
 			</div><!-- /.navbar-collapse -->
 		</nav>
 
 		
-		<div ng-view ></div>
+		<div ng-view class="container" ></div>
 
 		<script src="js/jquery.min.js" ></script>
 		
@@ -74,5 +78,7 @@
 		<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/md5.js"></script> <!-- TODO: make this a local file -->
 
 		<script src="js/nulpunt.js" ></script>
+		<script src="js/nulpunt-ClientSessionService.js" ></script>
+		<script src="js/nulpunt-AccountAuthService.js" ></script>
 	</body>
 </html>

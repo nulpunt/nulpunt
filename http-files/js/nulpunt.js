@@ -7,36 +7,86 @@ var nulpunt = angular.module('nulpunt', [
 ]);
 
 nulpunt.config(function($routeProvider) {
-	$routeProvider.when('/', {
+	$routeProvider
+	.when('/', {
 		template: 'Welcome home',
-		controller: "HomeCtrl"
+		controller: "HomeCtrl" //++ rename to Overview?
 	})
-	.when('/account', {
-		template: 'Account info',
-		controller: "AccountCtrl"
+	.when('/sign-in', {
+		templateUrl: "/html/sign-in.html",
+		controller: "SignInCtrl"
 	})
-	.when('/not-found', {
-		template: "Page not found",
+	.when('/sign-out', {
+		templateUrl: "/html/sign-out.html",
+		controller: "SignOutCtrl"
+	})
+	.when('/topics', {
+		templateUrl: "/html/topics.html",
+		controller: "TopicsCtrl"
+	})
+	.when('/search/:searchValue', {
+		templateUrl: '/html/search.html',
+		controller: "SearchCtrl"
+	})
+	.when('/profile/:userID', {
+		templateUrl: '/html/profile.html',
+		controller: "ProfileCtrl"
 	})
 	.otherwise({
-		redirectTo: 'not-found' //++ write not-found template+controller
+		templateUrl: "/html/not-found.html",
+		controller: "NotFoundCtrl",
 	});
-});
-
-nulpunt.controller("HomeCtrl", function(){
-	//++
-});
-
-nulpunt.controller("AccountCtrl", function(){
-	//++
-});
-
-nulpunt.controller("NavCtrl", function($scope) {
-	$scope.loc = 'home';
-
-	$scope.gravatarHash = CryptoJS.MD5("gjr19912@gmail.com").toString(CryptoJS.enc.Hex);
 });
 
 nulpunt.controller("MainCtrl", function($scope) {
 	//++
+});
+
+nulpunt.controller("NavbarCtrl", function($scope, $rootScope, $location, AccountAuthService) {
+	$scope.loc = 'home';
+
+	$rootScope.$on("auth_changed", function() {
+		$scope.account = AccountAuthService.account;
+		$scope.gravatarHash = CryptoJS.MD5(AccountAuthService.account.email).toString(CryptoJS.enc.Hex);
+	});
+
+	$scope.search = function() {
+		var safeSearchValue = $scope.searchValue.replace(/[\/\? ]/g, '+').replace('++', '+').trim('+');
+		$location.path("search/"+safeSearchValue);
+	};
+});
+
+nulpunt.controller("HomeCtrl", function($scope){
+	//++
+});
+
+nulpunt.controller("TopicsCtrl", function($scope) {
+	//++
+});
+
+nulpunt.controller("SearchCtrl", function($scope, $routeParams) {
+	$scope.mySearch = $routeParams.searchValue.replace(/[+]/g, ' ');
+})
+
+nulpunt.controller("ProfileCtrl", function() {
+	
+});
+
+nulpunt.controller('NotFoundCtrl', function($scope, $location) {
+	$scope.path = $location.url()
+});
+
+nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService) {
+	$scope.submit = function() {
+		AccountAuthService.authenticate($scope.username, $scope.password);
+	};
+	
+	$rootScope.$on("auth_changed", function() {
+		$scope.account = AccountAuthService.account;
+	});
+});
+
+nulpunt.controller("SignOutCtrl", function($scope, AccountAuthService) {
+	$scope.username = AccountAuthService.getUsername();
+	AccountAuthService.unAuthenticate();
 });
