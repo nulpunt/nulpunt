@@ -1,7 +1,8 @@
 var nulpunt = angular.module('nulpunt', [
 	// imported modules
 	// please keep this list sorted
-	"ngRoute",
+	'ngRoute',
+	'ngStorage',
 	'ui.bootstrap.collapse', 
 	'ui.bootstrap.dropdownToggle'
 ]);
@@ -69,7 +70,7 @@ nulpunt.controller("SearchCtrl", function($scope, $routeParams) {
 })
 
 nulpunt.controller("ProfileCtrl", function() {
-	
+	//++
 });
 
 nulpunt.controller('NotFoundCtrl', function($scope, $location) {
@@ -86,7 +87,7 @@ nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService
 	});
 });
 
-nulpunt.controller("SignOutCtrl", function($scope, AccountAuthService) {
+nulpunt.controller("SignOutCtrl", function($scope, AccountAuthService, ClientSessionService) {
 	$scope.username = AccountAuthService.getUsername();
-	AccountAuthService.unAuthenticate();
+	ClientSessionService.stopSession();
 });

@@ -19,7 +19,9 @@ type ServiceHandlerFunc func(w http.ResponseWriter, r *http.Request, cs *ClientS
 var services = map[string]Service{
 	// list of services that don not require a clientSession.
 	// please keep this list sorted
-	"/service/init": Service{newInitHandlerFunc(), true},
+	"/service/sessionInit":    Service{newSessionInitHandlerFunc(), true},
+	"/service/sessionCheck":   Service{newSessionCheckHandlerFunc(), true},
+	"/service/sessionDestroy": Service{newSessionDestroyHandlerFunc(), false},
 }
 
 // initHTTPServer sets up the http.FileServer and other http services.
@@ -59,7 +61,7 @@ func rootServiceHandler(w http.ResponseWriter, r *http.Request) {
 	// find ClientSession
 	var cs *ClientSession
 	if !s.omitClientSession {
-		cs, err = getClientSession(r.Header.Get("X-nulpunt-sessionKey"))
+		cs, err = getClientSession(r.Header.Get("X-Nulpunt-SessionKey"))
 		if err != nil {
 			http.Error(w, "forbidden without valid sessionKey", http.StatusForbidden)
 			return
@@ -75,16 +77,17 @@ func rootServiceHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// encode response data to client
+	// we're responding with json
+	w.Header().Add("Content-Type", "application/json")
+
+	// encode response data to json for client
 	err = json.NewEncoder(w).Encode(outData)
 	if err != nil {
 		log.Printf("error encoding service outData to client for service %s: %s\n", r.RequestURI, err)
 	}
 }
 
-func newInitHandlerFunc() ServiceHandlerFunc {
-	type inDataType struct{}
-
+func newSessionInitHandlerFunc() ServiceHandlerFunc {
 	type outDataType struct {
 		SessionKey string `json:"sessionKey"`
 	}
@@ -99,5 +102,51 @@ func newInitHandlerFunc() ServiceHandlerFunc {
 		}
 
 		return out, nil
+	}
+}
+func newSessionCheckHandlerFunc() ServiceHandlerFunc {
+	type inDataType struct {
+		SessionKey string `json:"sessionKey"`
+	}
+
+	type outDataType struct {
+		Result bool `json:"result"`
+	}
+
+	return func(w http.ResponseWriter, r *http.Request, cs *ClientSession) (interface{}, error) {
+		// decode input data
+		inData := &inDataType{}
+		err := json.NewDecoder(r.Body).Decode(inData)
+		if err != nil {
+			return nil, err
+		}
+
+		// new outData
+		outData := &outDataType{}
+
+		// get ClientSession
+		s, err := getClientSession(inData.SessionKey)
+		if err != nil {
+			log.Printf("Could not find CS for key %s\n", inData.SessionKey)
+			return outData, nil
+		}
+
+		// already done
+		s.done()
+
+		// session is valid
+		outData.Result = true
+
+		// return data
+		return outData, nil
+	}
+}
+
+func newSessionDestroyHandlerFunc() ServiceHandlerFunc {
+	type outDataType struct{}
+
+	return func(w http.ResponseWriter, r *http.Request, cs *ClientSession) (interface{}, error) {
+		cs.ping <- false //++ TODO: race when this is called more then once
+		return nil, nil
 	}
 }
