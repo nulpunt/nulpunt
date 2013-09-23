@@ -10,9 +10,9 @@ var (
 	colUsers *mgo.Collection
 )
 
-// setupPersistency sets up database connection and initializes col* variables
+// initPersistency sets up database connection and initializes col* variables
 // it also ensures indexes are existing and will give a fatal error when that fails.
-func setupPersistency() {
+func initPersistency() {
 	// dial to localhost mongoDB instance
 	mgoConn, err := mgo.Dial("localhost")
 	if err != nil {
