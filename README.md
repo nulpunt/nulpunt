@@ -35,6 +35,5 @@ If anyone can point to or provide a better way to do this, please open an issue.
 5. Profit!
 
 ### CI
-We have a development server that is running the latest master of this server.
-
-TODO: more info and details on this.
+We have jenkins!
+https://ci.nulpunt.nu
