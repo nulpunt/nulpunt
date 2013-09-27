@@ -1,7 +1,7 @@
 package main
 
 import (
-	"labix.org/v2/mgo"
+	"./includes/labix.org/v2/mgo"
 	"log"
 )
 
