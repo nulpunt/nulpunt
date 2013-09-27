@@ -35,6 +35,9 @@ If anyone can point to or provide a better way to do this, please open an issue.
 5. Profit!
 
 ### CI
-We have a development server that is running the latest master of this server.
+We have jenkins!
+https://ci.nulpunt.nu
+Jenkins performs two tasks:
+- Run build and tests for each new PR (and new commits in that PR), then report status back to Github.
+- Run nightly build and restart nightly when repository has changed (PR merged in).
 
-TODO: more info and details on this.
