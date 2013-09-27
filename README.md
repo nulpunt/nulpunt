@@ -15,15 +15,14 @@ If you want to create something new, make sure the idea was approved by a nulpun
 
 ### Dependencies
 This project uses several third-party dependencies. Such as the `mgo` driver for MongoDB.
-These dependencies (third-party packages) are to be imported by nulpunt code as local imports.
-This has several important advantages over the normal go import system (`GOPATH`/`go get`):
-- Third-party code is checked and managed within the same repo as the application code. A commit can always refer to the right version, because it is included in the commit (local).
+These dependencies (third-party packages) are to be imported by nulpunt code with their fully qualified import name (e.g. `labix.org/v2/mgo`).
+We are keeping the source for imported packages within this repository for several reasons:
+- A commit can always refer to the right version of a third-party package, because it is included in the commit.
 - New third-party code must go through a PR, and can easily be checked.
 - Project will still build when remote dependency is unreachable or removed.
 
-Some cons:
-- Depencencies must be updated manually
-- Can't use the go tool as much, more manual work
+Cons:
+- Need to set GOPATH to get this to work.
 
 If anyone can point to or provide a better way to do this, please open an issue.
 
