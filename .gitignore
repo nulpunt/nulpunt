@@ -1,2 +1,5 @@
 /nulpunt
 *sublime*
+
+/gopath/pkg
+/gopath/bin
