@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 )
 
@@ -40,6 +41,19 @@ func initHTTPServer() {
 			log.Fatal(err)
 		}
 	}()
+
+	if flags.UnixSocket {
+		go func() {
+			socket, err := net.ListenUnix("unix", &net.UnixAddr{"./nulpunt.socket", "unix"})
+			if err != nil {
+				log.Fatal(err)
+			}
+			err = http.Serve(socket, nil)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
+	}
 }
 
 func rootServiceHandler(w http.ResponseWriter, r *http.Request) {
