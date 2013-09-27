@@ -37,3 +37,4 @@ If anyone can point to or provide a better way to do this, please open an issue.
 ### CI
 We have jenkins!
 https://ci.nulpunt.nu
+Jenkins will run automated builds for each new PR and new commits in PR's. It will also do nightly builds for new pushes to this repository.
