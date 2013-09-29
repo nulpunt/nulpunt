@@ -10,7 +10,7 @@ import (
 var flags struct {
 	Verbose     bool   `short:"v" long:"verbose" description:"Show verbose debug information"`
 	UnixSocket  bool   `long:"unix-socket" description:"Serve HTTP over unix socket"`
-	PIDFilename string `long:"pidfile" description:"PID file for this process" default:"/var/run/nulpunt.pid"`
+	PIDFilename string `long:"pidfile" description:"PID file for this process" default:"./npserver.pid"`
 }
 
 func initFlags() {
