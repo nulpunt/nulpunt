@@ -3,3 +3,6 @@
 
 /gopath/pkg
 /gopath/bin
+
+/npserver.pid
+/npserver.socket
