@@ -23,8 +23,9 @@ func main() {
 	initHTTPServer()
 	log.Println("http server initialized")
 
-	// all seems good
-	log.Println("running..")
+	// all seems good, inform the user
+	log.Println("npserver is running..")
+
 	// wait forever
 	select {}
 }

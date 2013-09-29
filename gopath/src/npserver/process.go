@@ -3,8 +3,11 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/signal"
 	"strconv"
 )
+
+var processEndFuncs = make([]func(), 0)
 
 // stuff to help manage this process (gracefull shutdown, etc)
 func initProcess() {
@@ -36,6 +39,32 @@ func initProcess() {
 		os.Exit(1)
 	}
 
-	//++ graceful shutdown on signals (remove pid file)
+	// register signals to channel
+	sigChan := make(chan os.Signal)
+	signal.Notify(sigChan, os.Interrupt)
+	signal.Notify(sigChan, os.Kill) //++ does this really do anything?
+
+	// start a goroutine to wait for and handle a signal
+	go func() {
+		select {
+		case sig := <-sigChan:
+			// inform user about received signal
+			fmt.Printf("Received %s signal, quitting.\n", sig)
+
+			// call all processEndFuncs
+			for _, endFunc := range processEndFuncs {
+				endFunc()
+			}
+
+			// remove pid file
+			err := os.Remove(flags.PIDFilename)
+			if err != nil {
+				fmt.Printf("Error cleaning up pid file. %s\n", err)
+			}
+
+			// exit with status 0
+			os.Exit(0)
+		}
+	}()
 
 }
