@@ -8,7 +8,9 @@ import (
 	"net/http"
 )
 
-// Service is a combination of a ServiceHandlerFunc and options, used by the rootServiceHandler
+// Service is a combination of a ServiceHandlerFunc and options
+// it is used by the rootServiceHandler that performs checks (depending on the options)
+// when the rootServiceHandler is satitsfied, the function in this Service object is called
 type Service struct {
 	fn                ServiceHandlerFunc
 	omitClientSession bool
@@ -17,9 +19,9 @@ type Service struct {
 // ServiceHandlerFunc defines the layout of a service handler func.. d'oh.
 type ServiceHandlerFunc func(w http.ResponseWriter, r *http.Request, cs *ClientSession) (outData interface{}, err error)
 
+// services is a list containing all registered Service instances
 var services = map[string]Service{
-	// list of services that don not require a clientSession.
-	// please keep this list sorted
+	// NOTE: please keep this list sorted
 	"/service/sessionInit":    Service{newSessionInitHandlerFunc(), true},
 	"/service/sessionCheck":   Service{newSessionCheckHandlerFunc(), true},
 	"/service/sessionDestroy": Service{newSessionDestroyHandlerFunc(), false},
@@ -34,8 +36,14 @@ func initHTTPServer() {
 
 	// run http server in goroutine
 	go func() {
+		//++ TODO: make configurable
 		port := "8000"
+
+		// inform user of startup
 		log.Printf("starting http server on port %s\n", port)
+
+		// listen and serve on given port
+		// error is fatal
 		err := http.ListenAndServe(":"+port, nil)
 		if err != nil {
 			log.Fatal(err)
@@ -44,18 +52,39 @@ func initHTTPServer() {
 
 	if flags.UnixSocket {
 		go func() {
-			socket, err := net.ListenUnix("unix", &net.UnixAddr{"./nulpunt.socket", "unix"})
+			// socketClosign is used to omit error on socket read when closing down.
+			var socketClosing bool
+
+			//++ TODO: make configurable
+			socketFilename := "./nulpunt.socket"
+
+			// inform user of startup
+			log.Printf("Starting http server on unix socket %s\n", socketFilename)
+
+			// create and listen on this unix socket
+			socket, err := net.ListenUnix("unix", &net.UnixAddr{socketFilename, "unix"})
 			if err != nil {
 				log.Fatal(err)
 			}
+
+			// append a function on graceful shutdown to close the unix socket
+			processEndFuncs = append(processEndFuncs, func() {
+				socketClosing = true
+				socket.Close()
+			})
+
+			// serve on the opened unix socket
+			// an error (when not closing down) is fatal
 			err = http.Serve(socket, nil)
-			if err != nil {
+			if !socketClosing && err != nil {
 				log.Fatal(err)
 			}
 		}()
 	}
 }
 
+// rootServiceHandler handles every service request in a generic way
+// service requests are checked for autenticity etc
 func rootServiceHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
 
@@ -67,9 +96,10 @@ func rootServiceHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//++ check origin
-	//++ check referer
+	//++ TODO: check origin
 	fmt.Println("check origin")
+
+	//++ TODO: check referer
 	fmt.Println("check referer")
 
 	// find ClientSession
@@ -101,6 +131,7 @@ func rootServiceHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// newSessionInitHandlerFunc creates a handler for new session initialization
 func newSessionInitHandlerFunc() ServiceHandlerFunc {
 	type outDataType struct {
 		SessionKey string `json:"sessionKey"`
@@ -118,6 +149,8 @@ func newSessionInitHandlerFunc() ServiceHandlerFunc {
 		return out, nil
 	}
 }
+
+// newSessionCheckHandlerFunc creates a handler for session checks
 func newSessionCheckHandlerFunc() ServiceHandlerFunc {
 	type inDataType struct {
 		SessionKey string `json:"sessionKey"`
@@ -156,6 +189,7 @@ func newSessionCheckHandlerFunc() ServiceHandlerFunc {
 	}
 }
 
+// newSessionDestroyHandlerFunc creates a handler for session destroy
 func newSessionDestroyHandlerFunc() ServiceHandlerFunc {
 	type outDataType struct{}
 
