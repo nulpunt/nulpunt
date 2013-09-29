@@ -8,7 +8,9 @@ import (
 	"net/http"
 )
 
-// Service is a combination of a ServiceHandlerFunc and options, used by the rootServiceHandler
+// Service is a combination of a ServiceHandlerFunc and options
+// it is used by the rootServiceHandler that performs checks (depending on the options)
+// when the rootServiceHandler is satitsfied, the function in this Service object is called
 type Service struct {
 	fn                ServiceHandlerFunc
 	omitClientSession bool
@@ -17,7 +19,7 @@ type Service struct {
 // ServiceHandlerFunc defines the layout of a service handler func.. d'oh.
 type ServiceHandlerFunc func(w http.ResponseWriter, r *http.Request, cs *ClientSession) (outData interface{}, err error)
 
-// list of services that don not require a clientSession
+// services is a list containing all registered Service instances
 var services = map[string]Service{
 	// NOTE: please keep this list sorted
 	"/service/sessionInit":    Service{newSessionInitHandlerFunc(), true},
@@ -81,6 +83,8 @@ func initHTTPServer() {
 	}
 }
 
+// rootServiceHandler handles every service request in a generic way
+// service requests are checked for autenticity etc
 func rootServiceHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
 
@@ -127,7 +131,7 @@ func rootServiceHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// create a handler for new session initialization
+// newSessionInitHandlerFunc creates a handler for new session initialization
 func newSessionInitHandlerFunc() ServiceHandlerFunc {
 	type outDataType struct {
 		SessionKey string `json:"sessionKey"`
@@ -146,7 +150,7 @@ func newSessionInitHandlerFunc() ServiceHandlerFunc {
 	}
 }
 
-// create a handler for session checks
+// newSessionCheckHandlerFunc creates a handler for session checks
 func newSessionCheckHandlerFunc() ServiceHandlerFunc {
 	type inDataType struct {
 		SessionKey string `json:"sessionKey"`
@@ -185,7 +189,7 @@ func newSessionCheckHandlerFunc() ServiceHandlerFunc {
 	}
 }
 
-// create a handler for session destroy
+// newSessionDestroyHandlerFunc creates a handler for session destroy
 func newSessionDestroyHandlerFunc() ServiceHandlerFunc {
 	type outDataType struct{}
 

@@ -6,15 +6,18 @@ import (
 	"time"
 )
 
+// locked map of clientSessions
 var (
 	clientSessions     = make(map[string]*ClientSession)
 	clientSessionsLock sync.RWMutex
 )
 
+// internally used errors
 var (
 	errClientSessionNotFound = errors.New("could not find ClientSession for given key")
 )
 
+// configuration constants
 const clientSessionTimeoutDuration = 1 * time.Minute
 
 // ClientSession defines the session for a given client.
@@ -27,6 +30,9 @@ type ClientSession struct {
 	account *Account // authorized account (when not nil)
 }
 
+// newClientSession creates a new ClientSession
+// a new unique key is generated for this ClientSession
+// ClientSession lifecycle is also started by this function
 func newClientSession() *ClientSession {
 	// locking
 	clientSessionsLock.Lock()
@@ -57,13 +63,18 @@ func newClientSession() *ClientSession {
 	return cs
 }
 
+// getClientSession returns a client session by given key (if it can be found)
+// when an error occurs or client session is not found, nil+error are returned
+// the returned ClientSession is locked, and can only be used by one
 func getClientSession(key string) (*ClientSession, error) {
 	// locking
+	// not using defered lock to avoid long-locking the clientSessions map when
+	// 		multiple goroutines require a client (cs.Lock in this function will hang)
 	clientSessionsLock.RLock()
-	defer clientSessionsLock.RUnlock()
 
 	// find cs, error on not found
 	cs, exists := clientSessions[key]
+	clientSessionsLock.RUnlock()
 	if !exists {
 		return nil, errClientSessionNotFound
 	}
@@ -84,11 +95,15 @@ func (cs *ClientSession) life() {
 		clientSessionsLock.Unlock()
 	}()
 
-	// timeout sequence
+	// timeout+ping loop
 	for {
 		select {
+		// when the timeout happens we return and the deferred end-of-life story is started
 		case <-time.After(clientSessionTimeoutDuration):
 			return
+
+		// when ping value is false we return, and the deferred end-of-life story is started
+		// when ping value is true, we just continue to the next loop iteration
 		case val := <-cs.ping:
 			if !val {
 				return

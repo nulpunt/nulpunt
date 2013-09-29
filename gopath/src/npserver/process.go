@@ -42,13 +42,14 @@ func initProcess() {
 	// register signals to channel
 	sigChan := make(chan os.Signal)
 	signal.Notify(sigChan, os.Interrupt)
-	signal.Notify(sigChan, os.Kill)
+	signal.Notify(sigChan, os.Kill) //++ does this really do anything?
 
+	// start a goroutine to wait for and handle a signal
 	go func() {
 		select {
 		case sig := <-sigChan:
 			// inform user about received signal
-			fmt.Printf("Received signal %v, quitting.\n", sig)
+			fmt.Printf("Received %s signal, quitting.\n", sig)
 
 			// call all processEndFuncs
 			for _, endFunc := range processEndFuncs {
