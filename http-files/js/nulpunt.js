@@ -13,6 +13,10 @@ nulpunt.config(function($routeProvider) {
 		template: 'Welcome home',
 		controller: "HomeCtrl" //++ rename to Overview?
 	})
+	.when('/register', {
+		templateUrl: "/html/register.html",
+		controller: "RegisterCtrl"
+	})
 	.when('/sign-in', {
 		templateUrl: "/html/sign-in.html",
 		controller: "SignInCtrl"
@@ -75,6 +79,12 @@ nulpunt.controller("ProfileCtrl", function() {
 
 nulpunt.controller('NotFoundCtrl', function($scope, $location) {
 	$scope.path = $location.url()
+});
+
+nulpunt.controller("RegisterCtrl", function($scope, $rootScope, AccountAuthService) {
+	$scope.submit = function() {
+		//++ register account
+	};
 });
 
 nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService) {
