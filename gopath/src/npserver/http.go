@@ -17,9 +17,9 @@ type Service struct {
 // ServiceHandlerFunc defines the layout of a service handler func.. d'oh.
 type ServiceHandlerFunc func(w http.ResponseWriter, r *http.Request, cs *ClientSession) (outData interface{}, err error)
 
+// list of services that don not require a clientSession
 var services = map[string]Service{
-	// list of services that don not require a clientSession.
-	// please keep this list sorted
+	// NOTE: please keep this list sorted
 	"/service/sessionInit":    Service{newSessionInitHandlerFunc(), true},
 	"/service/sessionCheck":   Service{newSessionCheckHandlerFunc(), true},
 	"/service/sessionDestroy": Service{newSessionDestroyHandlerFunc(), false},
@@ -127,6 +127,7 @@ func rootServiceHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// create a handler for new session initialization
 func newSessionInitHandlerFunc() ServiceHandlerFunc {
 	type outDataType struct {
 		SessionKey string `json:"sessionKey"`
@@ -144,6 +145,8 @@ func newSessionInitHandlerFunc() ServiceHandlerFunc {
 		return out, nil
 	}
 }
+
+// create a handler for session checks
 func newSessionCheckHandlerFunc() ServiceHandlerFunc {
 	type inDataType struct {
 		SessionKey string `json:"sessionKey"`
@@ -182,6 +185,7 @@ func newSessionCheckHandlerFunc() ServiceHandlerFunc {
 	}
 }
 
+// create a handler for session destroy
 func newSessionDestroyHandlerFunc() ServiceHandlerFunc {
 	type outDataType struct{}
 
