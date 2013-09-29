@@ -34,7 +34,7 @@ Changedir into the nulpunt directory
 `cd nulpunt`
 
 Invoke go build with a specific GOPATH:
-`GOPATH=$(PWD)/gopath go build`
+`GOPATH=$(PWD)/gopath go build npserver`
 
 You can permanently set the GOPATH for this project in your `.profile` file or `.bashrc` file.
 
