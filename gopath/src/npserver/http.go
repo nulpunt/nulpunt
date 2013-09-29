@@ -34,8 +34,14 @@ func initHTTPServer() {
 
 	// run http server in goroutine
 	go func() {
+		//++ TODO: make configurable
 		port := "8000"
+
+		// inform user of startup
 		log.Printf("starting http server on port %s\n", port)
+
+		// listen and serve on given port
+		// error is fatal
 		err := http.ListenAndServe(":"+port, nil)
 		if err != nil {
 			log.Fatal(err)
@@ -44,12 +50,31 @@ func initHTTPServer() {
 
 	if flags.UnixSocket {
 		go func() {
-			socket, err := net.ListenUnix("unix", &net.UnixAddr{"./nulpunt.socket", "unix"})
+			// socketClosign is used to omit error on socket read when closing down.
+			var socketClosing bool
+
+			//++ TODO: make configurable
+			socketFilename := "./nulpunt.socket"
+
+			// inform user of startup
+			log.Printf("Starting http server on unix socket %s\n", socketFilename)
+
+			// create and listen on this unix socket
+			socket, err := net.ListenUnix("unix", &net.UnixAddr{socketFilename, "unix"})
 			if err != nil {
 				log.Fatal(err)
 			}
+
+			// append a function on graceful shutdown to close the unix socket
+			processEndFuncs = append(processEndFuncs, func() {
+				socketClosing = true
+				socket.Close()
+			})
+
+			// serve on the opened unix socket
+			// an error (when not closing down) is fatal
 			err = http.Serve(socket, nil)
-			if err != nil {
+			if !socketClosing && err != nil {
 				log.Fatal(err)
 			}
 		}()
@@ -67,9 +92,10 @@ func rootServiceHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//++ check origin
-	//++ check referer
+	//++ TODO: check origin
 	fmt.Println("check origin")
+
+	//++ TODO: check referer
 	fmt.Println("check referer")
 
 	// find ClientSession

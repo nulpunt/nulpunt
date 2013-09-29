@@ -7,6 +7,8 @@ import (
 	"strconv"
 )
 
+var processEndFuncs = make([]func(), 0)
+
 // stuff to help manage this process (gracefull shutdown, etc)
 func initProcess() {
 	// obtain process id
@@ -47,6 +49,11 @@ func initProcess() {
 		case sig := <-sigChan:
 			// inform user about received signal
 			fmt.Printf("Received signal %v, quitting.\n", sig)
+
+			// call all processEndFuncs
+			for _, endFunc := range processEndFuncs {
+				endFunc()
+			}
 
 			// remove pid file
 			err := os.Remove(flags.PIDFilename)
