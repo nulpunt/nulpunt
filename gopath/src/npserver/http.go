@@ -56,7 +56,7 @@ func initHTTPServer() {
 			var socketClosing bool
 
 			//++ TODO: make configurable
-			socketFilename := "./nulpunt.socket"
+			socketFilename := "./npserver.socket"
 
 			// inform user of startup
 			log.Printf("Starting http server on unix socket %s\n", socketFilename)
