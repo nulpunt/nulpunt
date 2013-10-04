@@ -2,11 +2,14 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	"github.com/gorilla/mux"
+	"io"
 	"log"
 	"net"
 	"net/http"
 )
+
+const headerKeySessionKey = `X-Nulpunt-SessionKey`
 
 // Service is a combination of a ServiceHandlerFunc and options
 // it is used by the rootServiceHandler that performs checks (depending on the options)
@@ -21,18 +24,56 @@ type ServiceHandlerFunc func(w http.ResponseWriter, r *http.Request, cs *ClientS
 
 // services is a list containing all registered Service instances
 var services = map[string]Service{
-	// NOTE: please keep this list sorted
-	"/service/sessionInit":    Service{newSessionInitHandlerFunc(), true},
-	"/service/sessionCheck":   Service{newSessionCheckHandlerFunc(), true},
-	"/service/sessionDestroy": Service{newSessionDestroyHandlerFunc(), false},
+// NOTE: please keep this list sorted
 }
 
 // initHTTPServer sets up the http.FileServer and other http services.
 func initHTTPServer() {
-	// add handlers to http.DefaultServeMux
-	// try to serve static files on root uri
-	http.Handle("/", http.FileServer(http.Dir("./http-files/")))
-	http.HandleFunc("/service/", rootServiceHandler)
+	// normally, rootRouter would be directly linked to the http server.
+	// during closed alpha, the alphaRouter takes over, it checks for closed-alpha credentials.
+	// when everything is ok, the rootRouter is allowed to handle the requests.
+	alphaRouter := mux.NewRouter()
+	rootRouter := alphaRouter.MatcherFunc(func(r *http.Request, rm *mux.RouteMatch) bool {
+		// check if user is logged in to closed alpha
+		return true
+	}).Subrouter()
+	alphaRouter.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		//++ display alpha login form
+		io.WriteString(w, "TODO: show alpha login form")
+	})
+
+	// serve static files on / and several subdirs
+	fileServer := http.FileServer(http.Dir("./http-files/"))
+	rootRouter.Path("/").Handler(fileServer)
+	rootRouter.PathPrefix("/css/").Handler(fileServer)
+	rootRouter.PathPrefix("/fonts/").Handler(fileServer)
+	rootRouter.PathPrefix("/html/").Handler(fileServer)
+	rootRouter.PathPrefix("/js/").Handler(fileServer)
+
+	// create serviceRouter for everything beneath /service/
+	serviceRouter := rootRouter.PathPrefix("/service/").Subrouter()
+	serviceRouter.Path("/service/sessionInit").HandlerFunc(sessionInitHandlerFunc)
+	// serviceRouter.Path("/service/").Handler(http.NotFoundHandler())
+
+	// create sessionRouter for everything beneath /service/session/
+	sessionRouter := rootRouter.PathPrefix("/service/session/").MatcherFunc(func(r *http.Request, rm *mux.RouteMatch) bool {
+		//++ TODO: only check for client session, don't get it (involves locking)
+		//++ TODO: should be simple `return checkClientSessionValid(key string)`
+		cs, err := getClientSession(r.Header.Get(headerKeySessionKey))
+		if err != nil {
+			return false
+		}
+		cs.done()
+		return true
+	}).Subrouter()
+	sessionRouter.Path("/service/session/destroy").HandlerFunc(sessionDestroyHandlerFunc)
+	serviceRouter.Path("/service/session/check").HandlerFunc(sessionCheckHandlerFunc)
+	// sessionRouter.Path("/service/session/").Handler(http.NotFoundHandler())
+
+	// send 403 forbidden to requests on /service/session/* that don't have a valid session
+	serviceRouter.PathPrefix("/service/session/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "forbidden, invalid session key", http.StatusForbidden)
+	})
 
 	// run http server in goroutine
 	go func() {
@@ -44,7 +85,7 @@ func initHTTPServer() {
 
 		// listen and serve on given port
 		// error is fatal
-		err := http.ListenAndServe(":"+port, nil)
+		err := http.ListenAndServe(":"+port, alphaRouter)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -78,7 +119,7 @@ func initHTTPServer() {
 
 			// serve on the opened unix socket
 			// an error (when not closing down) is fatal
-			err = http.Serve(socket, nil)
+			err = http.Serve(socket, alphaRouter)
 			if !socketClosing && err != nil {
 				log.Fatal(err)
 			}
@@ -86,118 +127,38 @@ func initHTTPServer() {
 	}
 }
 
-// rootServiceHandler handles every service request in a generic way
-// service requests are checked for autenticity etc
-func rootServiceHandler(w http.ResponseWriter, r *http.Request) {
-	var err error
-
-	// lookup service
-	s, exists := services[r.RequestURI]
-	if !exists {
-		log.Printf("invalid request (404) for service on: %s\n", r.RequestURI)
-		http.NotFound(w, r)
-		return
-	}
-
-	//++ TODO: check origin
-	fmt.Println("check origin")
-
-	//++ TODO: check referer
-	fmt.Println("check referer")
-
-	// find ClientSession
-	var cs *ClientSession
-	if !s.omitClientSession {
-		cs, err = getClientSession(r.Header.Get("X-Nulpunt-SessionKey"))
-		if err != nil {
-			http.Error(w, "forbidden without valid sessionKey", http.StatusForbidden)
-			return
-		}
-		defer cs.done()
-	}
-
-	// call actual handler
-	outData, err := s.fn(w, r, cs)
-	if err != nil {
-		log.Printf("error from service %s: %s\n", r.RequestURI, err)
-		http.Error(w, "server error", http.StatusInternalServerError)
-		return
-	}
-
-	// we're responding with json
-	w.Header().Add("Content-Type", "application/json")
-
-	// encode response data to json for client
-	err = json.NewEncoder(w).Encode(outData)
-	if err != nil {
-		log.Printf("error encoding service outData to client for service %s: %s\n", r.RequestURI, err)
-	}
-}
-
-// newSessionInitHandlerFunc creates a handler for new session initialization
-func newSessionInitHandlerFunc() ServiceHandlerFunc {
+// sessionInitHandlerFunc creates a new session
+func sessionInitHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	type outDataType struct {
 		SessionKey string `json:"sessionKey"`
 	}
 
-	return func(w http.ResponseWriter, r *http.Request, cs *ClientSession) (interface{}, error) {
-		// create a new cs
-		newCS := newClientSession()
+	// create a new cs
+	newCS := newClientSession()
 
-		// return cs key
-		out := &outDataType{
-			SessionKey: newCS.key,
-		}
-
-		return out, nil
+	// return cs key
+	out := &outDataType{
+		SessionKey: newCS.key,
+	}
+	err := json.NewEncoder(w).Encode(out)
+	if err != nil {
+		log.Println("Could not encode output data for service sessionInitHandlerFunc. %s\n", err)
+		http.Error(w, "internal error", http.StatusInternalServerError)
 	}
 }
 
-// newSessionCheckHandlerFunc creates a handler for session checks
-func newSessionCheckHandlerFunc() ServiceHandlerFunc {
-	type inDataType struct {
-		SessionKey string `json:"sessionKey"`
-	}
-
-	type outDataType struct {
-		Result bool `json:"result"`
-	}
-
-	return func(w http.ResponseWriter, r *http.Request, cs *ClientSession) (interface{}, error) {
-		// decode input data
-		inData := &inDataType{}
-		err := json.NewDecoder(r.Body).Decode(inData)
-		if err != nil {
-			return nil, err
-		}
-
-		// new outData
-		outData := &outDataType{}
-
-		// get ClientSession
-		s, err := getClientSession(inData.SessionKey)
-		if err != nil {
-			log.Printf("Could not find CS for key %s\n", inData.SessionKey)
-			return outData, nil
-		}
-
-		// already done
-		s.done()
-
-		// session is valid
-		outData.Result = true
-
-		// return data
-		return outData, nil
-	}
+// sessionCheckHandlerFunc checks if session is ok
+func sessionCheckHandlerFunc(w http.ResponseWriter, r *http.Request) {
+	io.WriteString(w, "session ok")
 }
 
-// newSessionDestroyHandlerFunc creates a handler for session destroy
-func newSessionDestroyHandlerFunc() ServiceHandlerFunc {
-	type outDataType struct{}
-
-	return func(w http.ResponseWriter, r *http.Request, cs *ClientSession) (interface{}, error) {
-		cs.ping <- false //++ TODO: race when this is called more then once
-		return nil, nil
+// sessionDestroyHandlerFunc destroys a session
+func sessionDestroyHandlerFunc(w http.ResponseWriter, r *http.Request) {
+	cs, err := getClientSession(r.Header.Get(headerKeySessionKey))
+	if err != nil {
+		http.Error(w, "error", http.StatusInternalServerError)
+		return
 	}
+	cs.ping <- false //++ TODO: probable race when this is called more then once
+	cs.done()
 }
