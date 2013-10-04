@@ -12,8 +12,8 @@ import (
 var flags struct {
 	Verbose     bool   `short:"v" long:"verbose" description:"Show verbose debug information"`
 	UnixSocket  bool   `long:"unix-socket" description:"Serve HTTP over unix socket"`
-	PIDFilename string `long:"pidfile" description:"PID file for this process" default:"./npserver.pid"`
-	HTTPFiles   string `long:"httpfiles" description:"location for the http files" default:"./http-files/"`
+	PIDFilename string `long:"pid-file" description:"PID file for this process" default:"./npserver.pid"`
+	HTTPFiles   string `long:"http-files" description:"location for the http files" default:"./http-files/"`
 }
 
 // initFlags parses the given flags.
