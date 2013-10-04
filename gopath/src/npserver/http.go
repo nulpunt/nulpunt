@@ -62,7 +62,10 @@ func initHTTPServer() {
 			log.Printf("Starting http server on unix socket %s\n", socketFilename)
 
 			// create and listen on this unix socket
-			socket, err := net.ListenUnix("unix", &net.UnixAddr{socketFilename, "unix"})
+			socket, err := net.ListenUnix("unix", &net.UnixAddr{
+				Name: socketFilename,
+				Net:  "unix",
+			})
 			if err != nil {
 				log.Fatal(err)
 			}
