@@ -46,14 +46,7 @@ func initHTTPServer() {
 
 	// create sessionRouter for everything beneath /service/session/
 	sessionRouter := rootRouter.PathPrefix("/service/session/").MatcherFunc(func(r *http.Request, rm *mux.RouteMatch) bool {
-		//++ TODO: should be simple `return checkClientSessionValid(key string)`
-		// 			locking is unnecicary
-		cs, err := getClientSession(r.Header.Get(headerKeySessionKey))
-		if err != nil {
-			return false
-		}
-		cs.done()
-		return true
+		return isValidClientSession(r.Header.Get(headerKeySessionKey))
 	}).Subrouter()
 	sessionRouter.Path("/service/session/destroy").HandlerFunc(sessionDestroyHandlerFunc)
 	serviceRouter.Path("/service/session/check").HandlerFunc(sessionCheckHandlerFunc)
@@ -82,7 +75,7 @@ func initHTTPServer() {
 
 	if flags.UnixSocket {
 		go func() {
-			// socketClosign is used to omit error on socket read when closing down.
+			// socketClosing is used to omit error on socket read when closing down.
 			var socketClosing bool
 
 			//++ TODO: make configurable
@@ -131,7 +124,7 @@ func sessionInitHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	}
 	err := json.NewEncoder(w).Encode(out)
 	if err != nil {
-		log.Println("Could not encode output data for service sessionInitHandlerFunc. %s\n", err)
+		log.Printf("Could not encode output data for service sessionInitHandlerFunc. %s\n", err)
 		http.Error(w, "internal error", http.StatusInternalServerError)
 	}
 }
@@ -148,6 +141,6 @@ func sessionDestroyHandlerFunc(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "error", http.StatusInternalServerError)
 		return
 	}
-	cs.ping <- false //++ TODO: probable race when this is called more then once
+	cs.destroy()
 	cs.done()
 }
