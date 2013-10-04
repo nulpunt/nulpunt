@@ -32,7 +32,7 @@ func initHTTPServer() {
 	})
 
 	// serve static files on / and several subdirs
-	fileServer := http.FileServer(http.Dir("./http-files/"))
+	fileServer := http.FileServer(http.Dir(flags.HTTPFiles))
 	rootRouter.Path("/").Handler(fileServer)
 	rootRouter.PathPrefix("/css/").Handler(fileServer)
 	rootRouter.PathPrefix("/fonts/").Handler(fileServer)
