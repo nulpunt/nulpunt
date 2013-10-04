@@ -11,22 +11,6 @@ import (
 
 const headerKeySessionKey = `X-Nulpunt-SessionKey`
 
-// Service is a combination of a ServiceHandlerFunc and options
-// it is used by the rootServiceHandler that performs checks (depending on the options)
-// when the rootServiceHandler is satitsfied, the function in this Service object is called
-type Service struct {
-	fn                ServiceHandlerFunc
-	omitClientSession bool
-}
-
-// ServiceHandlerFunc defines the layout of a service handler func.. d'oh.
-type ServiceHandlerFunc func(w http.ResponseWriter, r *http.Request, cs *ClientSession) (outData interface{}, err error)
-
-// services is a list containing all registered Service instances
-var services = map[string]Service{
-// NOTE: please keep this list sorted
-}
-
 // initHTTPServer sets up the http.FileServer and other http services.
 func initHTTPServer() {
 	// normally, rootRouter would be directly linked to the http server.
