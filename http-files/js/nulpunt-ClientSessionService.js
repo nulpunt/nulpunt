@@ -32,17 +32,12 @@ nulpunt.factory('ClientSessionService', function($rootScope, $http, $sessionStor
 		// get key from session storage, check if it is valid
 		sessionKey = $sessionStorage.sessionKey;
 		if(sessionKey!=undefined && sessionKey.length>0) {
-			$http({method: 'POST', url: '/service/sessionCheck', data: {sessionKey: sessionKey}}).
+			$http({method: 'POST', url: '/service/session/check', data: {sessionKey: sessionKey}}).
 			success(function(data, status, headers, config) {
-				if(data.result) {
-					console.log("got sessionKey from browser sessionStorage");
-					setKey(sessionKey);
-				} else {
-					initSession();
-				}
+				console.log("got sessionKey from browser sessionStorage");
+				setKey(sessionKey);
 			}).
 			error(function(data, status, headers, config) {
-				console.error(status, data);
 				initSession();
 			});
 		} else {
@@ -53,7 +48,7 @@ nulpunt.factory('ClientSessionService', function($rootScope, $http, $sessionStor
 	// stop the session: destroy on server, destroy locally
 	service.stopSession = function() {
 		console.log($http.defaults.headers);
-		$http({method: 'GET', url: '/service/sessionDestroy'}).
+		$http({method: 'GET', url: '/service/session/destroy'}).
 		success(function(data, status, headers, config) {
 			console.log(status, data);
 			setKey("");
