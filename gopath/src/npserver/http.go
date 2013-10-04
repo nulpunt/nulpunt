@@ -17,13 +17,18 @@ func initHTTPServer() {
 	// during closed alpha, the alphaRouter takes over, it checks for closed-alpha credentials.
 	// when everything is ok, the rootRouter is allowed to handle the requests.
 	alphaRouter := mux.NewRouter()
+
+	// proceed to the rootRouter when basic auth is satisfied
 	rootRouter := alphaRouter.MatcherFunc(func(r *http.Request, rm *mux.RouteMatch) bool {
-		// check if user is logged in to closed alpha
-		return true
+		return alphaCheckBasicAuth(r)
 	}).Subrouter()
-	alphaRouter.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		//++ display alpha login form
-		io.WriteString(w, "TODO: show alpha login form")
+
+	// otherwise present request for basic auth
+	alphaRouter.MatcherFunc(func(r *http.Request, rm *mux.RouteMatch) bool {
+		return !alphaCheckBasicAuth(r)
+	}).HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("WWW-Authenticate", `Basic realm="Nulpunt alpha access"`)
+		http.Error(w, "Please enter valid Nulpunt alpha credentials", http.StatusUnauthorized)
 	})
 
 	// serve static files on / and several subdirs
@@ -41,8 +46,8 @@ func initHTTPServer() {
 
 	// create sessionRouter for everything beneath /service/session/
 	sessionRouter := rootRouter.PathPrefix("/service/session/").MatcherFunc(func(r *http.Request, rm *mux.RouteMatch) bool {
-		//++ TODO: only check for client session, don't get it (involves locking)
 		//++ TODO: should be simple `return checkClientSessionValid(key string)`
+		// 			locking is unnecicary
 		cs, err := getClientSession(r.Header.Get(headerKeySessionKey))
 		if err != nil {
 			return false
