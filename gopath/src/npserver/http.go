@@ -11,35 +11,24 @@ import (
 
 const headerKeySessionKey = `X-Nulpunt-SessionKey`
 
-// Service is a combination of a ServiceHandlerFunc and options
-// it is used by the rootServiceHandler that performs checks (depending on the options)
-// when the rootServiceHandler is satitsfied, the function in this Service object is called
-type Service struct {
-	fn                ServiceHandlerFunc
-	omitClientSession bool
-}
-
-// ServiceHandlerFunc defines the layout of a service handler func.. d'oh.
-type ServiceHandlerFunc func(w http.ResponseWriter, r *http.Request, cs *ClientSession) (outData interface{}, err error)
-
-// services is a list containing all registered Service instances
-var services = map[string]Service{
-// NOTE: please keep this list sorted
-}
-
 // initHTTPServer sets up the http.FileServer and other http services.
 func initHTTPServer() {
 	// normally, rootRouter would be directly linked to the http server.
 	// during closed alpha, the alphaRouter takes over, it checks for closed-alpha credentials.
 	// when everything is ok, the rootRouter is allowed to handle the requests.
 	alphaRouter := mux.NewRouter()
+
+	// proceed to the rootRouter when basic auth is satisfied
 	rootRouter := alphaRouter.MatcherFunc(func(r *http.Request, rm *mux.RouteMatch) bool {
-		// check if user is logged in to closed alpha
-		return true
+		return alphaCheckBasicAuth(r)
 	}).Subrouter()
-	alphaRouter.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		//++ display alpha login form
-		io.WriteString(w, "TODO: show alpha login form")
+
+	// otherwise present request for basic auth
+	alphaRouter.MatcherFunc(func(r *http.Request, rm *mux.RouteMatch) bool {
+		return !alphaCheckBasicAuth(r)
+	}).HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("WWW-Authenticate", `Basic realm="Nulpunt alpha access"`)
+		http.Error(w, "Please enter valid Nulpunt alpha credentials", http.StatusUnauthorized)
 	})
 
 	// serve static files on / and several subdirs
@@ -57,8 +46,8 @@ func initHTTPServer() {
 
 	// create sessionRouter for everything beneath /service/session/
 	sessionRouter := rootRouter.PathPrefix("/service/session/").MatcherFunc(func(r *http.Request, rm *mux.RouteMatch) bool {
-		//++ TODO: only check for client session, don't get it (involves locking)
 		//++ TODO: should be simple `return checkClientSessionValid(key string)`
+		// 			locking is unnecicary
 		cs, err := getClientSession(r.Header.Get(headerKeySessionKey))
 		if err != nil {
 			return false
