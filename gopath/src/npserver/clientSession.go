@@ -24,8 +24,9 @@ const clientSessionTimeoutDuration = 1 * time.Minute
 type ClientSession struct {
 	sync.Mutex // extends sync.Mutex: CS is to be locked when in use
 
-	key  string    // key for this CS
-	ping chan bool // ping chan, true keeps CS alive, false destroys CS
+	key       string    // key for this CS
+	destroyCh chan bool // destroy chan, receive from this chan destroys session
+	pingCh    chan bool // ping chan, receive from this chan keeps session alive
 
 	account *Account // authorized account (when not nil)
 }
@@ -49,8 +50,9 @@ func newClientSession() *ClientSession {
 
 	// create new ClientSession instance
 	cs := &ClientSession{
-		key:  key,
-		ping: make(chan bool),
+		key:       key,
+		destroyCh: make(chan bool),
+		pingCh:    make(chan bool),
 	}
 
 	// store cs in map
@@ -61,6 +63,27 @@ func newClientSession() *ClientSession {
 
 	// all done
 	return cs
+}
+
+func isValidClientSession(key string) bool {
+	// locking
+	// not using defered lock to avoid long-locking the clientSessions map when
+	// 		multiple goroutines require a client (cs.Lock in this function will hang)
+	clientSessionsLock.RLock()
+
+	// find cs, error on not found
+	cs, exists := clientSessions[key]
+	clientSessionsLock.RUnlock()
+	if !exists {
+		return false
+	}
+
+	if !cs.ping() {
+		return false
+	}
+
+	// all ok
+	return true
 }
 
 // getClientSession returns a client session by given key (if it can be found)
@@ -79,6 +102,10 @@ func getClientSession(key string) (*ClientSession, error) {
 		return nil, errClientSessionNotFound
 	}
 
+	if !cs.ping() {
+		return nil, errClientSessionNotFound
+	}
+
 	// lock cs, to be unlocked by cs.done()
 	cs.Lock()
 
@@ -86,30 +113,48 @@ func getClientSession(key string) (*ClientSession, error) {
 	return cs, nil
 }
 
-// life keeps track of this sessions lifetime (timeout) and cleans up on destory (cs.ping <- false)
+// life keeps track of this sessions lifetime (timeout) and cleans up on destory (cs.destroy <- false)
 func (cs *ClientSession) life() {
 	// end of life story
 	defer func() {
+		// close channels (destroy() and ping() will now return false)
+		close(cs.destroyCh)
+		close(cs.pingCh)
+
 		clientSessionsLock.Lock()
 		delete(clientSessions, cs.key)
 		clientSessionsLock.Unlock()
 	}()
 
-	// timeout+ping loop
+	// timeout+destroy+ping loop
 	for {
 		select {
 		// when the timeout happens we return and the deferred end-of-life story is started
 		case <-time.After(clientSessionTimeoutDuration):
 			return
 
-		// when ping value is false we return, and the deferred end-of-life story is started
-		// when ping value is true, we just continue to the next loop iteration
-		case val := <-cs.ping:
-			if !val {
-				return
-			}
+		case cs.destroyCh <- true:
+			return
+
+		case cs.pingCh <- true:
+			continue
 		}
+
 	}
+}
+
+// ping checks the ClientSession for life
+// when false is returned, the ClientSession is not alive
+func (cs *ClientSession) ping() bool {
+	_, ok := <-cs.pingCh
+	return ok
+}
+
+// destroy tries to destroy the ClientSession
+// when false is returned, it was already destroyed
+func (cs *ClientSession) destroy() bool {
+	_, ok := <-cs.destroyCh
+	return ok
 }
 
 // done must be called when the user of ClientSession has no more reads or writes to make.
