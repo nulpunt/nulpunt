@@ -37,21 +37,29 @@ func initHTTPServer() {
 	rootRouter.PathPrefix("/html/").Handler(fileServer)
 	rootRouter.PathPrefix("/js/").Handler(fileServer)
 
-	// create serviceRouter for everything beneath /service/
+	// create serviceRouter for /service/*
 	serviceRouter := rootRouter.PathPrefix("/service/").Subrouter()
-	serviceRouter.Path("/service/sessionInit").HandlerFunc(sessionInitHandlerFunc)
-	// serviceRouter.Path("/service/").Handler(http.NotFoundHandler())
+	serviceRouter.Path("/sessionInit").HandlerFunc(sessionInitHandlerFunc)
+	serviceRouter.Path("/sessionCheck").HandlerFunc(sessionCheckHandlerFunc)
 
-	// create sessionRouter for everything beneath /service/session/
-	sessionRouter := rootRouter.PathPrefix("/service/session/").MatcherFunc(func(r *http.Request, rm *mux.RouteMatch) bool {
-		return isValidClientSession(r.Header.Get(headerKeySessionKey))
+	// create sessionPathRouter for /service/session/*
+	sessionPathRouter := rootRouter.PathPrefix("/service/session/").Subrouter()
+
+	// sessionRouter handles valid authenticated requests for /service/session
+	sessionRouter := sessionPathRouter.MatcherFunc(func(r *http.Request, rm *mux.RouteMatch) bool {
+		sessionKey := r.Header.Get(headerKeySessionKey)
+		return isValidClientSession(sessionKey)
 	}).Subrouter()
-	sessionRouter.Path("/service/session/destroy").HandlerFunc(sessionDestroyHandlerFunc)
-	serviceRouter.Path("/service/session/check").HandlerFunc(sessionCheckHandlerFunc)
-	// sessionRouter.Path("/service/session/").Handler(http.NotFoundHandler())
 
-	// send 403 forbidden to requests on /service/session/* that don't have a valid session
-	serviceRouter.PathPrefix("/service/session/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	// register /service/session/* handlers
+	sessionRouter.Path("/destroy").HandlerFunc(sessionDestroyHandlerFunc)
+	sessionRouter.Path("/registerAccount").HandlerFunc(registerAccountHandlerFunc)
+
+	// 404 when /service/session/* was not found
+	sessionRouter.PathPrefix("/").Handler(http.NotFoundHandler())
+
+	// when session auth failed, return 403 forbidden for /service/session/*
+	sessionPathRouter.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "forbidden, invalid session key", http.StatusForbidden)
 	})
 
