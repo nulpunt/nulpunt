@@ -44,6 +44,9 @@ func getAccount(username string) (*Account, error) {
 	acc := &Account{}
 	err := colAccounts.Find(bson.M{"username": username}).One(acc)
 	if err != nil {
+		if err.Error() == "not found" {
+			return nil, nil
+		}
 		return nil, err
 	}
 	return acc, nil
