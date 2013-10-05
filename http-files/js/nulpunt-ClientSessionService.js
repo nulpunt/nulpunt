@@ -32,12 +32,20 @@ nulpunt.factory('ClientSessionService', function($rootScope, $http, $sessionStor
 		// get key from session storage, check if it is valid
 		sessionKey = $sessionStorage.sessionKey;
 		if(sessionKey!=undefined && sessionKey.length>0) {
-			$http({method: 'POST', url: '/service/session/check', data: {sessionKey: sessionKey}}).
+			$http({method: 'POST', url: '/service/sessionCheck', data: {sessionKey: sessionKey}}).
 			success(function(data, status, headers, config) {
-				console.log("got sessionKey from browser sessionStorage");
-				setKey(sessionKey);
+				console.log("got sessionKey from browser sessionStorage ...");
+				if(data.valid) {
+					console.log("... and guess what!? It's still valid! :D");
+					setKey(sessionKey);
+				} else {
+					console.log("... but that sessionKey was invalid");
+					initSession();
+				}
 			}).
 			error(function(data, status, headers, config) {
+				console.log("invalid response")
+				console.log(data, status, headers);
 				initSession();
 			});
 		} else {

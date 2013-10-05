@@ -81,9 +81,9 @@ nulpunt.controller('NotFoundCtrl', function($scope, $location) {
 	$scope.path = $location.url()
 });
 
-nulpunt.controller("RegisterCtrl", function($scope, $rootScope, AccountAuthService) {
+nulpunt.controller("RegisterCtrl", function($scope, $rootScope, $http) {
 	$scope.submit = function() {
-		//++ register account
+		//++
 	};
 });
 
