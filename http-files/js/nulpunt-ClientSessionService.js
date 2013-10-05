@@ -4,10 +4,26 @@ nulpunt.run(function(ClientSessionService) {
 	ClientSessionService.startSession();
 });
 
-nulpunt.factory('ClientSessionService', function($rootScope, $http, $sessionStorage) {
+nulpunt.factory('ClientSessionService', function($rootScope, $http, $sessionStorage, $timeout) {
 	var service = {
 		sessionKey: ""
 	};
+
+	function sendPing() {
+		$http({method: 'GET', url:"/service/session/ping"}).
+		success(function(data, status, headers, config) {
+			//++ ok !
+		}).
+		error(function(data, status, headers, config) {
+			//++ error !
+		});
+	}
+	
+	function timeoutPing() {
+		sendPing();
+		$timeout(timeoutPing, 3*60*1000);
+	}
+	timeoutPing();
 
 	// setKey updates the key on multiple locations (either a valid key, or empty string for unset)
 	function setKey(newKey) {
