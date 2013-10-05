@@ -55,6 +55,10 @@ func sessionCheckHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func sessionPingHandlerFunc(w http.ResponseWriter, r *http.Request) {
+	//++ do something useful with the ping?
+}
+
 // sessionDestroyHandlerFunc destroys a session
 func sessionDestroyHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	cs, err := getClientSession(r.Header.Get(headerKeySessionKey))
