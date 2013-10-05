@@ -5,7 +5,6 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"strings"
 )
@@ -35,10 +34,12 @@ func alphaCheckBasicAuth(r *http.Request) bool {
 	// decode auth data
 	authData, err := base64.StdEncoding.DecodeString(authHeader[6:])
 	if err != nil {
-		log.Printf("Could not decode auth. %s\n", err)
 		return false
 	}
 	authDataSlice := strings.SplitN(string(authData), ":", 2)
+	if len(authDataSlice) != 2 {
+		return false
+	}
 	givenUsername := authDataSlice[0]
 	givenPassword := authDataSlice[1]
 
@@ -48,19 +49,15 @@ func alphaCheckBasicAuth(r *http.Request) bool {
 		// user does not exist
 		return false
 	}
-	log.Println("user exists. hash is: ")
-	log.Println(correctPasswordHashed)
 
 	// hash retrieved password, format as hex string
 	passwordHasher := sha512.New()
 	io.WriteString(passwordHasher, givenPassword)
 	io.WriteString(passwordHasher, alphaSalt)
 	givenPasswordHashed := fmt.Sprintf("%x", passwordHasher.Sum(nil))
-	log.Println(givenPasswordHashed)
 	// password matches?
 	if givenPasswordHashed == correctPasswordHashed {
 		// yay! correct auth!
-		log.Println("correct auth")
 		return true
 	}
 
