@@ -83,7 +83,23 @@ nulpunt.controller('NotFoundCtrl', function($scope, $location) {
 
 nulpunt.controller("RegisterCtrl", function($scope, $rootScope, $http) {
 	$scope.submit = function() {
-		//++
+		$http({method: 'POST', url: '/service/session/registerAccount', data: {
+			username: $scope.username,
+			email: $scope.email,
+			password: $scope.password
+		}}).
+		success(function(data, status, headers, config) {
+			if(data.success) {
+				$scope.done = true
+			} else {
+				$scope.error = data.error;
+			}
+		}).
+		error(function(data, status, headers, config) {
+			console.log("invalid response for registerAccount")
+			console.log(data, status, headers);
+			$scope.error = "Could not make request to server";
+		});
 	};
 });
 

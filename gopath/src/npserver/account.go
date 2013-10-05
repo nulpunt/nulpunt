@@ -1,8 +1,12 @@
 package main
 
 import (
+	"errors"
+	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
 )
+
+var errAccountUsernameNotUnique = errors.New("account username is not unique")
 
 // Account holds information about an account.
 // It should not keep data in-memory, but rather write to db directly.
@@ -14,8 +18,9 @@ type Account struct {
 	Password string        // password
 }
 
-func RegisterNewAccount(username string, email string, password string) error {
+func registerNewAccount(username string, email string, password string) error {
 	acc := &Account{
+		ID:       bson.NewObjectId(),
 		Username: username,
 		Email:    email,
 		Password: password,
@@ -24,6 +29,10 @@ func RegisterNewAccount(username string, email string, password string) error {
 	// insert into collection
 	err := colAccounts.Insert(acc)
 	if err != nil {
+		mgoErr := err.(*mgo.LastError)
+		if mgoErr.Code == 11000 {
+			return errAccountUsernameNotUnique
+		}
 		return err
 	}
 

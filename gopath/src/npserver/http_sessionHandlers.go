@@ -38,6 +38,7 @@ func sessionCheckHandlerFunc(w http.ResponseWriter, r *http.Request) {
 
 	inData := &inDataType{}
 	err := json.NewDecoder(r.Body).Decode(inData)
+	r.Body.Close()
 	if err != nil {
 		log.Printf("error decoding data for sessionCheck. %s\n", err)
 		http.Error(w, "error", http.StatusInternalServerError)
