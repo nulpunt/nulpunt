@@ -54,6 +54,7 @@ func initHTTPServer() {
 	// register /service/session/* handlers
 	sessionRouter.Path("/destroy").HandlerFunc(sessionDestroyHandlerFunc)
 	sessionRouter.Path("/registerAccount").HandlerFunc(registerAccountHandlerFunc)
+	sessionRouter.Path("/authenticateAccount").HandlerFunc(sessionAuthenticateAccountHandlerFunc)
 
 	// 404 when /service/session/* was not found
 	sessionRouter.PathPrefix("/").Handler(http.NotFoundHandler())

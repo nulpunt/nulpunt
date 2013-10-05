@@ -14,12 +14,43 @@ var errAccountUsernameNotUnique = errors.New("account username is not unique")
 type Account struct {
 	ID       bson.ObjectId `bson:"_id"`
 	Username string        // username
+}
+
+func (a *Account) getDetails() (*AccountDetails, error) {
+	ad := &AccountDetails{}
+	err := colAccounts.Find(bson.M{"username": a.Username}).One(ad)
+	if err != nil {
+		return nil, err
+	}
+	return ad, nil
+}
+
+func (a *Account) verifyPassword(password string) (bool, error) {
+	ad, err := a.getDetails()
+	if err != nil {
+		return false, err
+	}
+	return ad.Password == password, nil
+}
+
+type AccountDetails struct {
+	ID       bson.ObjectId `bson:"_id"`
+	Username string        // username
 	Email    string        // email
 	Password string        // password
 }
 
+func getAccount(username string) (*Account, error) {
+	acc := &Account{}
+	err := colAccounts.Find(bson.M{"username": username}).One(acc)
+	if err != nil {
+		return nil, err
+	}
+	return acc, nil
+}
+
 func registerNewAccount(username string, email string, password string) error {
-	acc := &Account{
+	acc := &AccountDetails{
 		ID:       bson.NewObjectId(),
 		Username: username,
 		Email:    email,
