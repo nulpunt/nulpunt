@@ -31,7 +31,7 @@ func registerAccountHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(inData)
 	r.Body.Close()
 	if err != nil {
-		log.Println("could not decode body for registerAccount request. %s\n", err)
+		log.Printf("could not decode body for registerAccount request. %s\n", err)
 		return
 	}
 
@@ -41,7 +41,7 @@ func registerAccountHandlerFunc(w http.ResponseWriter, r *http.Request) {
 			outData.Error = "Username is already taken."
 			return
 		}
-		log.Println("error creating an account: %s\n", err)
+		log.Printf("error creating an account: %s\n", err)
 		outData.Error = "A server error occured."
 		return
 	}
