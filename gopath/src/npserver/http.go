@@ -48,7 +48,6 @@ func initHTTPServer() {
 	// sessionRouter handles valid authenticated requests for /service/session
 	sessionRouter := sessionPathRouter.MatcherFunc(func(r *http.Request, rm *mux.RouteMatch) bool {
 		sessionKey := r.Header.Get(headerKeySessionKey)
-		log.Printf("have sessionKey: %s\n", sessionKey)
 		return isValidClientSession(sessionKey)
 	}).Subrouter()
 
