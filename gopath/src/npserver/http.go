@@ -5,16 +5,27 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"strings"
 )
 
 const headerKeySessionKey = `X-Nulpunt-SessionKey`
 
 // initHTTPServer sets up the http.FileServer and other http services.
 func initHTTPServer() {
+	// create fileServer that servces that static files (html,css,js,etc.)
+	fileServer := http.FileServer(http.Dir(flags.HTTPFiles))
+
 	// normally, rootRouter would be directly linked to the http server.
 	// during closed alpha, the alphaRouter takes over, it checks for closed-alpha credentials.
 	// when everything is ok, the rootRouter is allowed to handle the requests.
 	alphaRouter := mux.NewRouter()
+
+	// Chrome doesn't apply basic auth to requests for map files
+	// therefore we must work arround this and provide the map files without basic auth
+	// TODO FIX WORKARROUND NASTY YOLO ALPHA
+	alphaRouter.PathPrefix("/js/").MatcherFunc(func(r *http.Request, rm *mux.RouteMatch) bool {
+		return strings.HasSuffix(r.RequestURI, ".map")
+	}).Handler(fileServer)
 
 	// proceed to the rootRouter when basic auth is satisfied
 	rootRouter := alphaRouter.MatcherFunc(func(r *http.Request, rm *mux.RouteMatch) bool {
@@ -30,7 +41,6 @@ func initHTTPServer() {
 	})
 
 	// serve static files on / and several subdirs
-	fileServer := http.FileServer(http.Dir(flags.HTTPFiles))
 	rootRouter.Path("/").Handler(fileServer)
 	rootRouter.PathPrefix("/css/").Handler(fileServer)
 	rootRouter.PathPrefix("/fonts/").Handler(fileServer)
