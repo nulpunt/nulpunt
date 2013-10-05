@@ -3,6 +3,16 @@
 	You're logged in as {{account.username}}.
 </div>
 
+<div ng-show="error" class="alert alert-error" >
+	<strong>Oops!</strong><br/>
+	{{error}}
+</div>
+
+<div ng-show="wrong" class="alert alert-warning" >
+	<strong>Wrong credentials</strong><br/>
+	Please try again.
+</div>
+
 <div ng-hide="account.username" >
 	<form ng-submit="submit()" class="form-horizontal" role="form">
 		<div class="form-group">
