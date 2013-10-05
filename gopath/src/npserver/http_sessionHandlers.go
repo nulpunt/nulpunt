@@ -88,6 +88,7 @@ func sessionAuthenticateAccountHandlerFunc(w http.ResponseWriter, r *http.Reques
 
 	inData := &inDataType{}
 	err := json.NewDecoder(r.Body).Decode(inData)
+	r.Body.Close()
 	if err != nil {
 		log.Printf("error decoding data for sessionAuthenticateAccount. %s\n", err)
 		outData.Error = "Something went wrong."
