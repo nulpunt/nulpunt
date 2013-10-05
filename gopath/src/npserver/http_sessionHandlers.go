@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"io"
 	"log"
 	"net/http"
 )
@@ -29,7 +28,31 @@ func sessionInitHandlerFunc(w http.ResponseWriter, r *http.Request) {
 
 // sessionCheckHandlerFunc checks if session is ok
 func sessionCheckHandlerFunc(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "session ok")
+	type inDataType struct {
+		SessionKey string `json:"sessionKey"`
+	}
+
+	type outDataType struct {
+		Valid bool `json:"valid"`
+	}
+
+	inData := &inDataType{}
+	err := json.NewDecoder(r.Body).Decode(inData)
+	r.Body.Close()
+	if err != nil {
+		log.Printf("error decoding data for sessionCheck. %s\n", err)
+		http.Error(w, "error", http.StatusInternalServerError)
+		return
+	}
+
+	err = json.NewEncoder(w).Encode(&outDataType{
+		Valid: isValidClientSession(inData.SessionKey),
+	})
+	if err != nil {
+		log.Printf("error encoding data for sessionCheck. %s\n", err)
+		http.Error(w, "error", http.StatusInternalServerError)
+		return
+	}
 }
 
 // sessionDestroyHandlerFunc destroys a session

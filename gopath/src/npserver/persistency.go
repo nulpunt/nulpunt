@@ -7,7 +7,7 @@ import (
 
 // package-wide shared variables pointing to collections in mongodb
 var (
-	colUsers *mgo.Collection
+	colAccounts *mgo.Collection
 )
 
 // initPersistency sets up database connection and initializes col* variables
@@ -23,10 +23,10 @@ func initPersistency() {
 	dbNulpunt := mgoConn.DB("nulpunt")
 
 	// get "users" collection
-	colUsers = dbNulpunt.C("users")
+	colAccounts = dbNulpunt.C("accounts")
 
 	// ensure that key "username" is unique for collection "users".
-	err = colUsers.EnsureIndex(mgo.Index{
+	err = colAccounts.EnsureIndex(mgo.Index{
 		Key:    []string{"username"},
 		Unique: true,
 	})
