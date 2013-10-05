@@ -65,3 +65,51 @@ func sessionDestroyHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	cs.destroy()
 	cs.done()
 }
+
+func sessionAuthenticateAccountHandlerFunc(w http.ResponseWriter, r *http.Request) {
+	type inDataType struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+
+	type outDataType struct {
+		Success bool   `json:"success"`
+		Error   string `json:"error"`
+		//++ add account details
+	}
+
+	outData := &outDataType{}
+	defer func() {
+		err := json.NewEncoder(w).Encode(outData)
+		if err != nil {
+			log.Printf("error encoding data for sessionAuthenticateAccount. %s\n", err)
+		}
+	}()
+
+	inData := &inDataType{}
+	err := json.NewDecoder(r.Body).Decode(inData)
+	r.Body.Close()
+	if err != nil {
+		log.Printf("error decoding data for sessionAuthenticateAccount. %s\n", err)
+		outData.Error = "Something went wrong."
+		return
+	}
+
+	cs, err := getClientSession(r.Header.Get(headerKeySessionKey))
+	if err != nil {
+		log.Printf("error retrieving session.. doesn't exist? %s\n", err)
+		outData.Error = "Could not authenticate your account. Session has become invalid. Please refresh the page."
+		return
+	}
+	defer cs.done()
+
+	authenticated, err := cs.authenticateAccount(inData.Username, inData.Password)
+	if err != nil {
+		log.Printf("could not authenticate. %s\n", err)
+		outData.Error = "Could not authenticate your account. Something went wrong."
+	}
+
+	if authenticated {
+		outData.Success = true
+	}
+}

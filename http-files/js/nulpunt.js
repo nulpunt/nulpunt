@@ -105,7 +105,24 @@ nulpunt.controller("RegisterCtrl", function($scope, $rootScope, $http) {
 
 nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService) {
 	$scope.submit = function() {
-		AccountAuthService.authenticate($scope.username, $scope.password);
+		$scope.success = false;
+		$scope.wrong = false;
+		$scope.error = "";
+		var prom = AccountAuthService.authenticate($scope.username, $scope.password);
+
+		prom.then(function() {
+				$scope.success = true;
+			}, function(error) {
+				if(error == "") {
+					// no success, but also no error: credentials are wrong.
+					$scope.wrong = true;
+				} else {
+					$scope.error = result;
+				}
+				//++ need to do some "digest" on $scope ?? or $scope.$apply()?
+				//++ find out what good convention is
+			}
+		);
 	};
 	
 	$rootScope.$on("auth_changed", function() {

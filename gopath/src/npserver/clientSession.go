@@ -28,7 +28,7 @@ type ClientSession struct {
 	destroyCh chan bool // destroy chan, receive from this chan destroys session
 	pingCh    chan bool // ping chan, receive from this chan keeps session alive
 
-	account *Account // authorized account (when not nil)
+	account *Account // authorized account (when nil: no auth)
 }
 
 // newClientSession creates a new ClientSession
@@ -160,4 +160,24 @@ func (cs *ClientSession) destroy() bool {
 // done must be called when the user of ClientSession has no more reads or writes to make.
 func (cs *ClientSession) done() {
 	cs.Unlock()
+}
+
+func (cs *ClientSession) authenticateAccount(username string, password string) (bool, error) {
+	acc, err := getAccount(username)
+	if err != nil {
+		return false, err
+	}
+	if acc == nil {
+		return false, nil
+	}
+	valid, err := acc.verifyPassword(password)
+	if err != nil {
+		return false, err
+	}
+	if valid {
+		cs.account = acc
+		return true, nil
+	}
+	return false, nil
+
 }
