@@ -52,6 +52,7 @@ func initHTTPServer() {
 	}).Subrouter()
 
 	// register /service/session/* handlers
+	sessionRouter.Path("/ping").HandlerFunc(sessionPingHandlerFunc)
 	sessionRouter.Path("/destroy").HandlerFunc(sessionDestroyHandlerFunc)
 	sessionRouter.Path("/registerAccount").HandlerFunc(registerAccountHandlerFunc)
 	sessionRouter.Path("/authenticateAccount").HandlerFunc(sessionAuthenticateAccountHandlerFunc)
