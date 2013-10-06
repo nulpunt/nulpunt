@@ -91,20 +91,17 @@ func initHTTPServer() {
 		}
 	}()
 
-	if flags.UnixSocket {
+	if len(flags.UnixSocket) > 0 {
 		go func() {
 			// socketClosing is used to omit error on socket read when closing down.
 			var socketClosing bool
 
-			//++ TODO: make configurable
-			socketFilename := "./npserver.socket"
-
 			// inform user of startup
-			log.Printf("Starting http server on unix socket %s\n", socketFilename)
+			log.Printf("Starting http server on unix socket %s\n", flags.UnixSocket)
 
 			// create and listen on this unix socket
 			socket, err := net.ListenUnix("unix", &net.UnixAddr{
-				Name: socketFilename,
+				Name: flags.UnixSocket,
 				Net:  "unix",
 			})
 			if err != nil {
