@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
+	"strconv"
 	"syscall"
 )
 
@@ -21,18 +23,27 @@ func main() {
 		fmt.Println("need --start or --stop flag")
 	}
 
+	if flags.Start {
+		startDaemon()
+	}
+	if flags.Stop {
+		stopDaemon()
+	}
+
+	// all good :)
+}
+
+func startDaemon() {
 	// setup args for daemon call
 	args := []string{
 		"--name=npserver",
 		"--noconfig",
 		"--errlog=/var/log/npserver-daemon.log",
 		"--output=/var/log/npserver.log",
-		"--pidfile=/run/npserver-daemon.pid",
+		fmt.Sprintf("--pidfile=%s", flags.PIDFile),
 		"--unsafe",
 		"--",
 		"/usr/local/bin/npserver",
-		fmt.Sprintf("--unix-socket=%s", flags.UnixSocket),
-		fmt.Sprintf("--pid-file=%s", flags.PIDFile),
 	}
 
 	// append extra args to args
@@ -59,6 +70,51 @@ func main() {
 		fmt.Printf("proc.Wait() failed. %s\n", err)
 		os.Exit(1)
 	}
+}
 
-	// all good :)
+func stopDaemon() {
+	pidFile, err := os.Open(flags.PIDFile)
+	if err != nil {
+		fmt.Printf("error on opening pidfile: %s", err)
+		os.Exit(1)
+	}
+
+	pidFileContents, err := ioutil.ReadAll(pidFile)
+	pidFile.Close()
+	if err != nil {
+		fmt.Printf("error reading pidfile contents: %s\n", err)
+		os.Exit(1)
+	}
+
+	// convert pid string to pid int
+	pid, err := strconv.Atoi(string(pidFileContents))
+	if err != nil {
+		fmt.Printf("error parsing pidfile contents: %s\n", err)
+		os.Exit(1)
+	}
+
+	// lookup process
+	proc, err := os.FindProcess(pid)
+	if err != nil {
+		fmt.Printf("error finding process with pid %d: %s\n", pid, err)
+		os.Exit(1)
+	}
+
+	// signal process to stop
+	err = proc.Signal(os.Interrupt)
+	if err != nil {
+		fmt.Printf("error sending interrupt signal to npserver: %s\n", err)
+		os.Exit(1)
+	}
+
+	// wait until process is done
+	state, err := proc.Wait()
+	if err != nil {
+		fmt.Printf("error waiting for process to stop: %s\n", err)
+		os.Exit(1)
+	}
+	if !state.Exited() || !state.Success() {
+		fmt.Printf("npserver process exited badly")
+		os.Exit(1)
+	}
 }
