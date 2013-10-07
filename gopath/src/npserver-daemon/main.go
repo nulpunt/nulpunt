@@ -75,9 +75,9 @@ func startDaemon() {
 func stopDaemon() {
 	// stopping arguments
 	args := []string{
+		"--stop",
 		fmt.Sprintf("--name=%s", daemonName),
 		fmt.Sprintf("--pidfile=%s", flags.PIDFile),
-		"--stop",
 	}
 
 	// start process
