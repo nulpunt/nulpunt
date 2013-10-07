@@ -50,7 +50,7 @@ func startDaemon() {
 	args = append(args, extraArgs...)
 
 	// start process
-	proc, err := os.StartProcess("daemon", args, &os.ProcAttr{
+	proc, err := os.StartProcess("/usr/bin/daemon", args, &os.ProcAttr{
 		Files: []*os.File{os.Stdin, os.Stdout, os.Stderr},
 		Sys: &syscall.SysProcAttr{
 			Credential: &syscall.Credential{
