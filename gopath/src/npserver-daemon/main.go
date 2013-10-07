@@ -121,9 +121,9 @@ func stopDaemon() {
 		fmt.Printf("npserver process exited badly")
 		os.Exit(1)
 	}
-	
+
 	// remove pid file
-	err := os.Remove(flags.PIDFile)
+	err = os.Remove(flags.PIDFile)
 	if err != nil {
 		fmt.Printf("error removing pid file: %s\n", err)
 	}
