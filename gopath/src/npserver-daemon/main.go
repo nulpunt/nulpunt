@@ -79,7 +79,7 @@ func stopDaemon() {
 			fmt.Printf("it looks like npserver is not running")
 			os.Exit(0)
 		}
-		fmt.Printf("error on opening pidfile: %s", err)
+		fmt.Printf("error on opening pidfile: %s\n", err)
 		os.Exit(1)
 	}
 
@@ -120,5 +120,11 @@ func stopDaemon() {
 	if !state.Exited() || !state.Success() {
 		fmt.Printf("npserver process exited badly")
 		os.Exit(1)
+	}
+	
+	// remove pid file
+	err := os.Remove(flags.PIDFile)
+	if err != nil {
+		fmt.Printf("error removing pid file: %s\n", err)
 	}
 }
