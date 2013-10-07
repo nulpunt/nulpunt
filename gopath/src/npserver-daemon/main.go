@@ -122,12 +122,15 @@ func stopDaemon() {
 	// wait until process is done
 	state, err := proc.Wait()
 	if err != nil {
-		fmt.Printf("error waiting for process to stop: %s\n", err)
-		os.Exit(1)
-	}
-	if !state.Exited() || !state.Success() {
-		fmt.Printf("npserver process exited badly")
-		os.Exit(1)
+		if err.Error() != "wait: no child processes" {
+			fmt.Printf("error waiting for process to stop: %s\n", err)
+			os.Exit(1)
+		}
+	} else {
+		if !state.Exited() || !state.Success() {
+			fmt.Printf("npserver process exited badly")
+			os.Exit(1)
+		}
 	}
 
 	// remove pid file
