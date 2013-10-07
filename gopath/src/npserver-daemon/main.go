@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/davecgh/go-spew/spew"
 	"os"
 	"syscall"
 )
@@ -79,6 +80,7 @@ func stopDaemon() {
 		fmt.Sprintf("--name=%s", daemonName),
 		fmt.Sprintf("--pidfile=%s", flags.PIDFile),
 	}
+	spew.Dump(args)
 
 	// start process
 	proc, err := os.StartProcess("/usr/bin/daemon", args, &os.ProcAttr{
