@@ -75,7 +75,7 @@ func startDaemon() {
 func stopDaemon() {
 	pidFile, err := os.Open(flags.PIDFile)
 	if err != nil {
-		if err == os.ErrNotExist {
+		if os.IsNotExist(err) {
 			fmt.Printf("it looks like npserver is not running")
 			os.Exit(0)
 		}
