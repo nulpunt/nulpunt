@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"strconv"
+	"strings"
 	"syscall"
 )
 
@@ -73,6 +74,7 @@ func startDaemon() {
 }
 
 func stopDaemon() {
+	// open pid file (if available)
 	pidFile, err := os.Open(flags.PIDFile)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -83,12 +85,16 @@ func stopDaemon() {
 		os.Exit(1)
 	}
 
+	// read all file contents
 	pidFileContents, err := ioutil.ReadAll(pidFile)
 	pidFile.Close()
 	if err != nil {
 		fmt.Printf("error reading pidfile contents: %s\n", err)
 		os.Exit(1)
 	}
+
+	// strip eventual whitespace
+	pidFileContents = strings.TrimRight(pidFileContents, " \r\n\t")
 
 	// convert pid string to pid int
 	pid, err := strconv.Atoi(string(pidFileContents))
