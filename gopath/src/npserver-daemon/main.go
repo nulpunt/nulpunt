@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/davecgh/go-spew/spew"
 	"os"
+	"os/exec"
 	"syscall"
 )
 
@@ -74,35 +75,41 @@ func startDaemon() {
 }
 
 func stopDaemon() {
-	// stopping arguments
-	args := []string{
-		"--stop",
-		fmt.Sprintf("--name=%s", daemonName),
-		fmt.Sprintf("--pidfile=%s", flags.PIDFile),
-	}
-	spew.Dump(args)
+	// possibly racy.
+	// no guarantee that npserver cleaned up before new npserver is being copied/started
+	cmd := exec.Command("killall", "-s", "SIGINT", "npserver")
+	cmd.Run()
 
-	// start process
-	proc, err := os.StartProcess("/usr/bin/daemon", args, &os.ProcAttr{
-		Files: []*os.File{os.Stdin, os.Stdout, os.Stderr},
-		Sys: &syscall.SysProcAttr{
-			Credential: &syscall.Credential{
-				Uid: uint32(os.Geteuid()),
-				Gid: uint32(os.Getegid()),
-			},
-		},
-	})
-	if err != nil {
-		fmt.Printf("os/exec returned an error: '%s'\n", err)
-		os.Exit(1)
-	}
+	// // stopping arguments
+	// args := []string{
+	// 	"--stop",
+	// 	fmt.Sprintf("--name=%s", daemonName),
+	// 	fmt.Sprintf("--pidfile=%s", flags.PIDFile),
+	// }
+	// spew.Dump(args)
 
-	// wait for daemon to be ready
-	_, err = proc.Wait()
-	if err != nil {
-		fmt.Printf("proc.Wait() failed. %s\n", err)
-		os.Exit(1)
-	}
+	// // start process
+	// proc, err := os.StartProcess("/usr/bin/daemon", args, &os.ProcAttr{
+	// 	Files: []*os.File{os.Stdin, os.Stdout, os.Stderr},
+	// 	Sys: &syscall.SysProcAttr{
+	// 		Credential: &syscall.Credential{
+	// 			Uid: uint32(os.Geteuid()),
+	// 			Gid: uint32(os.Getegid()),
+	// 		},
+	// 	},
+	// })
+	// if err != nil {
+	// 	fmt.Printf("os/exec returned an error: '%s'\n", err)
+	// 	os.Exit(1)
+	// }
+
+	// // wait for daemon to be ready
+	// _, err = proc.Wait()
+	// if err != nil {
+	// 	fmt.Printf("proc.Wait() failed. %s\n", err)
+	// 	os.Exit(1)
+	// }
+
 	// // open pid file (if available)
 	// pidFile, err := os.Open(flags.PIDFile)
 	// if err != nil {
