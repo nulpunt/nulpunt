@@ -93,11 +93,13 @@ func stopDaemon() {
 		os.Exit(1)
 	}
 
+	pidFileContentsString := string(pidFileContents)
+
 	// strip eventual whitespace
-	pidFileContents = strings.TrimRight(pidFileContents, " \r\n\t")
+	pidFileContentsString = strings.TrimRight(pidFileContentsString, " \r\n\t")
 
 	// convert pid string to pid int
-	pid, err := strconv.Atoi(string(pidFileContents))
+	pid, err := strconv.Atoi(pidFileContentsString)
 	if err != nil {
 		fmt.Printf("error parsing pidfile contents: %s\n", err)
 		os.Exit(1)
