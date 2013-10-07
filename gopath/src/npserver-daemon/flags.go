@@ -10,10 +10,9 @@ import (
 // never write to this struct from outside this file
 // flags is filled with defaults from the tags and the initFlags function
 var flags struct {
-	Start      bool   `long:"start" description:"start npserver"`
-	Stop       bool   `long:"stop" description:"stop npserver"`
-	UnixSocket string `long:"unix-socket" description:"unix socket on which the npserver should listen" default:"/var/run/npserver.sock"`
-	PIDFile    string `long:"pid-file" description:"pid file for the npserver" default:"/var/run/npserver.pid"`
+	Start   bool   `long:"start" description:"start npserver"`
+	Stop    bool   `long:"stop" description:"stop npserver"`
+	PIDFile string `long:"pid-file" description:"pid file for the npserver" default:"/var/run/npserver.pid"`
 }
 
 var extraArgs []string
