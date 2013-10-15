@@ -87,7 +87,7 @@ func initHTTPServer() {
 		// error is fatal
 		err := http.ListenAndServe(":"+port, alphaRouter)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatalf("fatal error listening/serving http on tcp: %s\n", err)
 		}
 	}()
 
@@ -105,7 +105,7 @@ func initHTTPServer() {
 				Net:  "unix",
 			})
 			if err != nil {
-				log.Fatal(err)
+				log.Fatalf("fatal error on listening on unix socket: %s\n", err)
 			}
 
 			// append a function on graceful shutdown to close the unix socket
@@ -118,7 +118,7 @@ func initHTTPServer() {
 			// an error (when not closing down) is fatal
 			err = http.Serve(socket, alphaRouter)
 			if !socketClosing && err != nil {
-				log.Fatal(err)
+				log.Fatalf("fatal error serving http on the unix socket: %s\n", err)
 			}
 		}()
 	}
