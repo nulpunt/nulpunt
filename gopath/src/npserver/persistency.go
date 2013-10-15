@@ -16,7 +16,7 @@ func initPersistency() {
 	// dial to localhost mongoDB instance
 	mgoConn, err := mgo.Dial("localhost")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("couldn't dial mgo connection: %s\n", err)
 	}
 
 	// get "nulpunt" database
@@ -31,6 +31,6 @@ func initPersistency() {
 		Unique: true,
 	})
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("couldn't ensure index on accounts.username: %s\n", err)
 	}
 }
