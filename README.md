@@ -22,7 +22,7 @@ We are keeping the source for imported packages within this repository for sever
 - Project will still build when remote dependency is unreachable or removed.
 
 Cons:
-- Need to set GOPATH to get this to work.
+- Need to set GOPATH environment variable to make this work properly.
 
 If anyone can point to or provide a better way to do this, please open an issue.
 
@@ -39,11 +39,12 @@ Invoke go build with a specific GOPATH:
 You can permanently set the GOPATH for this project in your `.profile` file or `.bashrc` file.
 
 ### How to contribute
-1. Fork this repository on GitHub  
-2. Edit your fork (preferably use a new branch for each feature/bugfix)
-3. Send pull request
-4. ????
-5. Profit!
+1. Fork this repository on GitHub.
+2. Edit your fork (preferably use a new branch for each feature/bugfix).
+3. Make sure that the code is formated according to `go fmt`.
+4. Send pull request on github.
+5. Pull request is automatically built by Jenkins.
+6. When PR is approved, it is merged into the master branch.
 
 ### CI
 We have jenkins!
