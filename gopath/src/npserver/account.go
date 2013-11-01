@@ -12,7 +12,7 @@ var errAccountUsernameNotUnique = errors.New("account username is not unique")
 // It should not keep data in-memory, but rather write to db directly.
 // This type should just be a good wrapper for db raed/write functionality
 type Account struct {
-	ID       bson.ObjectId `bson:"_id"`
+		ID       bson.ObjectId `bson:"_id"`
 	Username string        // username
 }
 
