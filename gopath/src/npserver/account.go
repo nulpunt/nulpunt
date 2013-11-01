@@ -1,12 +1,12 @@
 package main
 
 import (
+	"bytes"
+	"code.google.com/p/go.crypto/scrypt"
+	CryptoRand "crypto/rand"
 	"errors"
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
-	"bytes"
-	CryptoRand "crypto/rand"
-	"code.google.com/p/go.crypto/scrypt"
 )
 
 var errAccountUsernameNotUnique = errors.New("account username is not unique")
@@ -29,10 +29,10 @@ func (a *Account) getDetails() (*AccountDetail, error) {
 }
 
 func (a *Account) verifyPassword(password string) (bool, error) {
- 	ad, err := a.getDetails()
- 	if err != nil {
- 		return false, err
- 	}
+	ad, err := a.getDetails()
+	if err != nil {
+		return false, err
+	}
 	return ad.ValidatePassword(password), nil
 }
 
@@ -40,10 +40,10 @@ type AccountDetail struct {
 	ID       bson.ObjectId `bson:"_id"`
 	Username string        // username
 	Email    string        // email
-	Hash []byte
-        Salt  []byte
-        N, R, P  int   // Parameters for the PBKDF2 hashing.
-        Remarks string // field for admin remarks about accounts.
+	Hash     []byte
+	Salt     []byte
+	N, R, P  int    // Parameters for the PBKDF2 hashing.
+	Remarks  string // field for admin remarks about accounts.
 }
 
 func getAccount(username string) (*Account, error) {
@@ -73,28 +73,29 @@ func registerNewAccount(username string, email string, password string) error {
 	return nil
 }
 
-
 // Cryptographically strong hash generator.
 // Create a new account, salt and hash the password. return it
-func NewAccountDetail(username, password, email string) (*AccountDetail) {
+func NewAccountDetail(username, password, email string) *AccountDetail {
 	salt := randBytes(32)
 	acct := &AccountDetail{
-		ID: bson.NewObjectId(),
+		ID:       bson.NewObjectId(),
 		Username: username,
-		Email: email,
-		Salt: salt,
-		N: 16384,
-		R: 8,
-		P: 1,
+		Email:    email,
+		Salt:     salt,
+		N:        16384,
+		R:        8,
+		P:        1,
 	}
 	hash := acct.HashPassword(password)
 	acct.Hash = hash
 	return acct
 }
 
-func (a *AccountDetail) HashPassword(password string) ([]byte) {
-	hash, err :=scrypt.Key([]byte(password), a.Salt, a.N, a.R, a.P, 32)
-	if err != nil { panic(err) }
+func (a *AccountDetail) HashPassword(password string) []byte {
+	hash, err := scrypt.Key([]byte(password), a.Salt, a.N, a.R, a.P, 32)
+	if err != nil {
+		panic(err)
+	}
 	return hash
 }
 
@@ -104,8 +105,7 @@ func (acct *AccountDetail) ValidatePassword(password string) bool {
 }
 
 func randBytes(length int) (bytes []byte) {
-        bytes = make([]byte, length)
-        CryptoRand.Read(bytes)
-        return
+	bytes = make([]byte, length)
+	CryptoRand.Read(bytes)
+	return
 }
-
