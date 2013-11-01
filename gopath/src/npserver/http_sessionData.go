@@ -44,13 +44,12 @@ func sessionDataBlobSave(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 
-	n, err := file.Write([]byte(inData.Blob))
+	_, err = file.Write([]byte(inData.Blob))
 	if err != nil {
 		log.Printf("error writing to blob GridFile: %s\n", err)
 		http.Error(w, "error", http.StatusInternalServerError)
 		return
 	}
-	log.Printf("wrote %d bytes\n", n)
 
 	return
 }
