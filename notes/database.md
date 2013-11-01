@@ -21,8 +21,8 @@ annotations
  - `location` (object)
   - `page` (int)
   - `start` (object)
-   - `x` (int)
-   - `y` (int)
-  - `end`
-   - `x` (int)
-   - `y` (int)
+    - `x` (int)
+    - `y` (int)
+  - `end` (object)
+    - `x` (int)
+    - `y` (int)
