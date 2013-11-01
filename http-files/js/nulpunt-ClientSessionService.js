@@ -84,7 +84,6 @@ nulpunt.factory('ClientSessionService', function($rootScope, $http, $sessionStor
 	};
 
 	//++ add websocket (?)
-	//++ add timed pings
 
 	return service;
 });

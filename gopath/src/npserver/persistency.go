@@ -8,6 +8,7 @@ import (
 // package-wide shared variables pointing to collections in mongodb
 var (
 	colAccounts *mgo.Collection
+	gridFS      *mgo.GridFS
 )
 
 // initPersistency sets up database connection and initializes col* variables
@@ -21,6 +22,9 @@ func initPersistency() {
 
 	// get "nulpunt" database
 	dbNulpunt := mgoConn.DB("nulpunt")
+
+	// get gridfs
+	gridFS = dbNulpunt.GridFS("fs")
 
 	// get "users" collection
 	colAccounts = dbNulpunt.C("accounts")

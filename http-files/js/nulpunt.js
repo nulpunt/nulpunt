@@ -37,6 +37,10 @@ nulpunt.config(function($routeProvider) {
 		templateUrl: '/html/profile.html',
 		controller: "ProfileCtrl"
 	})
+	.when('/settings', {
+		templateUrl: '/html/settings.html',
+		controller: "SettingsCtrl"
+	})
 	.otherwise({
 		templateUrl: "/html/not-found.html",
 		controller: "NotFoundCtrl",
@@ -101,6 +105,37 @@ nulpunt.controller("RegisterCtrl", function($scope, $rootScope, $http) {
 			$scope.error = "Could not make request to server";
 		});
 	};
+});
+
+nulpunt.controller("SettingsCtrl", function($scope, AccountDataService) {
+	// defaults
+	$scope.settings = {
+		testA: "emptyA",
+		testB: "emptyB",
+	};
+
+	// get settings from server
+	var settingsPromise = AccountDataService.getObject("settings");
+	settingsPromise.then(function(data) {
+		$scope.settings.testA = data.a;
+		$scope.settings.testB = data.b;
+	}, function(error) {
+		console.error(error);
+	});
+
+	// saveSettings function
+	$scope.saveSettings = function() {
+		var data = {
+			a: $scope.settings.testA,
+			b: $scope.settings.testB,
+		};
+		var donePromise = AccountDataService.setObject("settings", data);
+		donePromise.then(function() {
+			console.log('saved');
+		}, function(error) {
+			console.error(error);
+		})
+	}
 });
 
 nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService) {
