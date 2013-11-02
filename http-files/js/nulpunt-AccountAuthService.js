@@ -23,6 +23,10 @@ nulpunt.factory('AccountAuthService', function($rootScope, $http, $q) {
 		return service.account.username;
 	}
 
+	service.resume = function() {
+		//++
+	};
+
 	service.authenticate = function(username, password) {
 		var defered = $q.defer();
 

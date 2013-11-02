@@ -4,7 +4,8 @@ var nulpunt = angular.module('nulpunt', [
 	'ngRoute',
 	'ngStorage',
 	'ui.bootstrap.collapse', 
-	'ui.bootstrap.dropdownToggle'
+	'ui.bootstrap.dropdownToggle',
+	'angularFileUpload'
 ]);
 
 nulpunt.config(function($routeProvider) {
@@ -193,8 +194,14 @@ nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService
 	});
 });
 
-nulpunt.controller("AdminUploadCtrl", function($scope) {
-	//++
+nulpunt.controller("AdminUploadCtrl", function($scope, $upload) {
+	$scope.onFileSelect = function($files) {
+		$scope.files = [];
+		_.each($files, function(file, index) {
+			$scope.files.push({file: file, i: index});
+		});
+	};
+	$scope.removeFile = function() {};
 });
 
 nulpunt.controller("SignOutCtrl", function($scope, AccountAuthService, ClientSessionService) {
