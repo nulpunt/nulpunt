@@ -1,6 +1,19 @@
+.container {
+	padding-left: 0;
+	padding-right: 0;
+}
+
 .np-nav-account-logo {
 	padding-top: 5px !important;
 	padding-bottom: 5px !important;
+}
+
+.np-main-content {
+	border-left: 1px solid #dadadc;
+	border-right: 1px solid #dadadc;
+	border-bottom: 1px solid #dadadc;
+	margin-bottom: 75px;
+	padding: 10px 15px;
 }
 
 div.np-tagline {
@@ -15,6 +28,72 @@ div.np-tagline p {
 	text-align: center;
 }
 
+.np-row {
+	background-color: #f2f0f2;
+	padding: 10px 20px;
+	margin-left: -15px;
+	margin-right: -15px;
+}
+
+.np-row-even {
+	background-color: #ffffff;
+}
+
+.np-document h2 {
+	font-size: 24px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+.np-document p {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+.np-document p strong {
+	width: 150px;
+	text-align: right;
+}
+.np-document p.np-document-description {
+	margin-bottom: 5px;
+	font-size: 12px;
+	font-style: italic;
+}
+.np-document-tag {
+	display: block;
+	float: left;
+	padding: 3px 5px;
+	background-color: #d9d9d9;
+	margin-top: 5px;
+	margin-right: 10px;
+	border: 1px solid #a09ea2;
+	border-radius: 4px;
+}
+.np-open-document {
+	float: right;
+	margin-right: 10px;
+	margin-top: 10px;
+}
+
+.np-notification-time {
+	font-size: 11px;
+	text-align: right;
+	display: inline-block;
+	width: 125px;
+	padding-right: 20px;
+}
+
+.np-remove-padding-lr {
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.nav-tabs {
+	padding-left: 15px;
+	padding-right: 15px;
+}
+.nav-tabs > li.np-tab-right {
+	float: right;
+}
+
 .nav-tabs > li > a {
 	color: #555;
 	background-color: #f1f0f1;
@@ -23,4 +102,15 @@ div.np-tagline p {
 
 .nav-tabs > li > a:hover {
 	background-color: #d1d0d2;
+}
+
+.btn-black {
+  color: #ffffff;
+  background-color: #000000;
+}
+.btn-black:hover,
+.btn-black:focus,
+.btn-black:active,
+.btn-black.active {
+  color: #dddddd;
 }
