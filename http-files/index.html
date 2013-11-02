@@ -23,25 +23,17 @@
 			<!-- collect the nav links, forms, and other content for toggling -->
 			<div class="collapse navbar-collapse navbar-ex1-collapse">
 				<ul class="nav navbar-nav">
-					<li ng-class="{active: loc=='home'}" ><a ng-location="/#/">Home</a></li> <!-- active class deprecated? -->
-					<li ng-class="{active: loc=='topics'}"><a href="/#/topics">Topics</a></li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li><a href="#">Action</a></li>
-							<li><a href="#">Another action</a></li>
-							<li><a href="#">Something else here</a></li>
-							<li><a href="#">Separated link</a></li>
-							<li><a href="#">One more separated link</a></li>
-						</ul>
-					</li>
+					<!-- <li ng-class="{active: loc=='overview'}" ><a href="/#/">0.</a></li> -->
+					<li ng-show="account.username" ><a href="/#/inbox">Inbox</a></li> <!-- active class deprecated? -->
+					<li ng-show="account.username" ><a href="/#/history">History</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right" ng-hide="account.username">
 					<li><a href="/#/sign-in">Sign in</a></li>
 					<li><a href="/#/register">Register</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right" ng-show="account.username">
-					<li><a href="/#/new-document">New document</a></li>
+					<li><a href="/#/messages"><span class="glyphicon glyphicon-comment" ></span> Messages (6)</a></li>
+					<li><a href="/#/new-document"><span class="glyphicon glyphicon-file" ></span> New document</a></li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle np-nav-account-logo" data-toggle="dropdown">
 							<img ng-src="https://secure.gravatar.com/avatar/{{gravatarHash}}?s=40" width="40px" height="40px" />
