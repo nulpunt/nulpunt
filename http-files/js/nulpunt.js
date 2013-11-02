@@ -10,12 +10,20 @@ var nulpunt = angular.module('nulpunt', [
 nulpunt.config(function($routeProvider) {
 	$routeProvider
 	.when('/', {
-		template: 'Welcome home',
-		controller: "HomeCtrl" //++ rename to Overview?
+		templateUrl: "/html/overview.html",
+		controller: "OverviewCtrl"
+	})
+	.when('/inbox', {
+		templateUrl: "/html/inbox.html",
+		controller: "InboxCtrl"
 	})
 	.when('/register', {
 		templateUrl: "/html/register.html",
 		controller: "RegisterCtrl"
+	})
+	.when('/history', {
+		templateUrl: "/html/history.html",
+		controller: "HistoryCtrl"
 	})
 	.when('/sign-in', {
 		templateUrl: "/html/sign-in.html",
@@ -24,10 +32,6 @@ nulpunt.config(function($routeProvider) {
 	.when('/sign-out', {
 		templateUrl: "/html/sign-out.html",
 		controller: "SignOutCtrl"
-	})
-	.when('/topics', {
-		templateUrl: "/html/topics.html",
-		controller: "TopicsCtrl"
 	})
 	.when('/search/:searchValue', {
 		templateUrl: '/html/search.html',
@@ -52,8 +56,6 @@ nulpunt.controller("MainCtrl", function($scope) {
 });
 
 nulpunt.controller("NavbarCtrl", function($scope, $rootScope, $location, AccountAuthService) {
-	$scope.loc = 'home';
-
 	$rootScope.$on("auth_changed", function() {
 		$scope.account = AccountAuthService.account;
 		$scope.gravatarHash = CryptoJS.MD5(AccountAuthService.account.email).toString(CryptoJS.enc.Hex);
@@ -65,17 +67,27 @@ nulpunt.controller("NavbarCtrl", function($scope, $rootScope, $location, Account
 	};
 });
 
-nulpunt.controller("HomeCtrl", function($scope){
+nulpunt.controller("OverviewCtrl", function($scope){
 	//++
 });
 
-nulpunt.controller("TopicsCtrl", function($scope) {
+nulpunt.controller("InboxCtrl", function($scope) {
+	$scope.inbox = {
+		items: [],
+	};
+
+	$scope.inbox.items = [
+		{name: "bla", summary: "fdsa"},
+	];
+});
+
+nulpunt.controller("HistoryCtrl", function($scope) {
 	//++
 });
 
 nulpunt.controller("SearchCtrl", function($scope, $routeParams) {
 	$scope.mySearch = $routeParams.searchValue.replace(/[+]/g, ' ');
-})
+});
 
 nulpunt.controller("ProfileCtrl", function() {
 	//++
@@ -116,10 +128,12 @@ nulpunt.controller("SettingsCtrl", function($scope, AccountDataService) {
 
 	// get settings from server
 	var settingsPromise = AccountDataService.getObject("settings");
-	settingsPromise.then(function(data) {
+	settingsPromise.then(
+	function(data) { // success
 		$scope.settings.testA = data.a;
 		$scope.settings.testB = data.b;
-	}, function(error) {
+	}, 
+	function(error) { // error
 		console.error(error);
 	});
 
