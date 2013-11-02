@@ -29,6 +29,9 @@ func initHTTPServer() {
 
 	// proceed to the rootRouter when basic auth is satisfied
 	rootRouter := alphaRouter.MatcherFunc(func(r *http.Request, rm *mux.RouteMatch) bool {
+		if flags.DisableAlphaAuth {
+			return true
+		}
 		return alphaCheckBasicAuth(r)
 	}).Subrouter()
 
