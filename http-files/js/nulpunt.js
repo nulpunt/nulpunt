@@ -45,6 +45,10 @@ nulpunt.config(function($routeProvider) {
 		templateUrl: '/html/settings.html',
 		controller: "SettingsCtrl"
 	})
+	.when('/admin/upload', {
+		templateUrl: "/html/admin-upload.html",
+		controller: "AdminUploadCtrl"
+	})
 	.otherwise({
 		templateUrl: "/html/not-found.html",
 		controller: "NotFoundCtrl",
@@ -187,6 +191,10 @@ nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService
 	$rootScope.$on("auth_changed", function() {
 		$scope.account = AccountAuthService.account;
 	});
+});
+
+nulpunt.controller("AdminUploadCtrl", function($scope) {
+	//++
 });
 
 nulpunt.controller("SignOutCtrl", function($scope, AccountAuthService, ClientSessionService) {
