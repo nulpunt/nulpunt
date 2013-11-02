@@ -2,3 +2,25 @@
 	padding-top: 5px !important;
 	padding-bottom: 5px !important;
 }
+
+div.np-tagline {
+	background-color: #000000;
+	width: 300px;
+	margin-left: auto;
+	margin-right: auto;
+}
+div.np-tagline p {
+	color: #ffffff;
+	padding: 5px;
+	text-align: center;
+}
+
+.nav-tabs > li > a {
+	color: #555;
+	background-color: #f1f0f1;
+	border-color:#eee #eee #ddd;
+}
+
+.nav-tabs > li > a:hover {
+	background-color: #d1d0d2;
+}

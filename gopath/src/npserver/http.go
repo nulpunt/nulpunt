@@ -49,6 +49,7 @@ func initHTTPServer() {
 	rootRouter.PathPrefix("/fonts/").Handler(fileServer)
 	rootRouter.PathPrefix("/html/").Handler(fileServer)
 	rootRouter.PathPrefix("/js/").Handler(fileServer)
+	rootRouter.PathPrefix("/img/").Handler(fileServer)
 
 	// create serviceRouter for /service/*
 	serviceRouter := rootRouter.PathPrefix("/service/").Subrouter()

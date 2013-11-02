@@ -4,68 +4,79 @@
 		<title>Nulpunt</title>
 
 		<link href="css/bootstrap.min.css" rel="stylesheet" >
+		<link href="css/bootstrap-theme.css" rel="stylesheet" >
 		<link href="css/nulpunt.css" rel="stylesheet" >
 	</head>
 	<body ng-controller="MainCtrl" >
 
-		<nav class="navbar navbar-default navbar-static-top" role="navigation" ng-controller="NavbarCtrl">
-			<!-- brand and toggle get grouped for better mobile display -->
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" ng-init="navCollapsed = true" ng-click="navCollapsed = !navCollapsed">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="/#/">0.</a>
-			</div>
-
-			<!-- collect the nav links, forms, and other content for toggling -->
-			<div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
-				<ul class="nav navbar-nav">
-					<!-- <li ng-class="{active: loc=='overview'}" ><a href="/#/">0.</a></li> -->
-					<li ng-show="account.username" ><a href="/#/inbox">Inbox</a></li> <!-- active class deprecated? -->
-					<li ng-show="account.username" ><a href="/#/history">History</a></li>
-				</ul>
-				<ul class="nav navbar-nav navbar-right" ng-hide="account.username">
-					<li><a href="/#/sign-in">Sign in</a></li>
-					<li><a href="/#/register">Register</a></li>
-				</ul>
-				<ul class="nav navbar-nav navbar-right" ng-show="account.username">
-					<li><a href="/#/messages"><span class="glyphicon glyphicon-comment" ></span> Messages (6)</a></li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<span class="glyphicon glyphicon-cog"></span> Admin
-							<b class="caret"></b>
-						</a>
-						<ul class="dropdown-menu">
-							<li><a ng-href="/#/upload"><span class="glyphicon glyphicon-file" ></span> Upload documents</a></li>
-							<li><a href="/#/process"><span class="glyphicon glyphicon-asterisk" ></span> Process</a></li>
-						</ul>
-					</li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle np-nav-account-logo" data-toggle="dropdown">
-							<img ng-src="https://secure.gravatar.com/avatar/{{gravatarHash}}?s=40" width="40px" height="40px" />
-							<b class="caret"></b>
-						</a>
-						<ul class="dropdown-menu">
-							<li><a ng-href="/#/profile/{{account.username}}"><span class="glyphicon glyphicon-user" ></span> Profile</a></li>
-							<li><a href="/#/settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
-							<li><a href="/#/sign-out"><span class="glyphicon glyphicon-off"></span> Sign out</a></li>
-						</ul>
-					</li>
-				</ul>
-				<div class="col-sm-3 col-md-3 pull-right">
-					<form class="navbar-form navbar-right" role="search">
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Search" ng-model="searchValue">
-							<div class="input-group-btn">
-								<button class="btn btn-default" type="submit" ng-click="search()"><span class="glyphicon glyphicon-search"></span></button>
-							</div>
-						</div>
-					</form>
+		<div class="navbar navbar-default navbar-static-top" ng-controller="NavbarCtrl">
+			<div class="container">
+				<!-- brand and toggle get grouped for better mobile display -->
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" ng-init="navCollapsed = true" ng-click="navCollapsed = !navCollapsed">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="/#/"><img src="img/np-logo.png" /></a>
 				</div>
-			</div><!-- /.navbar-collapse -->
+
+				<div class="np-tagline hidden-xs">
+					<p>Towards a democracy without secrets</p>
+				</div>
+				
+				<div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
+					<ul class="nav navbar-nav navbar-right" ng-hide="account.username">
+						<li><a href="/#/sign-in">Sign in</a></li>
+						<li><a href="/#/register">Register</a></li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right" ng-show="account.username">
+						<li><a href="/#/messages"><span class="glyphicon glyphicon-comment" ></span> Messages (6)</a></li>
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+								<span class="glyphicon glyphicon-cog"></span> Admin
+								<b class="caret"></b>
+							</a>
+							<ul class="dropdown-menu">
+								<li><a ng-href="/#/upload"><span class="glyphicon glyphicon-file" ></span> Upload documents</a></li>
+								<li><a href="/#/process"><span class="glyphicon glyphicon-asterisk" ></span> Process</a></li>
+							</ul>
+						</li>
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle np-nav-account-logo" data-toggle="dropdown">
+								<img ng-src="https://secure.gravatar.com/avatar/{{gravatarHash}}?s=40" width="40px" height="40px" />
+								<b class="caret"></b>
+							</a>
+							<ul class="dropdown-menu">
+								<li><a ng-href="/#/profile/{{account.username}}"><span class="glyphicon glyphicon-user" ></span> Profile</a></li>
+								<li><a href="/#/settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+								<li><a href="/#/sign-out"><span class="glyphicon glyphicon-off"></span> Sign out</a></li>
+							</ul>
+						</li>
+					</ul>
+					<div class="col-sm-3 col-md-3 pull-right">
+						<form class="navbar-form navbar-right" role="search">
+							<div class="input-group">
+								<input type="text" class="form-control" placeholder="Search" ng-model="searchValue">
+								<div class="input-group-btn">
+									<button class="btn btn-default" type="submit" ng-click="search()"><span class="glyphicon glyphicon-search"></span></button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div><!-- /.navbar-collapse -->
+
+			</div>
+		</div>
+		<nav role="navigation" ng-controller="TabbarCtrl" class="hidden-xs">
+			<div class="container">
+				<ul class="nav nav-tabs">
+					<li ng-class="getClass('/inbox')"><a href="/#/inbox">Inbox</a></li>
+					<li ng-class="getClass('/history')"><a href="/#/history">History</a></li>
+					<li><a href="#">Messages</a></li>
+				</ul>
+			</div>
 		</nav>
 
 
