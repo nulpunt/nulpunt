@@ -1,22 +1,41 @@
 
+<div class="row" >
+	<div class="col-md-10" >
+		<input type="file" ng-file-select="onFileSelect($files)" multiple title="Add file(s)" ng-disabled="uploading" >
+	</div>
+</div>
 
-<form >
-	<input type="file" ng-file-select="onFileSelect(files)" multiple>
-</form>
+<div class="row" >
+	<div class="col-md-8" >
+		<table class="table table-striped table-condensed" >
+			<thead>
+				<tr>
+					<th width="80%">Filename</th>
+					<th ng-show="uploading" >Uploading</th>
+					<th ng-hide="uploading" >Options</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="file in files" >
+					<td>{{file.file.name}}</td>
+					<td ng-show="uploading" >
+						<div class="progress">
+							<div class="progress-bar" role="progressbar" aria-valuenow="{{file.percentage}}" aria-valuemin="0" aria-valuemax="100" style="width: {{file.percentage}}%;" >
+								<span class="sr-only">{{file.percentage}}% Complete</span>
+							</div>
+						</div>
+					</td>
+					<td ng-hide="uploading" >
+						<button ng-click="removeFile(file.i)" class="btn btn-danger btn-xs">Remove</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
 
-<table class="table table-striped table-condensed" >
-	<thead>
-		<tr>
-			<td>Filename</td>
-			<td>Options</td>
-		</tr>
-	</thead>
-	<tbody>
-		<tr ng-repeat="file in files" >
-			<td>{{file.name}}</td>
-			<td><button ng-click="removeFile(file.name)" class="btn btn-danger btn-xs">Remove</button></td>
-		</tr>
-	</tbody>
-</table>
-
-<button class="btn btn-success" >Upload all files</button>
+<div class="row" >
+	<div class="col-md-10" >
+		<button class="btn btn-success" ng-click="uploadFiles()" ng-disabled="uploading" >Upload all files</button>
+	</div>
+</div>

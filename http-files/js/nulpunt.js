@@ -4,7 +4,8 @@ var nulpunt = angular.module('nulpunt', [
 	'ngRoute',
 	'ngStorage',
 	'ui.bootstrap.collapse', 
-	'ui.bootstrap.dropdownToggle'
+	'ui.bootstrap.dropdownToggle',
+	'angularFileUpload'
 ]);
 
 nulpunt.config(function($routeProvider) {
@@ -266,8 +267,51 @@ nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService
 	});
 });
 
-nulpunt.controller("AdminUploadCtrl", function($scope) {
-	//++
+nulpunt.controller("AdminUploadCtrl", function($scope, $upload) {
+	$scope.uploading = false;
+
+	$scope.onFileSelect = function($files) {
+		$scope.files = [];
+		_.each($files, function(file, index) {
+			$scope.files.push({
+				file: file,
+				i: index,
+				percentage: 1,
+			});
+		});
+	};
+	
+	$scope.removeFile = function(index) {
+		$scope.files.splice(index, 1);
+	};
+
+	$scope.uploadFiles = function() {
+		$scope.uploading = true;
+		_.each($scope.files, function(file, index) {
+			$upload.upload({
+				url: 'service/session/adminUpload',
+				// headers: {'X-Nulpunt-SessionKey': 'headerValue'},
+				// withCredential: true,
+				data: {/*aditional data*/},
+				file: file.file,
+				//fileFormDataName: myFile, //(optional) sets 'Content-Desposition' formData name for file
+				progress: function(evt) {
+					//++ TODO: this isn't executed
+					var percentage = parseInt(100.0 * evt.loaded / evt.total);
+					console.log('progress: '+index+': '+percentage);
+					$scope.files[index].percentage = percentage;
+					$scope.$apply(); //++ is this required?
+				}
+			})
+			.success(function(data, status, headers, config) {
+				$scope.files[index].percentage = 100;
+				console.log(data);
+			})
+			.error(function(data, status, headers, config) {
+				console.log("error uploading", data);
+			})
+		})
+	};
 });
 
 nulpunt.controller("SignOutCtrl", function($scope, AccountAuthService, ClientSessionService) {
