@@ -10,9 +10,10 @@ import (
 // never write to this struct from outside this file
 // flags is filled with defaults from the tags and the initFlags function
 var flags struct {
-	Verbose    bool   `short:"v" long:"verbose" description:"Show verbose debug information"`
-	UnixSocket string `long:"unix-socket" description:"Serve HTTP over unix socket"`
-	HTTPFiles  string `long:"http-files" description:"location for the http files" default:"./http-files/"`
+	Verbose          bool   `short:"v" long:"verbose" description:"Show verbose debug information"`
+	UnixSocket       string `long:"unix-socket" description:"Serve HTTP over unix socket"`
+	HTTPFiles        string `long:"http-files" description:"location for the http files" default:"./http-files/"`
+	DisableAlphaAuth bool   `long:"disable-alpha-auth" description:"disable the alpha authentication check"`
 }
 
 // initFlags parses the given flags.
