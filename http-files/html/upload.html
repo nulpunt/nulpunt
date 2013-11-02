@@ -1,0 +1,22 @@
+
+
+<form >
+	<input type="file" ng-file-select="onFileSelect(files)" multiple>
+</form>
+
+<table class="table table-striped table-condensed" >
+	<thead>
+		<tr>
+			<td>Filename</td>
+			<td>Options</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="file in files" >
+			<td>{{file.name}}</td>
+			<td><button ng-click="removeFile(file.name)" class="btn btn-danger btn-xs">Remove</button></td>
+		</tr>
+	</tbody>
+</table>
+
+<button class="btn btn-success" >Upload all files</button>
