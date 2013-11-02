@@ -26,3 +26,9 @@ annotations
   - `end` (object)
     - `x` (int)
     - `y` (int)
+
+uploads
+ - `_id` (bson.ObjectId)
+ - `uploaderId` (bson.ObjectId)
+ - `filename` (string)
+ - `uploadDate` (time.Time)
