@@ -58,6 +58,14 @@ nulpunt.config(function($routeProvider) {
 		templateUrl: "/html/admin-upload.html",
 		controller: "AdminUploadCtrl"
 	})
+	.when('/admin/analyse', {
+		templateUrl: "/html/admin-analyse.html",
+		controller: "AdminAnalyseCtrl"
+	})
+	.when('/admin/process', {
+		templateUrl: "/html/admin-process.html",
+		controller: "AdminProcessCtrl"
+	})
 	.otherwise({
 		templateUrl: "/html/not-found.html",
 		controller: "NotFoundCtrl",
@@ -289,7 +297,7 @@ nulpunt.controller("AdminUploadCtrl", function($scope, $upload) {
 		$scope.uploading = true;
 		_.each($scope.files, function(file, index) {
 			$upload.upload({
-				url: 'service/session/adminUpload',
+				url: 'service/session/admin/upload',
 				// headers: {'X-Nulpunt-SessionKey': 'headerValue'},
 				// withCredential: true,
 				data: {/*aditional data*/},
@@ -314,7 +322,29 @@ nulpunt.controller("AdminUploadCtrl", function($scope, $upload) {
 	};
 });
 
+nulpunt.controller("AdminAnalyseCtrl", function($scope, $http) {
+	$scope.files = [];
+	$http({method: "POST", url: "/service/session/admin/getRawUploads"}).
+	success(function(data) {
+		console.dir(data);
+		$scope.files = data.files;
+	}).
+	error(function(error) {
+		console.log('error retrieving raw documents: ', error);
+	})
+});
+
 nulpunt.controller("SignOutCtrl", function($scope, AccountAuthService, ClientSessionService) {
 	$scope.username = AccountAuthService.getUsername();
 	ClientSessionService.stopSession();
+});
+
+nulpunt.filter('bytes', function() {
+	return function(bytes, precision) {
+		if (bytes==0 || isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
+		if (typeof precision === 'undefined') precision = 1;
+		var units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'],
+		number = Math.floor(Math.log(bytes) / Math.log(1024));
+		return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) + ' ' + units[number];
+	}
 });

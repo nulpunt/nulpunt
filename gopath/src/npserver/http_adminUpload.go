@@ -9,14 +9,16 @@ import (
 	"time"
 )
 
-func adminUpload(w http.ResponseWriter, r *http.Request) {
+type uploadedFileMetadata struct {
+	UploaderUsername string  `json:"uploaderUsername"`
+	Filename         string  `json:"filename"`
+	GridFilename     string  `json:"gridFilename"` //++ timestamp + randomstring + filename
+	Size             int64   `json:"size"`
+	Language         *string `json:"language"`
+	//++ more metadata
+}
 
-	type uploadedFileType struct {
-		Filename   string
-		UniqueName string //++ randomstring + filename
-		Size       int64
-		//++ more metadata
-	}
+func adminUpload(w http.ResponseWriter, r *http.Request) {
 
 	// get session
 	cs, err := getClientSession(r.Header.Get(headerKeySessionKey))
@@ -45,11 +47,12 @@ func adminUpload(w http.ResponseWriter, r *http.Request) {
 		log.Printf("have fieldname %s\n", fieldname)
 		for _, file := range files {
 			// generate unique name
-			uniqueName := strconv.FormatInt(time.Now().Unix(), 10) + "-" + RandomString(10) + "-" + file.Filename
+			gridFilename := strconv.FormatInt(time.Now().Unix(), 10) + "-" + RandomString(10) + "-" + file.Filename
 			// metadata instance
-			uploadedFile := &uploadedFileType{
-				Filename:   file.Filename,
-				UniqueName: uniqueName,
+			uploadedFile := &uploadedFileMetadata{
+				UploaderUsername: acc.Username,
+				Filename:         file.Filename,
+				GridFilename:     gridFilename,
 			}
 
 			// save file
@@ -60,7 +63,7 @@ func adminUpload(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			defer multipartFile.Close()
-			gridFile, err := gridFS.Create(fmt.Sprintf("/uploads/%s/%s", acc.Username, uniqueName))
+			gridFile, err := gridFS.Create(fmt.Sprintf("/uploads/%s/%s", acc.Username, gridFilename))
 			if err != nil {
 				log.Printf("error creating gridFile for %s: %s\n", file.Filename, err)
 				http.Error(w, "error", http.StatusInternalServerError)
