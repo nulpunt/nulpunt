@@ -117,3 +117,38 @@ func sessionAuthenticateAccountHandlerFunc(w http.ResponseWriter, r *http.Reques
 		outData.Success = true
 	}
 }
+
+func sessionResumeHandlerFunc(w http.ResponseWriter, r *http.Request) {
+	type outDataType struct {
+		Success  bool   `json:"success"`
+		Username string `json:"username,omitempty"`
+	}
+
+	outData := &outDataType{}
+
+	defer func() {
+		err := json.NewEncoder(w).Encode(outData)
+		if err != nil {
+			log.Printf("error: could not encode outData to client for sessionResume: %s\n", err)
+			http.Error(w, "error", http.StatusInternalServerError)
+		}
+	}()
+
+	// retrieve session
+	cs, err := getClientSession(r.Header.Get(headerKeySessionKey))
+	if err != nil {
+		log.Printf("error retrieving session.. doesn't exist? %s\n", err)
+		return
+	}
+	defer cs.done()
+
+	// retrieve and check account
+	acc := cs.account
+	if acc == nil {
+		return
+	}
+
+	// all done
+	outData.Username = acc.Username
+	outData.Success = true
+}

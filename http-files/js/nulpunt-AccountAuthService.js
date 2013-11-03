@@ -24,7 +24,20 @@ nulpunt.factory('AccountAuthService', function($rootScope, $http, $q) {
 	}
 
 	service.resume = function() {
-		//++
+		$http({method: 'POST', url: '/service/session/resume'}).
+		success(function(data, status, headers, config) {
+			if(data.success) {
+				//++ retrieve account details from server (also in .authenticate())
+				service.account = {
+					username: data.username,
+					email: "gjr19912@gmail.com"
+				};
+				$rootScope.$broadcast("auth_changed");
+			}
+		}).
+		error(function(data, status, headers, config){
+			console.log('error: could not resume authenticated session');
+		})
 	};
 
 	service.authenticate = function(username, password) {
