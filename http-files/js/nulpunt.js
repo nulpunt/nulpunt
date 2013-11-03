@@ -22,9 +22,17 @@ nulpunt.config(function($routeProvider) {
 		templateUrl: "/html/register.html",
 		controller: "RegisterCtrl"
 	})
-	.when('/history', {
+	.when('/history/:sortBy', {
 		templateUrl: "/html/history.html",
 		controller: "HistoryCtrl"
+	})
+	.when('/trending', {
+		templateUrl: "/html/trending.html",
+		controller: "TrendingCtrl"
+	})
+	.when('/notifications', {
+		templateUrl: "/html/notifications.html",
+		controller: "NotificationsCtrl"
 	})
 	.when('/sign-in', {
 		templateUrl: "/html/sign-in.html",
@@ -78,9 +86,7 @@ nulpunt.controller("NavbarCtrl", function($scope, $rootScope, $location, Account
 		var safeSearchValue = $scope.searchValue.replace(/[\/\? ]/g, '+').replace('++', '+').trim('+');
 		$location.path("search/"+safeSearchValue);
 	};
-});
 
-nulpunt.controller("TabbarCtrl", function($scope, $location) {
 	$scope.getClass = function(path) {
     	if ($location.path().substr(0, path.length) == path) {
 	      return "active"
@@ -95,17 +101,84 @@ nulpunt.controller("OverviewCtrl", function($scope){
 });
 
 nulpunt.controller("InboxCtrl", function($scope) {
-	$scope.inbox = {
+	$scope.documents = {
 		items: [],
 	};
 
-	$scope.inbox.items = [
-		{name: "bla", summary: "fdsa"},
+	$scope.documents.items = [
+		{title: "Title of the document", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 6, nrOfDrafts: 2, nrOfComments: 8, nrOfBookmarks: 4, tags: [{title: "Iraq"}, {title:"Conspiracy"}, {title:"Another tag"}] },
+		{title: "Title of the document", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 32, nrOfDrafts: 7, nrOfComments: 18, nrOfBookmarks: 12, tags: [{title: "Random tag"}] },
+		{title: "Title of the document", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 2, nrOfDrafts: 14, nrOfComments: 25, nrOfBookmarks: 4, tags: [{title: "Iraq"}] },
+		{title: "Title of the document", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 10, nrOfDrafts: 55, nrOfComments: 3, nrOfBookmarks: 15, tags: [] },
 	];
 });
 
-nulpunt.controller("HistoryCtrl", function($scope) {
-	//++
+nulpunt.controller("HistoryCtrl", function($scope, $routeParams) {
+	$scope.documents = {
+		items: [],
+	};
+
+	if($routeParams.sortBy == "annotations") {
+		//Sort by Annotations
+		$scope.documents.items = [
+			{title: "Title of the document 4", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 32, nrOfDrafts: 7, nrOfComments: 18, nrOfBookmarks: 12, tags: [{title: "Random tag"}] },
+			{title: "Title of the document 3", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 10, nrOfDrafts: 55, nrOfComments: 3, nrOfBookmarks: 15, tags: [] },
+			{title: "Title of the document 2", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 6, nrOfDrafts: 2, nrOfComments: 8, nrOfBookmarks: 4, tags: [{title: "Iraq"}, {title:"Conspiracy"}, {title:"Another tag"}] },
+			{title: "Title of the document 1", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 2, nrOfDrafts: 14, nrOfComments: 25, nrOfBookmarks: 4, tags: [{title: "Iraq"}] },
+		];
+	}
+	else if($routeParams.sortBy == "drafts") {
+		$scope.documents.items = [
+			{title: "Title of the document 3", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 10, nrOfDrafts: 55, nrOfComments: 3, nrOfBookmarks: 15, tags: [] },
+			{title: "Title of the document 1", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 2, nrOfDrafts: 14, nrOfComments: 25, nrOfBookmarks: 4, tags: [{title: "Iraq"}] },
+			{title: "Title of the document 4", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 32, nrOfDrafts: 7, nrOfComments: 18, nrOfBookmarks: 12, tags: [{title: "Random tag"}] },
+			{title: "Title of the document 2", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 6, nrOfDrafts: 2, nrOfComments: 8, nrOfBookmarks: 4, tags: [{title: "Iraq"}, {title:"Conspiracy"}, {title:"Another tag"}] },
+		];
+	}
+	else if($routeParams.sortBy == "comments") {
+		$scope.documents.items = [
+			{title: "Title of the document 1", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 2, nrOfDrafts: 14, nrOfComments: 25, nrOfBookmarks: 4, tags: [{title: "Iraq"}] },
+			{title: "Title of the document 4", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 32, nrOfDrafts: 7, nrOfComments: 18, nrOfBookmarks: 12, tags: [{title: "Random tag"}] },
+			{title: "Title of the document 2", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 6, nrOfDrafts: 2, nrOfComments: 8, nrOfBookmarks: 4, tags: [{title: "Iraq"}, {title:"Conspiracy"}, {title:"Another tag"}] },
+			{title: "Title of the document 3", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 10, nrOfDrafts: 55, nrOfComments: 3, nrOfBookmarks: 15, tags: [] },
+		];
+	}
+	else if($routeParams.sortBy == "bookmarks") {
+		$scope.documents.items = [
+			{title: "Title of the document 3", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 10, nrOfDrafts: 55, nrOfComments: 3, nrOfBookmarks: 15, tags: [] },
+			{title: "Title of the document 4", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 32, nrOfDrafts: 7, nrOfComments: 18, nrOfBookmarks: 12, tags: [{title: "Random tag"}] },
+			{title: "Title of the document 1", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 2, nrOfDrafts: 14, nrOfComments: 25, nrOfBookmarks: 4, tags: [{title: "Iraq"}] },
+			{title: "Title of the document 2", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 6, nrOfDrafts: 2, nrOfComments: 8, nrOfBookmarks: 4, tags: [{title: "Iraq"}, {title:"Conspiracy"}, {title:"Another tag"}] },
+		];
+	}
+});
+
+nulpunt.controller("TrendingCtrl", function($scope) {
+	$scope.documents = {
+		items: [],
+	};
+
+	$scope.documents.items = [
+		{title: "Title of the document", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 6, nrOfDrafts: 2, nrOfComments: 8, nrOfBookmarks: 4, tags: [{title: "Iraq"}, {title:"Conspiracy"}, {title:"Another tag"}] },
+		{title: "Title of the document", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 32, nrOfDrafts: 7, nrOfComments: 18, nrOfBookmarks: 12, tags: [{title: "Random tag"}] },
+		{title: "Title of the document", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 2, nrOfDrafts: 14, nrOfComments: 25, nrOfBookmarks: 4, tags: [{title: "Iraq"}] },
+		{title: "Title of the document", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 10, nrOfDrafts: 55, nrOfComments: 3, nrOfBookmarks: 15, tags: [] },
+	];
+});
+
+nulpunt.controller("NotificationsCtrl", function($scope) {
+	$scope.notifications = {
+		items: [],
+	};
+
+	$scope.notifications.items = [
+		{type: "comment", time: "1 minute ago", user: "Jonas", userId: "jonas", documentTitle: "An awesome article", documentId: 1},
+		{type: "annotation", time: "2 minutes ago", user: "Renée", userId: "renee", documentTitle: "Another document", documentId: 2},
+		{type: "comment", time: "1 hour ago", user: "Jonas", userId: "jonas", documentTitle: "An awesome article", documentId: 1},
+		{type: "annotation", time: "3 hours ago", user: "Renée", userId: "renee", documentTitle: "Another document", documentId: 2},
+		{type: "comment", time: "yesterday", user: "Jonas", userId: "jonas", documentTitle: "An awesome article", documentId: 1},
+		{type: "annotation", time: "28/10/ 2013 - 18:22", user: "Renée", userId: "renee", documentTitle: "Another document", documentId: 2},
+	];
 });
 
 nulpunt.controller("SearchCtrl", function($scope, $routeParams) {
