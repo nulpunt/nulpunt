@@ -24,6 +24,7 @@ var alphaUsers = map[string]string{
 	"younes":     "996a9b02da5088409c96d609fe5db9e5129efbb335beda06c35e4980814b59a98d4241a4fddf45a2eb93465f520d5ba2cdfe54ed75955bcb43775a88a46db2f2",
 	"guido":      "cf283559a5731f10206c8e395bc6d38d1ecf2c5f6e0cc748af9e0793a190a1b2cb1f27baf39b3707961d11cbc9f881297bc307de5f1c493806d1af1e5c4afe88",
 	"alpha":      "e15bf77af7123dbf2be7d0206ff4007f9bc3d1f29539d7b795cda4a230cd7807db55c4c38f4e98feb3d59cfbda97fe668e53d0edc8de0473d4fa33e8c76dd58c",
+	"daniel":     "6c3a3dbab3ed36df1187600e89df93c4e695c9bfe27736bed41af439bfd0b81e5364c1916a98f74cc5d76ca405e234749771d2dd2fc90d943b57023ab1dcdc31",
 }
 
 func alphaCheckBasicAuth(r *http.Request) bool {
