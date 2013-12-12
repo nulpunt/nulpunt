@@ -8,6 +8,7 @@ import (
 // package-wide shared variables pointing to collections in mongodb
 var (
 	colAccounts *mgo.Collection
+	colUploads  *mgo.Collection
 	gridFS      *mgo.GridFS
 )
 
@@ -26,7 +27,7 @@ func initPersistency() {
 	// get gridfs
 	gridFS = dbNulpunt.GridFS("fs")
 
-	// get "users" collection
+	// get "accounts" collection
 	colAccounts = dbNulpunt.C("accounts")
 
 	// ensure that key "username" is unique for collection "users".
@@ -37,4 +38,7 @@ func initPersistency() {
 	if err != nil {
 		log.Fatalf("fatal error when ensuring index on accounts.username: %s\n", err)
 	}
+
+	// get "uploads" collection
+	colUploads = dbNulpunt.C("uploads")
 }

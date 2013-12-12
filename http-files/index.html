@@ -9,79 +9,92 @@
 	</head>
 	<body ng-controller="MainCtrl" >
 
-		<div class="navbar navbar-default navbar-static-top" ng-controller="NavbarCtrl">
-			<div class="container">
-				<!-- brand and toggle get grouped for better mobile display -->
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle" ng-init="navCollapsed = true" ng-click="navCollapsed = !navCollapsed">
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="/#/"><img src="img/np-logo.png" /></a>
-				</div>
-
-				<div class="np-tagline hidden-xs">
-					<p>Towards a democracy without secrets</p>
-				</div>
-				
-				<div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
-					<ul class="nav navbar-nav navbar-right" ng-hide="account.username">
-						<li><a href="/#/sign-in">Sign in</a></li>
-						<li><a href="/#/register">Register</a></li>
-					</ul>
-					<ul class="nav navbar-nav navbar-right" ng-show="account.username">
-						<li><a href="/#/messages"><span class="glyphicon glyphicon-comment" ></span> Messages (6)</a></li>
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-								<span class="glyphicon glyphicon-cog"></span> Admin
-								<b class="caret"></b>
-							</a>
-							<ul class="dropdown-menu">
-								<li><a ng-href="/#/admin/upload"><span class="glyphicon glyphicon-file" ></span> Upload documents</a></li>
-								<li><a href="/#/admin/process"><span class="glyphicon glyphicon-asterisk" ></span> Process documents</a></li>
-							</ul>
-						</li>
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle np-nav-account-logo" data-toggle="dropdown">
-								<img ng-src="https://secure.gravatar.com/avatar/{{gravatarHash}}?s=40" width="40px" height="40px" />
-								<b class="caret"></b>
-							</a>
-							<ul class="dropdown-menu">
-								<li><a ng-href="/#/profile/{{account.username}}"><span class="glyphicon glyphicon-user" ></span> Profile</a></li>
-								<li><a href="/#/settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
-								<li><a href="/#/sign-out"><span class="glyphicon glyphicon-off"></span> Sign out</a></li>
-							</ul>
-						</li>
-					</ul>
-					<div class="col-sm-3 col-md-3 pull-right">
-						<form class="navbar-form navbar-right" role="search">
-							<div class="input-group">
-								<input type="text" class="form-control" placeholder="Search" ng-model="searchValue">
-								<div class="input-group-btn">
-									<button class="btn btn-default" type="submit" ng-click="search()"><span class="glyphicon glyphicon-search"></span></button>
-								</div>
-							</div>
-						</form>
+		<div ng-controller="NavbarCtrl">
+			<div class="navbar navbar-default navbar-static-top">
+				<div class="container">
+					<!-- brand and toggle get grouped for better mobile display -->
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" ng-init="navCollapsed = true" ng-click="navCollapsed = !navCollapsed">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="/#/"><img src="img/np-logo.png" /></a>
 					</div>
-				</div><!-- /.navbar-collapse -->
+					<div class="np-tagline hidden-xs">
+						<p>Towards a democracy without secrets</p>
+					</div>
+				
+					<div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
+						<ul class="nav navbar-nav navbar-right" ng-hide="account.username">
+							<li><a href="/#/sign-in">Sign in</a></li>
+							<li><a href="/#/register">Register</a></li>
+						</ul>
+						<ul class="nav navbar-nav navbar-right" ng-show="account.username">
+							<li><a href="/#/messages"><span class="glyphicon glyphicon-comment" ></span> Messages (6)</a></li>
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+									<span class="glyphicon glyphicon-cog"></span> Admin
+									<b class="caret"></b>
+								</a>
+								<ul class="dropdown-menu">
+									<li><a ng-href="/#/admin/upload"><span class="glyphicon glyphicon-file" ></span> Upload documents</a></li>
+									<li><a ng-href="/#/admin/analyse"><span class="glyphicon glyphicon-search" ></span> Analyse documents</a></li>
+									<li><a href="/#/admin/process"><span class="glyphicon glyphicon-asterisk" ></span> Process documents</a></li>
+								</ul>
+							</li>
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle np-nav-account-logo" data-toggle="dropdown">
+									<img ng-src="https://secure.gravatar.com/avatar/{{gravatarHash}}?s=40" width="40px" height="40px" />
+									<b class="caret"></b>
+								</a>
+								<ul class="dropdown-menu">
+									<li><a ng-href="/#/profile/{{account.username}}"><span class="glyphicon glyphicon-user" ></span> Profile</a></li>
+									<li><a href="/#/settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+									<li><a href="/#/sign-out"><span class="glyphicon glyphicon-off"></span> Sign out</a></li>
+								</ul>
+							</li>
+						</ul>
+						<div class="col-sm-3 col-md-3 pull-right">
+							<form class="navbar-form navbar-right" role="search">
+								<div class="input-group">
+									<input type="text" class="form-control" placeholder="Search" ng-model="searchValue">
+									<div class="input-group-btn">
+										<button class="btn btn-default" type="submit" ng-click="search()"><span class="glyphicon glyphicon-search"></span></button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
 
-			</div>
+			<nav role="navigation" class="hidden-xs">
+				<div class="container">
+					<ul class="nav nav-tabs" ng-show="account.username">
+						<li ng-class="getClass('/inbox')"><a href="/#/inbox">Inbox</a></li>
+						<li ng-class="getClass('/history')"><a href="/#/history/annotations">History</a></li>
+						<li ng-class="getClass('/notifications')"><a href="/#/notifications">Notifications <span class="badge">3</span></a></li>
+						<li ng-class="getClass('/trending')"><a href="/#/trending">Trending</a></li>
+
+						<li ng-class="getClass('/settings')" class="np-tab-right"><a href="/#/settings">Settings</a></li>
+						<li ng-class="getClass('/messages')" class="np-tab-right"><a href="/#/messages">Messages <span class="badge">6</span></a></li>
+						<li ng-class="getClass('/profile')" class="np-tab-right"><a href="/#/profile/{{account.username}}">My profile</a></li>
+					</ul>
+					<ul class="nav nav-tabs" ng-hide="account.username">
+						<li ng-class="getClass('/trending')"><a href="/#/trending">Trending</a></li>
+
+						<li ng-class="getClass('/sign-in')" class="np-tab-right"><a href="/#/sign-in">Sign in </a></li>
+						<li ng-class="getClass('/register')" class="np-tab-right"><a href="/#/register">Register</a></li>
+					</ul>
+				</div>
+			</nav>
 		</div>
-		<nav role="navigation" ng-controller="TabbarCtrl" class="hidden-xs">
-			<div class="container">
-				<ul class="nav nav-tabs">
-					<li ng-class="getClass('/inbox')"><a href="/#/inbox">Inbox</a></li>
-					<li ng-class="getClass('/history')"><a href="/#/history">History</a></li>
-					<li><a href="#">Messages</a></li>
-				</ul>
-			</div>
-		</nav>
 
 
 		<!-- location for the view to load (see ngRoute) -->		
-		<div ng-view class="container" ></div>
+		<div ng-view class="container np-main-content" ></div>
 
 
 

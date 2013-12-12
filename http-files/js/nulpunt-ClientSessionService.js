@@ -4,7 +4,7 @@ nulpunt.run(function(ClientSessionService) {
 	ClientSessionService.startSession();
 });
 
-nulpunt.factory('ClientSessionService', function($rootScope, $http, $sessionStorage, $timeout) {
+nulpunt.factory('ClientSessionService', function($rootScope, $http, $sessionStorage, $timeout, AccountAuthService) {
 	var service = {
 		sessionKey: ""
 	};
@@ -54,6 +54,7 @@ nulpunt.factory('ClientSessionService', function($rootScope, $http, $sessionStor
 				if(data.valid) {
 					console.log("... and guess what!? It's still valid! :D");
 					setKey(sessionKey);
+					AccountAuthService.resume();
 				} else {
 					console.log("... but that sessionKey was invalid");
 					initSession();
