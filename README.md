@@ -5,6 +5,16 @@ This repository contains the server and the static web files (html,css,js) for N
 
 For more information about Nulpunt, please visit [nulpunt.nu](http://nulpunt.nu)
 
+### Quickstart
+1. [Install go](http://golang.org/doc/install/)
+2. Fork the repository on GitHub
+3. Clone to local machine: `git clone git@github.com:YOUR-USERNAME/nulpunt.git`
+4. Execute: `cd nulpunt`
+5. Execute: `GOPATH=$(PWD)/gopath go build npserver`
+6. Run npserver: `./npserver`
+
+For changes to go code, you must recompile and restart the server (steps 5 and 6). Changes to html/css/js only need browser refresh.
+
 ### Closed repo
 The development of this application is closed fow now. If you know someone that wants to join, please ask an Owner ([GeertJohan](mailto:gjr19912@gmail.com)) to add this person to the "Contributors" team.
 
@@ -24,18 +34,6 @@ We are keeping the source for imported packages within this repository for sever
 Cons:
 - Need to set GOPATH environment variable to make this work properly.
 
-If anyone can point to or provide a better way to do this, please open an issue.
-
-### Building
-Clone this repository (or, preferably, a fork):
-`git clone git@github.com:nulpunt/nulpunt.git`
-
-Changedir into the nulpunt directory
-`cd nulpunt`
-
-Invoke go build with a specific GOPATH:
-`GOPATH=$(PWD)/gopath go build npserver`
-
 You can permanently set the GOPATH for this project in your `.profile` file or `.bashrc` file.
 
 ### How to contribute
@@ -48,8 +46,8 @@ You can permanently set the GOPATH for this project in your `.profile` file or `
 7. Repeat from step 2 for each bugfix/feature.
 
 ### CI
-We have jenkins!
-https://ci.nulpunt.nu
+We have [jenkins](https://ci.nulpunt.nu)!
+
 Jenkins performs two tasks:
 - Run build and tests for each new PR (and new commits in that PR), then report status back to Github.
 - Run nightly build and restart nightly when repository has changed (PR merged in).
