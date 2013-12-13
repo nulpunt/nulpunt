@@ -39,12 +39,13 @@ Invoke go build with a specific GOPATH:
 You can permanently set the GOPATH for this project in your `.profile` file or `.bashrc` file.
 
 ### How to contribute
-1. Fork this repository on GitHub.
-2. Edit your fork (preferably use a new branch for each feature/bugfix).
+1. Fork this repository on GitHub and clone to local.
+2. Create a new branch and start developing
 3. Make sure that the code is formated according to `go fmt`.
-4. Send pull request on github.
+4. Push your branch+changes to github and create a pull request.
 5. Pull request is automatically built by Jenkins.
 6. When PR is approved, it is merged into the master branch.
+7. Repeat from step 2 for each bugfix/feature.
 
 ### CI
 We have jenkins!
