@@ -13,6 +13,13 @@ documents
  - `categories` ([]string)
  - `publicationDate` (time.Time)
  - `original` (string, refers to location in GridFS)
+ - `lines` (two-dimensional array of char-object)
+
+char-object (inside document):
+ - `x` (int, left)
+ - `y` (int, top)
+ - `s` (int, size in pixels)
+ - `c` (string, character)
 
 annotations
  - `_id` (bson.ObjectId)
