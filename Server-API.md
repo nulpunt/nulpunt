@@ -23,6 +23,7 @@ Parameters:
 Returns: 
  - success message;
  - or error message;
+
 Result depends on database records with a valid account an entry of
 the corresponding parameters.
 
@@ -79,8 +80,30 @@ Side effects:
 ## /admin/process
 
 Add metadata to an uploaded document
-GET gives a list of document to be processed.
-POST updates a document.
+
+### GET /admin/process/list
+
+Returns a list of unpublished documents.
+
+For each document expect these fields:
+- docId; internal id of the document. needed for reference;
+- original file name; File name as it was when it was uploaded;
+- timestamp of upload;
+
+### GET /admin/process/doc?docId
+
+Parameter: 
+- docId, the internal id of the document;
+
+Returns the selected document, together with any existing metadata, see POST parameters;
+
+User can edit all parameters.
+
+TODO: invent something to correct OCR-errors.
+
+### POST 
+
+Updates the metadata of a document.
 
 POST Parameters:
 - To be defined. Examples: 
@@ -90,13 +113,14 @@ POST Parameters:
   - dates;
   - whatever;
   - Publish Yes/No;
-	  
+  - Delete Yes/No;	  
 Result:
 	Updated document.
 
 Side effects:
-- The metadata of the document gets updated with the specified values.
-- if Published == yes, document will become visible on the site. No: remove from site.
+- The metadata of the document gets updated with the specified values;
+- if Published == yes, document will become visible on the site. No: remove from site;
+- if Delete == yes, document, all metadata and any comments will be deleted from the database.
 
 ## admin/analyse 
 
@@ -105,16 +129,32 @@ This gets removed.
 Rationale: Documents get added to a queue for OCR'ing after uploading. OCR'ing happens automatically. 
 When OCR'ed succesfully, documents get visible in the /process list.
 
-# Document viewing, 
+## admin/tags
 
-## GET /document/$docid/#commentid
+A page devoted to managing the list of tags to assign to documents.
+
+GET retrieve the list of tags,
+POST adds a tags.
+
+## admin/tags/delete 
+POST deletes a tag from the list. It cannot be selected anymore for new taggings.
+
+NOTE: Documents tagged with it stay as they are. 
+
+
+
+# Document viewing
+
+## GET /document/$docId/#commentid
 
 This shows the document (or the first part), the selected page and the
 selected comment.  It is designed to be the full, static URL of the
 document with the comment on the page.
 
 It's for static deep-linking. People can post this URL everywhere and
-be sure readers get their comment on the document.
+be sure other readers can read their comment on the document.
+
+The #commentid is optional. Without it, it shows the first page/all pages.
 
 Parameters:
 - none;  it's in the URL
@@ -164,3 +204,29 @@ Returns:
 Side Effects:
 - Add a comment to an existing quotation. Sorted by submission date.
 
+# Document selection and ordering
+
+This part deals with document selection and ordering.
+
+## GET /trending
+
+This retrieve a list of docuement that are sorted to the  'trending' criterium.
+
+Trending can be defined simply as 'ordered by timestamp of latest annotation'. It will be a 'jumpy' list.
+
+Or more complex as weighted number of anntations and comments in the last X minutes.
+
+Parameters: 
+- limit; max number of documents to return
+
+Returns:
+- a list of documents. (max 50)
+  For each document expect: 
+  - docId;
+  - title;
+  - summary (if not too long);
+  - latest annotation-id
+
+Front end code needs to fetch page contents (image, overlay) and the annotation and comments to display it all.
+
+Perhaps we should consider making this call a special case that precomputes the pages and makes it mostly static, as it is used on the front page. 
