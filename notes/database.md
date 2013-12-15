@@ -5,14 +5,18 @@ accounts
  - 
 
 documents
+technical parameters (for system)
  - `_id` (bson.ObjectId)
+ - `original` (string, refers to location in GridFS)
+ - `published` boolean; true: document is visible for users; false: new or not yet processed document
+content parameters (for people)
  - `accountId` (bson.ObjectId, refers to `accounts._id`)
  - `title` (string)
  - `summary` (string)
  - `source` (string)
  - `categories` ([]string)  // These come from the Tags-table
- - `publicationDate` (time.Time)
- - `original` (string, refers to location in GridFS)
+ - `publicationDate` (time.Time)  // Time that it gets published on Nulpunt.
+
 
 tags
  - `_id` (bson.ObjectId)
@@ -25,7 +29,9 @@ pages
  - `_id` (bson.ObjectId)
  - `documentId` (bson.ObjectId, refers to `documents._id`)
  - `pageNr` (int, page number)
- - `lines` (two-dimensional array of char-object)
+ - `lines` ([][]char-object)
+ - `image` []byte; the png image data of the page
+ - `text' []string; the text in the same order as the lines-attribute
 
 char-object (inside page):
  - `x` (int, left)
@@ -49,5 +55,7 @@ annotations
 uploads
  - `_id` (bson.ObjectId)
  - `uploaderId` (bson.ObjectId)
+ - `original` 
  - `filename` (string)
  - `uploadDate` (time.Time)
+ - `language` (string); language of the document to help the OCR (default 'nld')
