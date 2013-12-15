@@ -6,8 +6,8 @@ html front end.  In here you'll find every call that can be made from
 the front end, the data structures, the parameters and the results.
 
     This document is leading. Any deviation between this document and
-    the current code is considered a bug. Either one (code or this
-    document) needs to be changed.
+    the code is considered a bug. Either one (code or this document)
+    needs to be changed.
 
 This document does not specify data storage strucutures, See
 Datastore-design.md for that.
@@ -134,12 +134,30 @@ When OCR'ed succesfully, documents get visible in the /process list.
 A page devoted to managing the list of tags to assign to documents.
 
 GET retrieve the list of tags,
-POST adds a tags.
+It returns a list of JSON-encoded 
+
+    [{ID: 123abc, Tag: 'example'}, ..]
+
+With status code 200.
+
+POST adds a tags
+It takes a JSON encoded object in the request-body:
+
+    { Tag: 'example' }
+
+On succes, it returns a 200-status code and the new list in the same
+way as the GET request. Clients can use this to update their view.
+
+On error, it returns a 400/405/500 status code with a plain text string in the page body.
 
 ## admin/tags/delete 
 POST deletes a tag from the list. It cannot be selected anymore for new taggings.
 
-NOTE: Documents tagged with it stay as they are. 
+It takes the same parameter as POST admin/tags call.
+It returns the same types of results. 
+
+NOTE: Documents tagged with it stay as they are. IE, Tags are used by
+value in the document classificiation, not by reference.
 
 
 
