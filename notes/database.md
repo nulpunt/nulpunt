@@ -14,6 +14,18 @@ documents
  - `publicationDate` (time.Time)
  - `original` (string, refers to location in GridFS)
 
+pages
+ - `_id` (bson.ObjectId)
+ - `documentId` (bson.ObjectId, refers to `documents._id`)
+ - `pageNr` (int, page number)
+ - `lines` (two-dimensional array of char-object)
+
+char-object (inside page):
+ - `x` (int, left)
+ - `y` (int, top)
+ - `s` (int, size in pixels)
+ - `c` (string, character)
+
 annotations
  - `_id` (bson.ObjectId)
  - `accountId` (bson.ObjectId, refers to `accounts._id`)
