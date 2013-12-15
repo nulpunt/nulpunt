@@ -9,6 +9,7 @@ import (
 var (
 	colAccounts *mgo.Collection
 	colUploads  *mgo.Collection
+	colTags     *mgo.Collection
 	gridFS      *mgo.GridFS
 )
 
@@ -41,4 +42,17 @@ func initPersistency() {
 
 	// get "uploads" collection
 	colUploads = dbNulpunt.C("uploads")
+
+	// get "tags" collection
+	colTags = dbNulpunt.C("tags")
+
+	// ensure that key "tag" is unique for collection "tags".
+	err = colTags.EnsureIndex(mgo.Index{
+		Key:    []string{"tag"},
+		Unique: true,
+	})
+	if err != nil {
+		log.Fatalf("fatal error when ensuring index on tag.tag: %s\n", err)
+	}
+
 }

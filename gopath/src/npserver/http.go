@@ -78,6 +78,7 @@ func initHTTPServer() {
 	adminRouter := sessionRouter.PathPrefix("/admin/").Subrouter()
 	adminRouter.Path("/upload").HandlerFunc(adminUpload)
 	adminRouter.Path("/getRawUploads").HandlerFunc(adminGetRawUploads)
+	adminRouter.PathPrefix("/tags").HandlerFunc(adminTags)
 	adminRouter.PathPrefix("/").Handler(http.NotFoundHandler())
 
 	// 404 when /service/session/* was not found
