@@ -21,7 +21,7 @@ The development of this application is closed fow now. If you know someone that 
 ### Development
 
 Nulpunt consists of a seperate server and client web-application. The client web-application is a standalone SPA (Single Page Application).
-The server exposes a set of [services](blob/master/notes/server-api.md) to the client. The server uses MongoDB as a database, it's outline/structure is defined [here](blob/master/notes/database.md).
+The server exposes a set of [services](notes/server-api.md) to the client. The server uses MongoDB as a database, it's outline/structure is defined [here](notes/database.md).
 
 Please view the [issues](https://github.com/nulpunt/nulpunt/issues?state=open) on this repo. If you have an idea or suggestion, please [create a new issue](https://github.com/nulpunt/nulpunt/issues/new).
 
