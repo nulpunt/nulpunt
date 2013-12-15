@@ -10,7 +10,7 @@ documents
  - `title` (string)
  - `summary` (string)
  - `source` (string)
- - `categories` ([]string)
+ - `categories` ([]string)  // These come from the Tags-table
  - `publicationDate` (time.Time)
  - `original` (string, refers to location in GridFS)
 
@@ -20,6 +20,18 @@ tags
 
 Note: tags have an ObjectId, these are not for referencing in other tables.
 Just insert the tag-string into other tables where needed.
+
+pages
+ - `_id` (bson.ObjectId)
+ - `documentId` (bson.ObjectId, refers to `documents._id`)
+ - `pageNr` (int, page number)
+ - `lines` (two-dimensional array of char-object)
+
+char-object (inside page):
+ - `x` (int, left)
+ - `y` (int, top)
+ - `s` (int, size in pixels)
+ - `c` (string, character)
 
 annotations
  - `_id` (bson.ObjectId)

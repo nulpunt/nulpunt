@@ -160,7 +160,6 @@ NOTE: Documents tagged with it stay as they are. IE, Tags are used by
 value in the document classificiation, not by reference.
 
 
-
 # Document viewing
 
 ## GET /document/$docId/#commentid
