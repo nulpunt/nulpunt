@@ -19,6 +19,10 @@ For changes to go code, you must recompile and restart the server (steps 5 and 6
 The development of this application is closed fow now. If you know someone that wants to join, please ask an Owner ([GeertJohan](mailto:gjr19912@gmail.com)) to add this person to the "Contributors" team.
 
 ### Development
+
+Nulpunt consists of a seperate server and client web-application. The client web-application is a standalone SPA (Single Page Application).
+The server exposes a set of [services](blob/master/notes/server-api.md) to the client. The server uses MongoDB as a database, it's outline/structure is defined [here](blob/master/notes/database.md).
+
 Please view the [issues](https://github.com/nulpunt/nulpunt/issues?state=open) on this repo. If you have an idea or suggestion, please [create a new issue](https://github.com/nulpunt/nulpunt/issues/new).
 
 #### Server development
@@ -44,7 +48,7 @@ The client, or "front-end", is written using HTML, CSS and Javascript. The clien
  - [Underscore](http://underscorejs.org)
  - [CrytoJS](https://crypto-js.googlecode.com)
 
-#### AngularJS
+##### AngularJS
 It is important to understand how [AngularJS](http://angularjs.org) works because this is the foundation for the nulpunt client application. If you have not worked with AngularJS yet, please folow some [basic tutorials (scroll down)](http://egghead.io/lessons), it's very easy to pick up.
 
 #### How to contribute
