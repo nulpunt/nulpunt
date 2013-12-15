@@ -25,6 +25,13 @@ char-object (inside page):
  - `y` (int, top)
  - `s` (int, size in pixels)
  - `c` (string, character)
+ - 
+tags
+ - `_id` (bson.ObjectId)
+ - `tag` (string)
+
+Note: tags have an ObjectId, these are not for referencing in other tables.
+Just insert the tag-string into other tables where needed.
 
 annotations
  - `_id` (bson.ObjectId)

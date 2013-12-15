@@ -66,6 +66,10 @@ nulpunt.config(function($routeProvider) {
 		templateUrl: "/html/admin-process.html",
 		controller: "AdminProcessCtrl"
 	})
+	.when('/admin/tags', {
+		templateUrl: "/html/admin-tags.html",
+		controller: "AdminTagsCtrl"
+	})
 	.otherwise({
 		templateUrl: "/html/not-found.html",
 		controller: "NotFoundCtrl",
@@ -273,6 +277,47 @@ nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService
 	$rootScope.$on("auth_changed", function() {
 		$scope.account = AccountAuthService.account;
 	});
+});
+
+nulpunt.controller("AdminTagsCtrl", function($scope, $rootScope, $http) {
+    $http.get('/service/session/admin/tags').
+	success(function(data) {
+	    $scope.tags = data;
+	}).
+	error(function(data, status, headers, config) {
+	    console.log("error fetching tags");
+	    console.log(data, status, headers);
+	    $scope.error = data;
+	});
+
+    $scope.specify_add = function() {
+	this.url = '/service/session/admin/tags';
+    }
+    
+    $scope.specify_delete = function() {
+	this.url = '/service/session/admin/tags/delete';
+    }
+
+    $scope.submit = function() {
+	    $scope.done = false;
+	    $scope.error = "";
+	    
+		$http({
+		    method: 'POST', 
+		    url: this.url,
+		    data: { tag: $scope.tag } }).
+		success(function(data, status, headers, config) {
+		    // console.log(data)
+		    // TODO: This doesn't update the list of available tags.
+		    // We need to signal the model-viewer somehow.
+		    $scope.tags = data
+		}).
+		error(function(data, status, headers, config) {
+		    console.log("invalid response for add Tag");
+			console.log(data, status, headers);
+			$scope.error = data;
+		});
+	};
 });
 
 nulpunt.controller("AdminUploadCtrl", function($scope, $upload) {

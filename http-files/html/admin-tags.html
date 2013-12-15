@@ -1,0 +1,29 @@
+<h3>Available Tags</h3>
+
+<div ng-controller="AdminTagsCtrl as tags">
+  <ul>
+    <li ng-repeat="tag in tags">{{tag.Tag}}</li>
+  </ul>
+</div>
+
+<div ng-show="error" class="alert alert-error" >
+	<strong>{{ error }}</strong><br/>
+</div>
+
+<div>
+	<h3>Add a new tag</h3>
+	<form ng-submit="submit()" role="form" >
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="addTag" class="col-lg-2 control-label" >Tag</label>
+					<input type="text" class="form-control" id="addTag" placeholder="Tag" required ng-model="tag" >
+				</div>
+				<div class="form-group">
+					<button type="submit" ng-click="specify_add()"    class="btn btn-default">Add</button>
+					<button type="submit" ng-click="specify_delete()" class="btn btn-default">Delete</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
