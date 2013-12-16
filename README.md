@@ -68,3 +68,12 @@ Jenkins performs two tasks:
 - Run build and tests for each new PR (and new commits in that PR), then report status back to Github.
 - Run nightly build and restart nightly when repository has changed (PR merged in).
 
+#### OCR process
+The quickstart and server instructions above do not include the OCR process (`npocr`).
+To get `npocr` up and running, perform the following:
+1. Install go.leptonica dependencies as explained [here](https://github.com/GeertJohan/go.leptonica)
+2. Install go.tesseract dependencies as explained [here](https://github.com/GeertJohan/go.tesseract)
+3. Install and run `nsqlookupd` and `nsqd` with their defaults (localhost): [follow this quick start](http://bitly.github.io/nsq/overview/quick_start.html).
+4. Change dir into the root of your nulpunt repository clone
+5. Build npocr: `GOPATH=$(pwd)/gopath go build npocr`
+6. Run npocr: `./npocr`
