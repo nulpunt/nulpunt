@@ -17,7 +17,6 @@ content parameters (for people)
  - `source` (string)
  - `categories` ([]string)  // These come from the Tags-table
  - `originalDate` (time.Time)  // Time of publishing by the gov-ment agency or date of FOI-response.
- 
 
 tags
  - `_id` (bson.ObjectId)
@@ -31,8 +30,7 @@ pages
  - `documentId` (bson.ObjectId, refers to `documents._id`)
  - `pageNr` (int, page number)
  - `lines` ([][]char-object)
- - `image` []byte; the png image data of the page
- - `text` []string; the text in the same order as the lines-attribute, use for search/sharing. Contains ocr-errors
+ - `text` string; the text in the same order as the lines-attribute, use for search/sharing. Contains ocr-errors
 
 char-object (inside page):
  - `x1` (int, left) in pixels
@@ -40,6 +38,12 @@ char-object (inside page):
  - `x2` (int, bottom) in pixels
  - `y2` (int, right) in pixels
  - `c` (string, character)
+
+images
+ - `_id` (bson.ObjectId)
+ - `documentId` (bson.ObjectId, refers to `documents._id`)
+ - `pageNr` (int, page number)
+ - `image-location` (string) address in gridfs of the image data
 
 annotations
  - `_id` (bson.ObjectId)
