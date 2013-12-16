@@ -15,7 +15,7 @@ content parameters (for people)
  - `title` (string)
  - `summary` (string)
  - `source` (string)
- - `categories` ([]string)  // These come from the Tags-table
+ - `categories` ([]string)  // These come from the Tags-collection
  - `originalDate` (time.Time)  // Time of publishing by the gov-ment agency or date of FOI-response.
  
 
@@ -23,8 +23,8 @@ tags
  - `_id` (bson.ObjectId)
  - `tag` (string)
 
-Note: tags have an ObjectId, these are not for referencing in other tables.
-Just insert the tag-string into other tables where needed.
+Note: tags have an ObjectId, these are not for referencing in other collections.
+Just insert the tag-string into other collections where needed.
 
 pages
  - `_id` (bson.ObjectId)
