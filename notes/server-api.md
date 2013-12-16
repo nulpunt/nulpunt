@@ -227,23 +227,31 @@ This part deals with document selection and ordering.
 
 ## GET /trending
 
-This retrieve a list of docuement that are sorted to the  'trending' criterium.
+This retrieves a list of documents that are sorted to the  'trending' criterium.
 
 Trending can be defined simply as 'ordered by timestamp of latest annotation'. It will be a 'jumpy' list.
 
 Or more complex as weighted number of anntations and comments in the last X minutes.
 
+The server keeps a mostly static list of trending documents. This to keep the amount of work at request time to a minimum. This is really important for this call, as it will be used for every request at the home page. IE, everyone.
+
+Clients can request parts of the list that they are interested in. (to make lazy loading possible)
+
 Parameters: 
+- startAt; position in the list where to start; 0 is the most trending one.
 - limit; max number of documents to return
+- nrOfAnnotations; number of recent annotations per trending document
 
 Returns:
 - a list of documents. (max 50)
   For each document expect: 
-  - docId;
-  - title;
-  - summary (if not too long);
-  - latest annotation-id
+  - document-record (as in the database.md)
+  - []annotation-records (as in db)
+  - []pages-records (as in db) that are specified in the annotations.
 
-Front end code needs to fetch page contents (image, overlay) and the annotation and comments to display it all.
+This response should contain all that's needed to show the trending page.
 
-Perhaps we should consider making this call a special case that precomputes the pages and makes it mostly static, as it is used on the front page. 
+Expected use:
+* Front end code starts with a call to GET /trending with startAt 0, limit to what is wanted (1, 3, ...) and NrOfAnnotations to what's wanted.
+* Front end displays page;
+* buttons on the pages to see more (older) trending data can load lazily, just change the start-at parameter.
