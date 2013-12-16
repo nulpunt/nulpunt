@@ -2,30 +2,23 @@ accounts
  - `_id` (bson.ObjectId)
  - `handle` (string e.g. "GeertJohan" from "@GeertJohan")
  - `email` (string, optional)
- - 
+ - `avatar` (to be decided)
 
 documents
+technical parameters (for system)
  - `_id` (bson.ObjectId)
- - `accountId` (bson.ObjectId, refers to `accounts._id`)
+ - `original` (string, refers to location of the orginal docuement in GridFS)
+ - `published` boolean; true: document is visible for users; false: new or not yet processed document
+ - `uploaded_date` (time.Time); date of *publication* on Nulpunt.
+content parameters (for people)
+ - `uploaderId` (bson.ObjectId, refers to `accounts._id`)
  - `title` (string)
  - `summary` (string)
  - `source` (string)
- - `categories` ([]string)
- - `publicationDate` (time.Time)
- - `original` (string, refers to location in GridFS)
+ - `categories` ([]string)  // These come from the Tags-table
+ - `originalDate` (time.Time)  // Time of publishing by the gov-ment agency or date of FOI-response.
+ 
 
-pages
- - `_id` (bson.ObjectId)
- - `documentId` (bson.ObjectId, refers to `documents._id`)
- - `pageNr` (int, page number)
- - `lines` (two-dimensional array of char-object)
-
-char-object (inside page):
- - `x` (int, left)
- - `y` (int, top)
- - `s` (int, size in pixels)
- - `c` (string, character)
- - 
 tags
  - `_id` (bson.ObjectId)
  - `tag` (string)
@@ -33,21 +26,49 @@ tags
 Note: tags have an ObjectId, these are not for referencing in other tables.
 Just insert the tag-string into other tables where needed.
 
+pages
+ - `_id` (bson.ObjectId)
+ - `documentId` (bson.ObjectId, refers to `documents._id`)
+ - `pageNr` (int, page number)
+ - `lines` ([][]char-object)
+ - `image` []byte; the png image data of the page
+ - `text` []string; the text in the same order as the lines-attribute, use for search/sharing. Contains ocr-errors
+
+char-object (inside page):
+ - `x1` (int, left) in pixels
+ - `y1` (int, top) in pixels
+ - `x2` (int, bottom) in pixels
+ - `y2` (int, right) in pixels
+ - `c` (string, character)
+
 annotations
  - `_id` (bson.ObjectId)
- - `accountId` (bson.ObjectId, refers to `accounts._id`)
+ - `annotatorId` (bson.ObjectId, refers to `accounts._id`)
  - `createDate` (time.Time)
+ - `annotation` (string)
  - `location` (object)
-  - `page` (int)
   - `start` (object)
+    - `page` (int)
     - `x` (int)
     - `y` (int)
   - `end` (object)
+    - `page` (int)
     - `x` (int)
     - `y` (int)
+
+comments
+ - `_id` (bson.ObjectId)
+ - `documentID` (bson.ObjectId) refers to document
+ - `annotationID` (bson.ObjectId) refers to annotation
+ - `commenterId` (bson.ObjectId, refers to `accounts._id`)
+ - `createDate` (time.Time)
+ - `comment` (string)
+ - `parentID` (bson.ObjectId) refers to comment
 
 uploads
  - `_id` (bson.ObjectId)
  - `uploaderId` (bson.ObjectId)
+ - `original` 
  - `filename` (string)
  - `uploadDate` (time.Time)
+ - `language` (string); language of the document to help the OCR (default 'nld')
