@@ -27,9 +27,9 @@ If successful, the process deletes the entry in the upload-table (remove from qu
 # metadata attachment and publishing
 
 The admininstrator browses the list of documents that have their published-flag set to false
-The admin selects one
-It comes up on screeen
-Admin adds the metadata;
-Admin sets published-flag to true;
-Admin saves it. Now it is published.
+- The admin selects one
+- It comes up on screeen
+- Admin adds the metadata;
+- Admin sets published-flag to true;
+- Admin saves it. Now it is published.
 
