@@ -1,10 +1,10 @@
-accounts
+### accounts
  - `_id` (bson.ObjectId)
- - `handle` (string e.g. "GeertJohan" from "@GeertJohan")
+ - `handle` (string, e.g. "GeertJohan" in "@GeertJohan", **indexed**)
  - `email` (string, optional)
- - `avatar` (to be decided)
+ - `avatar` (to be decided, link to GridFS file?)
 
-documents
+### documents
 technical parameters (for system)
  - `_id` (bson.ObjectId)
  - `original` (string, refers to location of the orginal docuement in GridFS)
@@ -15,33 +15,32 @@ content parameters (for people)
  - `title` (string)
  - `summary` (string)
  - `source` (string)
- - `categories` ([]string)  // These come from the Tags-table
+ - `categories` ([]string)  // These come from the Tags-collection
  - `originalDate` (time.Time)  // Time of publishing by the gov-ment agency or date of FOI-response.
- 
 
-tags
+### tags
  - `_id` (bson.ObjectId)
  - `tag` (string)
 
-Note: tags have an ObjectId, these are not for referencing in other tables.
-Just insert the tag-string into other tables where needed.
+Note: tags have an ObjectId, these are not for referencing in other collections.
+Just insert the tag-string into other collections where needed.
 
-pages
+### pages
  - `_id` (bson.ObjectId)
  - `documentId` (bson.ObjectId, refers to `documents._id`)
  - `pageNr` (int, page number)
  - `lines` ([][]char-object)
- - `image` []byte; the png image data of the page
+ - `image` []byte; the png image data of the page (raw? base64 encoded for HTTP transport?)
  - `text` []string; the text in the same order as the lines-attribute, use for search/sharing. Contains ocr-errors
 
-char-object (inside page):
+### char-object (inside page):
  - `x1` (int, left) in pixels
  - `y1` (int, top) in pixels
  - `x2` (int, bottom) in pixels
  - `y2` (int, right) in pixels
  - `c` (string, character)
 
-annotations
+### annotations
  - `_id` (bson.ObjectId)
  - `annotatorId` (bson.ObjectId, refers to `accounts._id`)
  - `createDate` (time.Time)
@@ -56,7 +55,7 @@ annotations
     - `x` (int)
     - `y` (int)
 
-comments
+### comments
  - `_id` (bson.ObjectId)
  - `documentID` (bson.ObjectId) refers to document
  - `annotationID` (bson.ObjectId) refers to annotation
@@ -65,7 +64,7 @@ comments
  - `comment` (string)
  - `parentID` (bson.ObjectId) refers to comment
 
-uploads
+### uploads
  - `_id` (bson.ObjectId)
  - `uploaderId` (bson.ObjectId)
  - `original` 
