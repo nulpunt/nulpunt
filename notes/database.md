@@ -2,21 +2,22 @@ accounts
  - `_id` (bson.ObjectId)
  - `handle` (string e.g. "GeertJohan" from "@GeertJohan")
  - `email` (string, optional)
- - 
+ - `avatar` (to be decided)
 
 documents
 technical parameters (for system)
  - `_id` (bson.ObjectId)
- - `original` (string, refers to location in GridFS)
+ - `original` (string, refers to location of the orginal docuement in GridFS)
  - `published` boolean; true: document is visible for users; false: new or not yet processed document
+ - `uploaded_date` (time.Time); date of *publication* on Nulpunt.
 content parameters (for people)
- - `accountId` (bson.ObjectId, refers to `accounts._id`)
+ - `uploaderId` (bson.ObjectId, refers to `accounts._id`)
  - `title` (string)
  - `summary` (string)
  - `source` (string)
  - `categories` ([]string)  // These come from the Tags-table
- - `publicationDate` (time.Time)  // Time that it gets published on Nulpunt.
-
+ - `originalDate` (time.Time)  // Time of publishing by the gov-ment agency or date of FOI-response.
+ 
 
 tags
  - `_id` (bson.ObjectId)
@@ -31,26 +32,38 @@ pages
  - `pageNr` (int, page number)
  - `lines` ([][]char-object)
  - `image` []byte; the png image data of the page
- - `text' []string; the text in the same order as the lines-attribute
+ - `text` []string; the text in the same order as the lines-attribute, use for search/sharing. Contains ocr-errors
 
 char-object (inside page):
- - `x` (int, left)
- - `y` (int, top)
- - `s` (int, size in pixels)
+ - `x1` (int, left) in pixels
+ - `y1` (int, top) in pixels
+ - `x2` (int, bottom) in pixels
+ - `y2` (int, right) in pixels
  - `c` (string, character)
 
 annotations
  - `_id` (bson.ObjectId)
- - `accountId` (bson.ObjectId, refers to `accounts._id`)
+ - `annotatorId` (bson.ObjectId, refers to `accounts._id`)
  - `createDate` (time.Time)
+ - `annotation` (string)
  - `location` (object)
-  - `page` (int)
   - `start` (object)
+    - `page` (int)
     - `x` (int)
     - `y` (int)
   - `end` (object)
+    - `page` (int)
     - `x` (int)
     - `y` (int)
+
+comments
+ - `_id` (bson.ObjectId)
+ - `documentID` (bson.ObjectId) refers to document
+ - `annotationID` (bson.ObjectId) refers to annotation
+ - `commenterId` (bson.ObjectId, refers to `accounts._id`)
+ - `createDate` (time.Time)
+ - `comment` (string)
+ - `parentID` (bson.ObjectId) refers to comment
 
 uploads
  - `_id` (bson.ObjectId)
