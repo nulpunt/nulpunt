@@ -7,11 +7,12 @@ For more information about Nulpunt, please visit [nulpunt.nu](http://nulpunt.nu)
 
 ### Quickstart
 1. [Install go](http://golang.org/doc/install/)
-2. Fork the repository on GitHub
-3. Clone to local machine: `git clone git@github.com:YOUR-USERNAME/nulpunt.git`
-4. Execute: `cd nulpunt`
-5. Execute: `GOPATH=$(PWD)/gopath go build npserver`
-6. Run npserver: `./npserver`
+2. [Install MongoDB](http://www.mongodb.org/downloads)
+3. Fork the repository on GitHub
+4. Clone to local machine: `git clone git@github.com:YOUR-USERNAME/nulpunt.git`
+5. Execute: `cd nulpunt`
+6. Execute: `GOPATH=$(PWD)/gopath go build npserver`
+7. Run npserver: `./npserver`
 
 For changes to go code, you must recompile and restart the server (steps 5 and 6). Changes to html/css/js only need browser refresh.
 
