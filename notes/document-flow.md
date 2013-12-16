@@ -3,29 +3,34 @@ Document Flow
 
 This describes the document-flow through the nulpunt server.
 
-# uploading
+### Uploading
+- Admins (users with sufficient rights) can upload documents.
+- Uploading requires the user to specify the text's language (for ocr purposes).
+- The server stores the pdf file into GridFS.
+- The server inserts an mongo-document in the `uploads` collection with the upload-metadata
 
-Admins (users with sufficient rights) can upload documents.
-Uploading requires the user to specify the language.
-It stores the pdf into gridfs
-It creates an Upload-record with the upload-metadata (pretend it to be a queue)
+### OCR
+The `npocr` application analyses uploaded data. To let `npocr` do it's job, `npserver` must invoke it somehow. To not re-invent the wheel, we use NSQ, a Message Queue written in Go at bitly. Read up on NSQ [here](http://bitly.github.io/nsq/).
 
-# ocr-ing
+The NSQ topic for the upload-job is: `uploads`
+The NSQ channel for the `npocr` consumer is: `ocr`
 
-An independent proces:
-- takes the top of the queue, (upload-table)
-- extracts/converts image data from the pdf, one image per page;
-- ocr's each page;
+During development, a single `nsqlookupd` and a single `nsqd` instance are ran. We can scale when required.
 
-The process creates:
-- 1 document entry in the document table (to get the documentID for referencing to in the other tables)
-    documents have their published-flag set to false;
-- 1 page-record for each page
+The message sent on the uploads topic should be a json encoded data-structure with only one field (for starters):
+- field:`uploadId` type:`bson.ObjectId (hex string)`
 
-If successful, the process deletes the entry in the upload-table (remove from queue)
+`npocr` reads messages from the Queue and performs the following:
+- extracts/converts image data from the pdf, one image per page
+- ocr's each page
+- create 1 document entry in the document collection (to get the documentID for referencing to in the other collections) documents have their published-flag set to false
+- create 1 page-record for each page
 
-# metadata attachment and publishing
+[More info on database collections](/notes/database.md).
 
+When `npocr` succesfully analysed a document, it deletes the entry in the `uploads` collection.
+
+### Metadata attachment and publishing
 The admininstrator browses the list of documents that have their published-flag set to false
 - The admin selects one
 - It comes up on screeen
