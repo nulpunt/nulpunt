@@ -5,7 +5,7 @@ package leptonica
 #include "leptonica/allheaders.h"
 #include <stdlib.h>
 
-l_uint8* uglycast(void* value) { return (l_uint8*)value; } 
+l_uint8* uglycast(void* value) { return (l_uint8*)value; }
 
 */
 import "C"
