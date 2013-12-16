@@ -1,3 +1,5 @@
+## Collections
+
 ### accounts
  - `_id` (bson.ObjectId)
  - `handle` (string, e.g. "GeertJohan" in "@GeertJohan", **indexed**)
@@ -68,3 +70,13 @@ Just insert the tag-string into other collections where needed.
  - `filename` (string)
  - `uploadDate` (time.Time)
  - `language` (string); language of the document to help the OCR (default 'nld')
+
+## GridFS
+We're using GridFS to store files.
+
+### uploads
+Filename must be formatted as: `upload/<uploader-handle>/<unix-timestamp>-<random-string-10-chars>-<original-filename>`
+Holds original uploaded file.
+
+### images
+Filename must be formated as: `pages/<documentId>-<pageNumber>.png`
