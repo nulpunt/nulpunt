@@ -30,7 +30,6 @@ Just insert the tag-string into other collections where needed.
  - `documentId` (bson.ObjectId, refers to `documents._id`)
  - `pageNr` (int, page number)
  - `lines` ([][]char-object)
- - `image` ([]byte); the png image data of the page (raw? base64 encoded for HTTP transport?)
  - `text` (string); the text in the same order as the lines-attribute, use for search/sharing. Contains ocr-errors
 
 #### char-object

@@ -10,7 +10,7 @@ the front end, the data structures, the parameters and the results.
     needs to be changed.
 
 This document does not specify data storage strucutures, See
-Datastore-design.md for that.
+database.md for that.
 
 # Account management
 
@@ -162,7 +162,7 @@ value in the document classification, not by reference.
 
 # Document viewing
 
-## GET /document/$docId/$annotationId/$commentid
+## GET /service/document/$docId/$annotationId/$commentid
 
 This shows the document with, the selected page and the
 selected annotation and the comments.
@@ -173,7 +173,7 @@ document with the annotation and comment on the page.
 It's for static deep-linking. People can post this URL everywhere and
 be sure other readers can read their annotation and comment on the document.
 
-The $commentid is optional. Without it, it shows the document with the first page with requested annotations.
+The $commentid is optional. Without it, it shows the document on the page with requested annotations.
 
 The $annotation is optional. Without it, it returns the document with the first annotation.
 
@@ -186,9 +186,22 @@ Returns:
 - comment-records;
 - pages-record
 
+Clients need to fetch the page image data in a separate call to getImage
+
 Side effects (on the server): none.
 
-## POST /add-annotation
+
+## GET /service/getImage/$docId/$pagenumber.png
+
+Fetches the document page image data. It's static data, so ideal for caching at clients.
+
+Parameters: none, it's in the URL.
+
+Result: the image data in a http-body.
+
+TODO: cache this stuff at apache level.
+
+## POST /sevice/session/add-annotation
 
 Add a quote(selection) and comment for the world to see. IE, people
 can add a selection of a document and their comments.
@@ -211,10 +224,10 @@ Requirements:
 - be logged in. (we need to know who you are).
 
 
-## POST add-comment
+## POST /service/session/add-comment
 
 Add a reponse to an annotation/comment
-The idea is to provide a way to add a comment to an existing annotation.
+The goal is to provide a way to add a comment to an existing annotation.
 It allows people to discuss that annotation
 
 Parameters:
@@ -223,7 +236,7 @@ Parameters:
 - parentid to which this is a reply; nil for first comment or for no threading;
 - Response-text
 
-Server add the commenterID from the session.
+Server adds the commenterID from the session.
 
 Returns:
 - OK/Error with the full URL to the comment.
@@ -231,7 +244,7 @@ Returns:
 Side Effects:
 - Add a comment to an existing quotation. Sorted by submission date.
 
-## GET /page
+## GET /service/getPage
 
 Gets a page-record of a document. Needed for lazy loading.
 
@@ -243,12 +256,13 @@ Returns:
 - page-record
 - []annotations on the page
 
-## GET /comments
+## GET /service/getComments
 
 Gets the comment for the page. Used in lazy loading
 
 Parameters: 
 - documentId
+- annotationId
 
 Returns: comments on the page (to be defined further).
 
@@ -278,11 +292,12 @@ Returns:
   For each document expect: 
   - document-record (as in the database.md)
   - []annotation-records (as in db)
-  - []pages-records (as in db) that are specified in the annotations.
+  - []pages-records (as in db) that are specified in the annotations
+  - []crops of the images, one for each annotation.
 
-This response should contain all that's needed to show the trending page.
+This response contains all that's needed to show the trending page.
 
 Expected use:
 * Front end code starts with a call to GET /trending with startAt 0, limit to what is wanted (1, 3, ...) and NrOfAnnotations to what's wanted.
 * Front end displays page;
-* buttons on the pages to see more (older) trending data can load lazily, just change the start-at parameter.
+* user presses buttons on the pages to see more (older) trending data. Can load lazily, just change the start-at parameter.
