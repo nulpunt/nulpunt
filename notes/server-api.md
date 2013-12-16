@@ -157,69 +157,100 @@ It takes the same parameter as POST admin/tags call.
 It returns the same types of results. 
 
 NOTE: Documents tagged with it stay as they are. IE, Tags are used by
-value in the document classificiation, not by reference.
+value in the document classification, not by reference.
 
 
 # Document viewing
 
-## GET /document/$docId/#commentid
+## GET /document/$docId/$annotationId/$commentid
 
-This shows the document (or the first part), the selected page and the
-selected comment.  It is designed to be the full, static URL of the
-document with the comment on the page.
+This shows the document with, the selected page and the
+selected annotation and the comments.
+
+It is designed to be the full, static URL of the
+document with the annotation and comment on the page.
 
 It's for static deep-linking. People can post this URL everywhere and
-be sure other readers can read their comment on the document.
+be sure other readers can read their annotation and comment on the document.
 
-The #commentid is optional. Without it, it shows the first page/all pages.
+The $commentid is optional. Without it, it shows the document with the first page with requested annotations.
+
+The $annotation is optional. Without it, it returns the document with the first annotation.
 
 Parameters:
 - none;  it's in the URL
 
-Result:
-- The page of the document: a html page with the
-          image(gif/png) of the specified page and centered on the
-          specified comment;
-- The Javascript has to fetch the details of the selection and
-          the contents of the comments in a separate request;
-- Details include: comment, details of commenter: name, color.
+Returns:
+- document record;
+- annotation-record;
+- comment-records;
+- pages-record
 
 Side effects (on the server): none.
 
-## POST /document/$docid
+## POST /add-annotation
 
 Add a quote(selection) and comment for the world to see. IE, people
 can add a selection of a document and their comments.
 
 Parameters:
-	- one or more ranges of start-end coordinates;
-	- commentary text;
+- documentId
+- one or more ranges of start-end coordinates;
+- commentary text;
+
+Server adds the annotatorId from the session and stores it in the database.
 
 Result:
 - Ok, added, gives bookmarkable, static URL to the document with the comment;
 - Error
 
 Side effects: 
-- when valid: add the comment to the database;
+- when valid: add the annotation to the database;
 
 Requirements:
 - be logged in. (we need to know who you are).
 
 
-## POST /document/$docid/$commentid
+## POST add-comment
 
-Add a reponse to a selection/comment
-The idea is to provide a way to add a comment to an existing quotation.
-It allows people to discuss a certain quotation.
+Add a reponse to an annotation/comment
+The idea is to provide a way to add a comment to an existing annotation.
+It allows people to discuss that annotation
 
 Parameters:
+- documentid
+- annotationid;
+- parentid to which this is a reply; nil for first comment or for no threading;
 - Response-text
 
+Server add the commenterID from the session.
+
 Returns:
-- OK/Error
+- OK/Error with the full URL to the comment.
 
 Side Effects:
 - Add a comment to an existing quotation. Sorted by submission date.
+
+## GET /page
+
+Gets a page-record of a document. Needed for lazy loading.
+
+Parameters:
+- documentid
+- page number. Starts at 1. (there is no page 0).
+
+Returns: 
+- page-record
+- []annotations on the page
+
+## GET /comments
+
+Gets the comment for the page. Used in lazy loading
+
+Parameters: 
+- documentId
+
+Returns: comments on the page (to be defined further).
 
 # Document selection and ordering
 
