@@ -4,7 +4,7 @@ Document Flow
 This describes the document-flow through the nulpunt server.
 
 ### Uploading & Analyzing
-- Admins (users with sufficient rights) can upload documents in a 'bulk' way.
+- Admins (users with sufficient rights) can upload documents in a 'bulk' way on the 'upload' admin page.
 - The server stores the pdf file into GridFS (see [database.md](database.md) for more info) and creates an entry in the `uploads` collection.
 - Uploaded documents are visible for uploader only on his/her 'analyse' admin page.
 - Admin inputs meta-data for each uploaded document on the analyse page.
