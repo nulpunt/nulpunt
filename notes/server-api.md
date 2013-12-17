@@ -12,25 +12,37 @@ the front end, the data structures, the parameters and the results.
 This document does not specify data storage strucutures, See
 database.md for that.
 
-# Account management
+# Session and account management
 
-## /sign-in
+### /service/sessionInit
+Parameters:
+ - none
+
+Returns json object:
+ - `sessionKey` (string)
+
+The returned `sessionKey` is to be with all calls to /service/session/* services as request header `X-nulpunt-sessionKey`.
+
+### /service/sessionCheck
+Checks wether a session is valid
 
 Parameters:
-- username
-- password
+ - `sessionKey` (string)
 
-Returns: 
- - success message;
- - or error message;
+Returns json object:
+ - `valid` (bool)
 
-Result depends on database records with a valid account an entry of
-the corresponding parameters.
+### /service/session/ping
+Keeps session alive.
 
-Side effects on the server:
-- none.
+No parameters or return values.
 
-## /register
+### /service/session/destroy
+Destroys session. Also used to log off.
+
+No parameters or return values.
+
+### /service/session/registerAccount
 
 Parameters:
 - Username;
@@ -49,7 +61,35 @@ Side effects:
 - When the username has not been used, the account, with specified
 password, email address and color is created in the database.
 
-## /profile
+### /service/session/authenticateAccount
+Authenticates account on session.
+
+Parameters:
+- username (string)
+- password (string)
+
+Returns: 
+ - success (bool)
+ - error (string)
+
+Result depends on database records with a valid account an entry of
+the corresponding parameters.
+
+Side effects on the server:
+ - when credentials were valid: Session is now authenticated and has an account connected.
+
+### /service/session/resume
+Allows client to resume an existing session (upon page refresh).
+Returns information about the session, that could be unknown by the client after refresh.
+
+Params: none.
+
+Returns:
+ - `success` (bool)
+ - `authenticated` (bool)
+ - `username` (string)
+
+### /service/session/profile
 
 To be defined.
 Expected functions:
@@ -60,7 +100,7 @@ Expected functions:
 
 The admin interface deals with uploading, processing and publishing documents.
 
-## /admin/upload
+### /service/session/admin/upload
 
 Upload a document to be published.
 
@@ -77,11 +117,11 @@ Side effects:
   - coordinates of each character;
   - asynchronously. (it can take a while).
 
-## /admin/process
+### /service/session/admin/process
 
 Add metadata to an uploaded document
 
-### GET /admin/process/list
+### GET /service/sessiona/dmin/process-todo
 
 Returns a list of unpublished documents.
 
@@ -90,7 +130,7 @@ For each document expect these fields:
 - original file name; File name as it was when it was uploaded;
 - timestamp of upload;
 
-### GET /admin/process/doc?docId
+### GET /service/session/admin/process-get-doc
 
 Parameter: 
 - docId, the internal id of the document;
@@ -101,9 +141,9 @@ User can edit all parameters.
 
 TODO: invent something to correct OCR-errors.
 
-### POST 
+### POST /service/session/admin/process-doc
 
-Updates the metadata of a document.
+Updates the metadata of a document and marks is for processing/analysing.
 
 POST Parameters:
 - To be defined. Examples: 
@@ -122,14 +162,7 @@ Side effects:
 - if Published == yes, document will become visible on the site. No: remove from site;
 - if Delete == yes, document, all metadata and any comments will be deleted from the database.
 
-## admin/analyse 
-
-This gets removed. 
-
-Rationale: Documents get added to a queue for OCR'ing after uploading. OCR'ing happens automatically. 
-When OCR'ed succesfully, documents get visible in the /process list.
-
-## admin/tags
+### /service/session/admin/tags
 
 A page devoted to managing the list of tags to assign to documents.
 
@@ -150,7 +183,7 @@ way as the GET request. Clients can use this to update their view.
 
 On error, it returns a 400/405/500 status code with a plain text string in the page body.
 
-## admin/tags/delete 
+### /service/session/admin/delete-tag
 POST deletes a tag from the list. It cannot be selected anymore for new taggings.
 
 It takes the same parameter as POST admin/tags call.
@@ -162,8 +195,11 @@ value in the document classification, not by reference.
 
 # Document viewing
 
-## GET /service/document/$docId/$annotationId/$commentid
+### /service/session/get-document
+Params:
+ - documentId (string)
 
+~**this needs to be moved to a document about the SPA url's**
 This shows the document with, the selected page and the
 selected annotation and the comments.
 
@@ -175,23 +211,25 @@ be sure other readers can read their annotation and comment on the document.
 
 The $commentid is optional. Without it, it shows the document on the page with requested annotations.
 
-The $annotation is optional. Without it, it returns the document with the first annotation.
-
-Parameters:
-- none;  it's in the URL
+The $annotation is optional. Without it, it returns the document with the first annotation.~
 
 Returns:
-- document record;
-- annotation-record;
-- comment-records;
-- pages-record
+- document information
 
-Clients need to fetch the page image data in a separate call to getImage
+Clients need to fetch the page image data and information in separate calls
 
 Side effects (on the server): none.
 
+### /service/session/get-page
+Params:
+ - documentId (string)
+ - pageNumber (number)
 
-## GET /service/getImage/$docId/$pagenumber.png
+Returns page information, annotations and comments on annotations.
+
+### /document-page-images-whatever-needs-thought/$docId-$pagenumber.png
+
+This is not realy a 'service'.
 
 Fetches the document page image data. It's static data, so ideal for caching at clients.
 
@@ -201,7 +239,7 @@ Result: the image data in a http-body.
 
 TODO: cache this stuff at apache level.
 
-## POST /sevice/session/add-annotation
+### POST /sevice/session/add-annotation
 
 Add a quote(selection) and comment for the world to see. IE, people
 can add a selection of a document and their comments.
@@ -224,7 +262,7 @@ Requirements:
 - be logged in. (we need to know who you are).
 
 
-## POST /service/session/add-comment
+### POST /service/session/add-comment
 
 Add a reponse to an annotation/comment
 The goal is to provide a way to add a comment to an existing annotation.
@@ -244,7 +282,7 @@ Returns:
 Side Effects:
 - Add a comment to an existing quotation. Sorted by submission date.
 
-## GET /service/getPage
+### GET /service/getPage
 
 Gets a page-record of a document. Needed for lazy loading.
 
@@ -256,7 +294,7 @@ Returns:
 - page-record
 - []annotations on the page
 
-## GET /service/getComments
+### GET /service/getComments
 
 Gets the comment for the page. Used in lazy loading
 
@@ -270,7 +308,7 @@ Returns: comments on the page (to be defined further).
 
 This part deals with document selection and ordering.
 
-## GET /trending
+### GET /trending
 
 This retrieves a list of documents that are sorted to the  'trending' criterium.
 
