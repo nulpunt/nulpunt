@@ -3,11 +3,16 @@ Document Flow
 
 This describes the document-flow through the nulpunt server.
 
-### Uploading
-- Admins (users with sufficient rights) can upload documents.
-- Uploading requires the user to specify the text's language (for ocr purposes).
-- The server stores the pdf file into GridFS.
-- The server inserts an mongo-document in the `uploads` collection with the upload-metadata
+### Uploading & Analyzing
+- Admins (users with sufficient rights) can upload documents in a 'bulk' way on the 'upload' admin page.
+- The server stores the pdf file into GridFS (see [database.md](database.md) for more info) and creates an entry in the `uploads` collection.
+- Uploaded documents are visible for uploader only on his/her 'analyse' admin page.
+- Admin inputs meta-data for each uploaded document on the analyse page.
+ - text's language (for ocr purposes).
+ - color or grayscale document.
+ - summary? extra information about 'why' it was uploaded?
+ - original source? etc?
+- The server updates the mongo-document in the `uploads` collection with the upload-metadata and marks it ready for ocr.
 
 ### OCR
 The `npocr` application analyses uploaded data. To let `npocr` do it's job, `npserver` must invoke it somehow. To not re-invent the wheel, we use NSQ, a Message Queue written in Go at bitly. Read up on NSQ [here](http://bitly.github.io/nsq/).
