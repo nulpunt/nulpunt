@@ -63,8 +63,12 @@ nulpunt.config(function($routeProvider) {
 		controller: "AdminAnalyseCtrl"
 	})
 	.when('/admin/process', {
-		templateUrl: "/html/admin-process.html",
+	        templateUrl: "/html/admin-process.html",
 		controller: "AdminProcessCtrl"
+	})
+	.when('/admin/process-editmeta/:docID', {
+		templateUrl: "/html/admin-process-editmeta.html",
+		controller: "AdminProcessEditMetaCtrl"
 	})
 	.when('/admin/tags', {
 		templateUrl: "/html/admin-tags.html",
@@ -367,17 +371,87 @@ nulpunt.controller("AdminUploadCtrl", function($scope, $upload) {
 	};
 });
 
+// THIS CONTROLLER IS AN UGLY HACK! 
+// It copies uploaded-document data into new Document-record and a fake page-record. 
+// Remove after the OCR-processing creates the document/pages records.
 nulpunt.controller("AdminAnalyseCtrl", function($scope, $http) {
 	$scope.files = [];
 	$http({method: "POST", url: "/service/session/admin/getRawUploads"}).
 	success(function(data) {
-		console.dir(data);
+	    console.log(data);
 		$scope.files = data.files;
 	}).
 	error(function(error) {
 		console.log('error retrieving raw documents: ', error);
 	})
+
+    // create a new (unpublished) document to make testing document/pages possible
+    $scope.analyse = function(ind) {
+	$http({method: "POST", url: "/service/session/admin/insertDocument",
+	       data: { 
+		   //document: {
+		       title:                   $scope.files[ind].filename,
+		       uploader:          $scope.files[ind].uploaderUsername,
+		       uploadedDate: $scope.files[ind].uploadDate,
+		   //}
+	       }}).
+	    success(function(data) {
+		console.log('success updating document.');
+		alert("succes");
+	    }).
+	error(function(error) {
+		console.log('error updating document: ', error);
+	});
+    }});
+
+nulpunt.controller("AdminProcessCtrl", function($scope, $http) {
+    $scope.documents = [];
+    $http({method: "POST", url: "/service/getDocumentList", data: {} }).
+	success(function(data) {
+	    console.log(data);
+	    $scope.documents = data;
+	}).
+	error(function(error) {
+		console.log('error retrieving raw documents: ', error);
+	});
 });
+
+
+nulpunt.controller("AdminProcessEditMetaCtrl", function($scope, $http, $routeParams) {
+    $scope.done = false;
+    $scope.error = "";
+    console.log("DocID is " + $routeParams.docID );
+    $http({method: "POST", url: "/service/getDocument", data: { DocID: $routeParams.docID } }).
+	success(function(data) {
+	    console.log(data);
+	    $scope.document = data.document;
+	}).
+	error(function(error) {
+		console.log('error retrieving document: ', error);
+	})
+
+    $scope.submit = function() {
+	console.log("document to submit is "+ $scope.document)
+	$scope.done = false;
+	$scope.error = "";
+	$http({
+	    method: 'POST', 
+	    url: "/service/session/admin/updateDocument",
+	    data: $scope.document
+	}).
+	    success(function(data, status, headers, config) {
+		console.log(data)
+		$scope.done = true
+	    }).
+	    error(function(data, status, headers, config) {
+		console.log("error add updateDocument");
+		console.log(data, status, headers);
+		$scope.error = data;
+	    });
+    }
+});
+    
+
 
 nulpunt.controller("SignOutCtrl", function($scope, AccountAuthService, ClientSessionService) {
 	$scope.username = AccountAuthService.getUsername();

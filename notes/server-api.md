@@ -90,7 +90,7 @@ For each document expect these fields:
 - original file name; File name as it was when it was uploaded;
 - timestamp of upload;
 
-### GET /admin/process/doc?docId
+### GET /admin/process
 
 Parameter: 
 - docId, the internal id of the document;
@@ -101,7 +101,7 @@ User can edit all parameters.
 
 TODO: invent something to correct OCR-errors.
 
-### POST 
+### POST /admin/updateDocument
 
 Updates the metadata of a document.
 
@@ -162,7 +162,18 @@ value in the document classification, not by reference.
 
 # Document viewing
 
-## GET /service/document/$docId/$annotationId/$commentid
+## GET /service/getDocumentList
+
+ListDocuments returns a list of documents that match the specified criteria.
+
+Criteria are specified in bson.
+
+## GET /service/getDocument
+
+Parameters:
+- docID
+- annotationID
+- commentID
 
 This shows the document with, the selected page and the
 selected annotation and the comments.
@@ -176,9 +187,6 @@ be sure other readers can read their annotation and comment on the document.
 The $commentid is optional. Without it, it shows the document on the page with requested annotations.
 
 The $annotation is optional. Without it, it returns the document with the first annotation.
-
-Parameters:
-- none;  it's in the URL
 
 Returns:
 - document record;

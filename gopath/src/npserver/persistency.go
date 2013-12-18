@@ -7,10 +7,14 @@ import (
 
 // package-wide shared variables pointing to collections in mongodb
 var (
-	colAccounts *mgo.Collection
-	colUploads  *mgo.Collection
-	colTags     *mgo.Collection
-	gridFS      *mgo.GridFS
+	colAccounts    *mgo.Collection
+	colUploads     *mgo.Collection
+	colTags        *mgo.Collection
+	colDocuments   *mgo.Collection
+	colPages       *mgo.Collection
+	colAnnotations *mgo.Collection
+	// colComments *mgo.Collection
+	gridFS *mgo.GridFS
 )
 
 // initPersistency sets up database connection and initializes col* variables
@@ -55,4 +59,15 @@ func initPersistency() {
 		log.Fatalf("fatal error when ensuring index on tag.tag: %s\n", err)
 	}
 
+	// get "Documents" collection
+	colDocuments = dbNulpunt.C("documents")
+
+	// get "Pages" collection
+	colPages = dbNulpunt.C("pages")
+
+	// get "Annotations" collection
+	colAnnotations = dbNulpunt.C("annotations")
+
+	// get "Comments" collection
+	// colComments = dbNulpunt.C("comments")
 }
