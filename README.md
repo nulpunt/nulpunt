@@ -7,11 +7,12 @@ For more information about Nulpunt, please visit [nulpunt.nu](http://nulpunt.nu)
 
 ### Quickstart
 1. [Install go](http://golang.org/doc/install/)
-2. Fork the repository on GitHub
-3. Clone to local machine: `git clone git@github.com:YOUR-USERNAME/nulpunt.git`
-4. Execute: `cd nulpunt`
-5. Execute: `GOPATH=$(PWD)/gopath go build npserver`
-6. Run npserver: `./npserver`
+2. [Install MongoDB](http://www.mongodb.org/downloads)
+3. Fork the repository on GitHub
+4. Clone to local machine: `git clone git@github.com:YOUR-USERNAME/nulpunt.git`
+5. Execute: `cd nulpunt`
+6. Execute: `GOPATH=$(PWD)/gopath go build npserver`
+7. Run npserver: `./npserver`
 
 For changes to go code, you must recompile and restart the server (steps 5 and 6). Changes to html/css/js only need browser refresh.
 
@@ -67,3 +68,12 @@ Jenkins performs two tasks:
 - Run build and tests for each new PR (and new commits in that PR), then report status back to Github.
 - Run nightly build and restart nightly when repository has changed (PR merged in).
 
+#### OCR process
+The quickstart and server instructions above do not include the OCR process (`npanalyse`).
+To get `npanalyse` up and running, perform the following:
+1. Install go.leptonica dependencies as explained [here](https://github.com/GeertJohan/go.leptonica)
+2. Install go.tesseract dependencies as explained [here](https://github.com/GeertJohan/go.tesseract)
+3. Install and run `nsqlookupd` and `nsqd` with their defaults (localhost): [follow this quick start](http://bitly.github.io/nsq/overview/quick_start.html).
+4. Change dir into the root of your nulpunt repository clone
+5. Build npanalyse: `GOPATH=$(pwd)/gopath go build npanalyse`
+6. Run npanalyse: `./npanalyse`

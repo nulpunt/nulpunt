@@ -1,17 +1,19 @@
-accounts
- - `_id` (bson.ObjectId)
- - `handle` (string e.g. "GeertJohan" from "@GeertJohan")
- - `email` (string, optional)
- - `avatar` (to be decided)
+## Collections
 
-documents
+### accounts
+ - `_id` (bson.ObjectId)
+ - `handle` (string, e.g. "GeertJohan" in "@GeertJohan", **indexed**)
+ - `email` (string, optional)
+ - `avatar` (to be decided, link to GridFS file?)
+
+### documents
 technical parameters (for system)
  - `_id` (bson.ObjectId)
  - `original` (string, refers to location of the orginal document in GridFS)
  - `published` boolean; true: document is visible for users; false: new or not yet processed document
  - `upload_date` (time.Time); date of *publication* on Nulpunt.
 content parameters (for people)
- - `uploader` (bson.ObjectId, refers to `accounts._id`)
+ - `uploaderHandle` (string, refers to `accounts.handle`)
  - `title` (string)
  - `summary` (string)
  - `source` (string)
@@ -20,39 +22,34 @@ content parameters (for people)
  - `tags` ([]string)  // These come from the Tags-table
  - `originalDate` (time.Time)  // Time of publishing by the gov-ment agency or date of FOI-response.
 
-tags
+### tags
  - `_id` (bson.ObjectId)
  - `tag` (string)
 
-Note: tags have an ObjectId, these are not for referencing in other tables.
-Just insert the tag-string into other tables where needed.
+Note: tags have an ObjectId, these are not for referencing in other collections.
+Just insert the tag-string into other collections where needed.
 
-pages
+### pages
  - `_id` (bson.ObjectId)
  - `documentId` (bson.ObjectId, refers to `documents._id`)
  - `pageNr` (int, page number)
  - `lines` ([][]char-object)
- - `text` string; the text in the same order as the lines-attribute, use for search/sharing. Contains ocr-errors
+ - `text` (string); the text in the same order as the lines-attribute, use for search/sharing. Contains ocr-errors
 
-char-object (inside page):
+#### char-object
  - `x1` (int, left) in pixels
  - `y1` (int, top) in pixels
  - `x2` (int, bottom) in pixels
  - `y2` (int, right) in pixels
  - `c` (string, character)
 
-images
- - `_id` (bson.ObjectId)
- - `documentId` (bson.ObjectId, refers to `documents._id`)
- - `pageNr` (int, page number)
- - `image-location` (string) address in gridfs of the image data
-
-annotations
+### annotations
  - `_id` (bson.ObjectId)
  - `documentId` (bson.ObjectId, refers to Documents)
  - `annotator` (string)
  - `createDate` (time.Time)
  - `annotation` (string)
+ - `comments` (comment)
  - `location` ([]object) // In future, there could be multiple sections in a single annotation.
     - `page` (int)
     - `x1` (int))
@@ -60,19 +57,27 @@ annotations
     - `x2` (int)
     - `y2` (int)
 
-comments
- - `_id` (bson.ObjectId)
- - `documentID` (bson.ObjectId) refers to document
- - `annotationID` (bson.ObjectId) refers to annotation
- - `commenterId` (bson.ObjectId, refers to `accounts._id`)
+#### comment
+ - `_id` (bson.ObjectId) // needed to do treewalking to get new comments in the right place
+ - `commenter` (string, refers to `accounts.handle`)
  - `createDate` (time.Time)
  - `comment` (string)
- - `parentID` (bson.ObjectId) refers to comment
+ - `comments` ([]comment) *recursion, disabled for first version??*
 
-uploads
+### uploads
  - `_id` (bson.ObjectId)
- - `uploaderId` (bson.ObjectId)
- - `original` 
+ - `uploaderHandle` (string, refers to `accounts.handle`)
+ - `original` (string); reference to the original pdf file.
  - `filename` (string)
  - `uploadDate` (time.Time)
  - `language` (string); language of the document to help the OCR (default 'nld')
+
+## GridFS
+We're using GridFS to store files.
+
+### uploads
+Filename must be formatted as: `upload/<uploader-handle>/<unix-timestamp>-<random-string-10-chars>-<original-filename>`
+Holds original uploaded file.
+
+### images
+Filename must be formated as: `pages/<documentId>-<pageNumber>.png`
