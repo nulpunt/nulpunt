@@ -1,0 +1,31 @@
+
+<div class="row" >
+	<div class="col-md-11 col-md-offset-1">
+		<h3>Process documents</h3>
+
+		<p>Please select a document to add/edit metadata</p>
+	</div>
+</div>
+
+<div class="row" >
+	<div class="col-md-8" >
+		<table class="table table-striped table-condensed" >
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Title</th>
+					<th>Uploader</th>
+					<th>Options</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="doc in documents" >
+					<td>{{ doc.ID }}</td>
+					<td>{{ doc.Title }}</td>
+					<td>{{ doc.Uploader }}</td>
+					<td><a ng-href="/#/admin/process-editmeta/{{ doc.ID }}">Edit Metadata</a></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

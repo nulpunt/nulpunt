@@ -9,7 +9,7 @@
 ### documents
 technical parameters (for system)
  - `_id` (bson.ObjectId)
- - `original` (string, refers to location of the orginal docuement in GridFS)
+ - `original` (string, refers to location of the orginal document in GridFS)
  - `published` boolean; true: document is visible for users; false: new or not yet processed document
  - `uploaded_date` (time.Time); date of *publication* on Nulpunt. 
 content parameters (for people)
@@ -46,16 +46,12 @@ Just insert the tag-string into other collections where needed.
  - `annotatorId` (bson.ObjectId, refers to `accounts._id`)
  - `createDate` (time.Time)
  - `annotation` (string)
- - `location` (object)
-  - `start` (object)
-   - `page` (int)
-   - `x` (int)
-   - `y` (int)
-  - `end` (object)
-   - `page` (int)
-   - `x` (int)
-   - `y` (int)
- - `comments` ([]comment) structure defined below
+ - `location` ([]object) // In future, there could be multiple sections in a single annotation.
+    - `page` (int)
+    - `x1` (int))
+    - `y1` (int)
+    - `x2` (int)
+    - `y2` (int)
 
 #### comment
  - `commenterHandle` (string, refers to `accounts.handle`)
