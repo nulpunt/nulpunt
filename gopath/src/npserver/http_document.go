@@ -16,6 +16,8 @@ type getDocumentParams struct {
 	// CommentID bson.ObjectId
 }
 
+// Get a single document, specified by DocID,
+// Get the Annotation, if specified.
 func getDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 	log.Printf("getDocument-request: %v\n", req)
 
@@ -53,14 +55,81 @@ func getDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 
 		// get optional annotation, error if it is specified but not there.
 		if params.AnnotationID != "" {
-			annotation, err := getAnnotation(bson.M{"_id": params.AnnotationID})
+			// Be paranoid and limit annotation to the Document they belong to.
+			annotations, err := getAnnotations(bson.M{
+				"_id":   params.AnnotationID,
+				"DocID": params.DocID})
 			if err != nil {
 				log.Printf("AnnotationID not found: error %#v\n", err)
 				http.Error(rw, "AnnotationID not found", http.StatusNotFound) // 404
 				return
 			}
-			result["annotation"] = annotation
+			result["annotations"] = annotations
 		}
+
+		// marshal and write out.
+		j, err := json.Marshal(result)
+		if err != nil {
+			log.Printf("Error marshalling results: error %#v\n", err)
+			http.Error(rw, "Marshaling error", http.StatusInternalServerError) // 500
+			return
+		}
+		rw.WriteHeader(200)
+		rw.Write(j)
+		return
+
+	default: // request.Method
+		http.Error(rw, "error", http.StatusMethodNotAllowed) // 405
+	}
+}
+
+// get all documents with certain limits.
+// For lazy loading place a start-at at next call
+func getDocumentsHandler(rw http.ResponseWriter, req *http.Request) {
+	log.Printf("getDocument-request: %v\n", req)
+
+	// assemble results into a json-object
+	result := make(map[string]interface{})
+
+	switch req.Method {
+	case "POST":
+		// get document, annotation and comment parameters
+		body, _ := ioutil.ReadAll(req.Body)
+		log.Printf("request body is %s\n", string(body))
+		params := &getDocumentParams{}
+		err := json.Unmarshal(body, params)
+		log.Printf("Params is: %#v\n", params)
+		if err != nil {
+			log.Printf("JSON unmarshal error %#v\n", err)
+			http.Error(rw, "JSON unmarshal error", http.StatusBadRequest) // 400
+			return
+		}
+
+		// get document
+		// UGLY HACK: get them all.
+		docs, err := getDocuments(nil)
+		if err != nil {
+			log.Printf("GetDocuments error %#v\n", err)
+			http.Error(rw, "GetDocuments error", http.StatusNotFound) // 404
+			return
+		}
+		result["documents"] = docs
+
+		// get optional annotation, error if it is specified but not there.
+
+		// bs := bson.M{}
+		// if params.AnnotationID != "" {
+		// 	bs = bson.M{"_id": params.AnnotationID}
+		// } else {
+		// 	bs = bson.M{"DocID": params.DocID}
+		// }
+		// annotations, err := getAnnotations(bs)
+		// if err != nil {
+		// 	log.Printf("AnnotationID not found: error %#v\n", err)
+		// 	http.Error(rw, "AnnotationID not found", http.StatusNotFound) // 404
+		// 	return
+		// }
+		// result["annotations"] = annotations
 
 		// marshal and write out.
 		j, err := json.Marshal(result)

@@ -58,6 +58,7 @@ func initHTTPServer() {
 
 	// Document handlers
 	serviceRouter.Path("/getDocument").HandlerFunc(getDocumentHandler)
+	serviceRouter.Path("/getDocuments").HandlerFunc(getDocumentsHandler)
 	serviceRouter.Path("/getDocumentList").HandlerFunc(getDocumentListHandler)
 
 	// create sessionPathRouter for /service/session/*

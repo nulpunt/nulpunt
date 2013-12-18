@@ -1,21 +1,21 @@
 <h1>Inbox</h1>
 
-<div ng-repeat="item in documents.items" class="row np-row np-document" ng-class-even="'np-row-even'">
+<div ng-repeat="document in documents" class="row np-row np-document" ng-class-even="'np-row-even'">
 	<div class="col-sm-1">
 	<h5>Stats</h5>
-		<p><span class="glyphicon glyphicon-align-justify"></span> {{item.nrOfAnnotations}}</p> <!-- annotations -->
-		<p><span class="glyphicon glyphicon-pencil"></span> {{item.nrOfDrafts}}</p> <!-- drafts -->
-		<p><span class="glyphicon glyphicon-list-alt"></span> {{item.nrOfComments}}</p> <!-- comments -->
-		<p><span class="glyphicon glyphicon-star-empty"></span> {{item.nrOfBookmarks}}</p> <!-- bookmarks -->
+		<p><span class="glyphicon glyphicon-align-justify"></span> {{ document.nrOfAnnotations }}</p> <!-- annotations -->
+		<!--<p><span class="glyphicon glyphicon-pencil"></span> {{ document.nrOfDrafts }}</p> --><!-- drafts --> 
+		<p><span class="glyphicon glyphicon-list-alt"></span> {{ document.nrOfComments }}</p> <!-- comments -->
+		<!--<p><span class="glyphicon glyphicon-star-empty"></span> {{ document.nrOfBookmarks }}</p>--> <!-- bookmarks -->
 	</div>
 	<div class="col-sm-8">
-		<h2>{{item.title}}</h2>
-		<p class="np-document-description">{{item.description}}</p>
-		<p><strong>Source:</strong> {{item.source}}</p>
-		<p><strong>Source date:</strong> {{item.sourceDate}}</p>
-		<p><strong>Upload data:</strong> {{item.uploadDate}}</p>
-		<p><strong>Uploader:</strong> {{item.uploader}}</p>
-		<span ng-repeat="tag in item.tags" class="np-document-tag">{{tag.title}}</span>
+		<h2>{{ document.Title }}</h2>
+		<p class="np-document-description">{{ document.Summary }}</p>
+		<p><strong>Source:</strong> {{ document.Source }}</p>
+		<p><strong>Source date:</strong> {{ document.OriginalDate }}</p>
+		<p><strong>Upload data:</strong> {{ document.uploadDate }}</p>
+		<p><strong>Uploader:</strong> {{ document.uploader }}</p>
+		<span ng-repeat="tag in document.tags" class="np-document-tag">{{ tag }}</span>
 	</div>
 	<div class="col-sm-3">
 		<button type="button" class="btn btn-black np-open-document">Open document...</button>

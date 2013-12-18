@@ -9,7 +9,7 @@ technical parameters (for system)
  - `_id` (bson.ObjectId)
  - `original` (string, refers to location of the orginal document in GridFS)
  - `published` boolean; true: document is visible for users; false: new or not yet processed document
- - `uploaded_date` (time.Time); date of *publication* on Nulpunt.
+ - `upload_date` (time.Time); date of *publication* on Nulpunt.
 content parameters (for people)
  - `uploader` (bson.ObjectId, refers to `accounts._id`)
  - `title` (string)
@@ -49,7 +49,8 @@ images
 
 annotations
  - `_id` (bson.ObjectId)
- - `annotatorId` (bson.ObjectId, refers to `accounts._id`)
+ - `documentId` (bson.ObjectId, refers to Documents)
+ - `annotator` (string)
  - `createDate` (time.Time)
  - `annotation` (string)
  - `location` ([]object) // In future, there could be multiple sections in a single annotation.
