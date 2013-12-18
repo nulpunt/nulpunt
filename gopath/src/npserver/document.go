@@ -14,14 +14,15 @@ var errPageNotUnique = errors.New("Page not unique")
 // type Document holds the document properties
 type Document struct {
 	ID           bson.ObjectId `bson:"_id"`
-	Original     string
+	Original     string        // original PDF file to download the whole thing. Filename into GridFS
 	Published    bool
 	UploadedDate time.Time
 	Uploader     string
 	Title        string
 	Summary      string
 	Source       string
-	Categories   []string // contains tag.Tag
+	Category     string
+	Tags         []string // contains tag.Tag
 	OriginalDate time.Time
 }
 

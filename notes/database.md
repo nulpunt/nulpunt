@@ -17,8 +17,10 @@ content parameters (for people)
  - `title` (string)
  - `summary` (string)
  - `source` (string)
- - `tags` ([]string), as found in the tags collection
- - `originalDate` (time.Time) time of publishing by the gov-ment agency or date of FOI-response
+ - `category (string) // "Kamerbrief", "Rapport", ...
+ - `language` (string) // same value as in upload-table.
+ - `tags` ([]string)  // These come from the Tags-table
+ - `originalDate` (time.Time)  // Time of publishing by the gov-ment agency or date of FOI-response.
 
 ### tags
  - `_id` (bson.ObjectId)

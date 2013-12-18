@@ -421,15 +421,30 @@ nulpunt.controller("AdminProcessEditMetaCtrl", function($scope, $http, $routePar
     $scope.done = false;
     $scope.error = "";
     console.log("DocID is " + $routeParams.docID );
+    // load the requested document
     $http({method: "POST", url: "/service/getDocument", data: { DocID: $routeParams.docID } }).
 	success(function(data) {
 	    console.log(data);
 	    $scope.document = data.document;
+	    // cheat to test: $scope.document.Categories = ["irak", "test"];
 	}).
 	error(function(error) {
 		console.log('error retrieving document: ', error);
 	})
 
+    // Helper to check the right checkboxes // take out if not needed..
+    $scope.checkTag = function(tag, list) {
+	console.log("List is: " + list)
+	console.log("Checking tag: " +tag)
+	for (i = 0; i <  list.lenght; i++) {
+	    if (list[i] == tag) { 
+		return true
+	    }
+	}
+	return false;
+    };
+
+    // save the updated document
     $scope.submit = function() {
 	console.log("document to submit is "+ $scope.document)
 	$scope.done = false;
