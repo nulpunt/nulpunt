@@ -5,7 +5,8 @@ var nulpunt = angular.module('nulpunt', [
 	'ngStorage',
 	'ui.bootstrap.collapse', 
 	'ui.bootstrap.dropdownToggle',
-	'angularFileUpload'
+	'angularFileUpload',
+	'checklist-model'
 ]);
 
 nulpunt.config(function($routeProvider) {
@@ -293,35 +294,42 @@ nulpunt.controller("AdminTagsCtrl", function($scope, $rootScope, $http) {
 	    console.log(data, status, headers);
 	    $scope.error = data;
 	});
-
-    $scope.specify_add = function() {
-	this.url = '/service/session/admin/tags';
-    }
     
-    $scope.specify_delete = function() {
-	this.url = '/service/session/admin/tags/delete';
-    }
-
-    $scope.submit = function() {
-	    $scope.done = false;
-	    $scope.error = "";
-	    
+    $scope.delete_tag = function(tagname) {
+		console.log('deleting tag: '+tagname);
 		$http({
 		    method: 'POST', 
-		    url: this.url,
+		    url: '/service/session/admin/tags/delete',
+		    data: { tag: tagname } }).
+		success(function(data, status, headers, config) {
+		     console.log(data)
+		    // TODO: This doesn't update the list of available tags correctly
+		    // Delete 1 tag (for example the second one), and then the tag in the same 'position' (ie. the now second tag)
+		    //   this will fail somehow...
+		    $scope.tags = data;
+		}).
+		error(function(data, status, headers, config) {
+		    console.log("invalid response for delete Tag");
+			console.log(data, status, headers);
+			$scope.error = data;
+		});
+    }
+
+    $scope.add_tag = function() {
+		console.log('adding tag: '+$scope.tag);
+		$http({
+		    method: 'POST', 
+		    url: '/service/session/admin/tags',
 		    data: { tag: $scope.tag } }).
 		success(function(data, status, headers, config) {
-		    // console.log(data)
-		    // TODO: This doesn't update the list of available tags.
-		    // We need to signal the model-viewer somehow.
-		    $scope.tags = data
+		    $scope.tags = data;
 		}).
 		error(function(data, status, headers, config) {
 		    console.log("invalid response for add Tag");
 			console.log(data, status, headers);
 			$scope.error = data;
 		});
-	};
+    }
 });
 
 nulpunt.controller("AdminUploadCtrl", function($scope, $upload) {
@@ -417,14 +425,22 @@ nulpunt.controller("AdminProcessCtrl", function($scope, $http) {
 });
 
 
-nulpunt.controller("AdminProcessEditMetaCtrl", function($scope, $http, $routeParams) {
+nulpunt.controller("AdminProcessEditMetaCtrl", function($scope, $http, $routeParams, $filter) {
     $scope.done = false;
     $scope.error = "";
     console.log("DocID is " + $routeParams.docID );
     // load the requested document
-    $http({method: "POST", url: "/service/getDocument", data: { DocID: $routeParams.docID } }).
+    $http({
+    	method: "POST", 
+    	url: "/service/getDocument", 
+    	data: { 
+    		DocID: $routeParams.docID 
+    	} 
+    }).
 	success(function(data) {
 	    console.log(data);
+
+	    $scope.OriginalDateString = String($filter('date')(data.document.OriginalDate, 'dd-MM-yyyy'));
 	    $scope.document = data.document;
 	    // cheat to test: $scope.document.Categories = ["irak", "test"];
 	}).
@@ -433,7 +449,7 @@ nulpunt.controller("AdminProcessEditMetaCtrl", function($scope, $http, $routePar
 	})
 
     // Helper to check the right checkboxes // take out if not needed..
-    $scope.checkTag = function(tag, list) {
+    /*$scope.checkTag = function(tag, list) {
 	console.log("List is: " + list)
 	console.log("Checking tag: " +tag)
 	for (i = 0; i <  list.lenght; i++) {
@@ -442,31 +458,44 @@ nulpunt.controller("AdminProcessEditMetaCtrl", function($scope, $http, $routePar
 	    }
 	}
 	return false;
-    };
+    };*/
 
     // save the updated document
     $scope.submit = function() {
-	console.log("document to submit is "+ $scope.document)
-	$scope.done = false;
-	$scope.error = "";
-	$http({
-	    method: 'POST', 
-	    url: "/service/session/admin/updateDocument",
-	    data: $scope.document
-	}).
-	    success(function(data, status, headers, config) {
-		console.log(data)
-		$scope.done = true
-	    }).
-	    error(function(data, status, headers, config) {
-		console.log("error add updateDocument");
-		console.log(data, status, headers);
-		$scope.error = data;
-	    });
-    }
-});
-    
+		console.log("originalDateString: "+$scope.OriginalDateString);
+		
+		var dateInfo = $scope.OriginalDateString.split('-');
+		var day = dateInfo[0] || "01";
+		var month = dateInfo[1] || "01";
+		var year = dateInfo[2] || "0001";
 
+		var newStr = year + '-' + month + '-' + day + 'T00:00:00Z';
+		console.log('Saving in doc: '+newStr);
+		console.log('Reverse: '+String($filter('date')(newStr, 'dd-MM-yyyy')))
+		
+		var doc = $scope.document;
+		doc.OriginalDate = newStr;
+	
+		$scope.done = false;
+		$scope.error = "";
+		$http({
+		    method: 'POST', 
+		    url: "/service/session/admin/updateDocument",
+		    data: doc
+		}).
+		success(function(data, status, headers, config) {
+			console.log(data)
+			$scope.done = true
+		}).
+		error(function(data, status, headers, config) {
+			console.log("error add updateDocument");
+			console.log(data, status, headers);
+			$scope.error = data;
+		});
+	}
+
+    $("#originalDate").datepicker({format: 'dd-mm-yyyy'});
+});
 
 nulpunt.controller("SignOutCtrl", function($scope, AccountAuthService, ClientSessionService) {
 	$scope.username = AccountAuthService.getUsername();

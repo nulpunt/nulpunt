@@ -114,3 +114,12 @@ div.np-tagline p {
 .btn-black.active {
   color: #dddddd;
 }
+
+.glyphicon-delete-button {
+	color: #aaaaaa;
+	cursor: pointer;
+	cursor: hand;
+}
+.glyphicon-delete-button:hover {
+	color: #666666;
+}
