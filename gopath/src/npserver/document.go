@@ -16,7 +16,7 @@ type Document struct {
 	ID           bson.ObjectId `bson:"_id"`
 	Original     string        // original PDF file to download the whole thing. Filename into GridFS
 	Published    bool
-	UploadedDate time.Time
+	UploadDate   time.Time
 	Uploader     string
 	Title        string
 	Summary      string

@@ -108,17 +108,17 @@ nulpunt.controller("OverviewCtrl", function($scope){
 	//++
 });
 
-nulpunt.controller("InboxCtrl", function($scope) {
-	$scope.documents = {
-		items: [],
-	};
+nulpunt.controller("InboxCtrl", function($scope, $http) {
+    $scope.documents = [];
+    $http({method: "POST", url: "/service/getDocuments", data: {} }).
+	success(function(data) {
+	    console.log(data);
+	    $scope.documents = data.documents;
+	}).
+	error(function(error) {
+		console.log('error retrieving raw documents: ', error);
+	});
 
-	$scope.documents.items = [
-		{title: "Title of the document", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 6, nrOfDrafts: 2, nrOfComments: 8, nrOfBookmarks: 4, tags: [{title: "Iraq"}, {title:"Conspiracy"}, {title:"Another tag"}] },
-		{title: "Title of the document", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 32, nrOfDrafts: 7, nrOfComments: 18, nrOfBookmarks: 12, tags: [{title: "Random tag"}] },
-		{title: "Title of the document", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 2, nrOfDrafts: 14, nrOfComments: 25, nrOfBookmarks: 4, tags: [{title: "Iraq"}] },
-		{title: "Title of the document", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 10, nrOfDrafts: 55, nrOfComments: 3, nrOfBookmarks: 15, tags: [] },
-	];
 });
 
 nulpunt.controller("HistoryCtrl", function($scope, $routeParams) {
