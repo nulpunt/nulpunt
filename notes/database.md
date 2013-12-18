@@ -15,7 +15,9 @@ content parameters (for people)
  - `title` (string)
  - `summary` (string)
  - `source` (string)
- - `categories` ([]string)  // These come from the Tags-table
+ - `category (string) // "Kamerbrief", "Rapport", ...
+ - `language` (string) // same value as in upload-table.
+ - `tags` ([]string)  // These come from the Tags-table
  - `originalDate` (time.Time)  // Time of publishing by the gov-ment agency or date of FOI-response.
 
 tags
