@@ -79,6 +79,8 @@ func initHTTPServer() {
 	sessionRouter.Path("/dataBlobSave").HandlerFunc(sessionDataBlobSave)
 	sessionRouter.Path("/dataBlobLoad").HandlerFunc(sessionDataBlobLoad)
 
+	sessionRouter.Path("/add-annotation").HandlerFunc(addAnnotationHandler)
+
 	// register /service/session/admin/* handlers
 	adminRouter := sessionRouter.PathPrefix("/admin/").Subrouter()
 	adminRouter.Path("/upload").HandlerFunc(adminUpload)

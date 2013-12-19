@@ -19,6 +19,10 @@ nulpunt.config(function($routeProvider) {
 		templateUrl: "/html/inbox.html",
 		controller: "InboxCtrl"
 	})
+	.when('/document/:docID', {
+		templateUrl: "/html/show-document.html",
+		controller: "ShowDocCtrl"
+	})
 	.when('/register', {
 		templateUrl: "/html/register.html",
 		controller: "RegisterCtrl"
@@ -120,6 +124,43 @@ nulpunt.controller("InboxCtrl", function($scope, $http) {
 		console.log('error retrieving raw documents: ', error);
 	});
 
+});
+
+nulpunt.controller("ShowDocCtrl", function($scope, $http, $routeParams) {
+    //$scope.document =;
+    $http({method: "POST", url: "/service/getDocument", data: { docID: $routeParams.docID } }).
+	success(function(data) {
+	    console.log(data);
+	    $scope.document = data.document;
+	    $scope.pages = data.pages;
+	    $scope.annotations = data.annotations;
+	}).
+	error(function(error) {
+		console.log('error retrieving raw documents: ', error);
+	});
+
+});
+
+nulpunt.controller("AnnotationSubmitCtrl", function($scope, $http) {
+    $scope.submit = function() {
+		$http({method: 'POST', url: '/service/session/add-annotation', data: {
+		    documentId: $scope.document.ID,
+		    locations: $scope.locations,
+		    annotation: $scope.annotation,
+		}}).
+		success(function(data, status, headers, config) {
+			if(data.success) {
+				$scope.done = true
+			} else {
+				$scope.error = data.error;
+			}
+		}).
+		error(function(data, status, headers, config) {
+			console.log("invalid response for registerAccount")
+			console.log(data, status, headers);
+			$scope.error = "Could not make request to server";
+		});
+	};
 });
 
 nulpunt.controller("HistoryCtrl", function($scope, $routeParams) {

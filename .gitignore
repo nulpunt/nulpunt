@@ -9,3 +9,7 @@
 
 /npserver.pid
 /npserver.socket
+
+# emacs backups
+*~
+

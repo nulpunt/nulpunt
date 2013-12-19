@@ -53,19 +53,27 @@ func getDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 		}
 		result["document"] = doc
 
-		// get optional annotation, error if it is specified but not there.
-		if params.AnnotationID != "" {
-			// Be paranoid and limit annotation to the Document they belong to.
-			annotations, err := getAnnotations(bson.M{
-				"_id":   params.AnnotationID,
-				"DocID": params.DocID})
-			if err != nil {
-				log.Printf("AnnotationID not found: error %#v\n", err)
-				http.Error(rw, "AnnotationID not found", http.StatusNotFound) // 404
-				return
-			}
-			result["annotations"] = annotations
+		// get Pages, expect at least 1.
+		pages, err := getPages(bson.M{"documentid": doc.ID})
+		if err != nil {
+			log.Printf("Pages with DocID not found: error %#v\n", err)
+			http.Error(rw, "DocID not found", http.StatusNotFound) // 404
+			return
 		}
+		result["pages"] = pages
+
+		// Be paranoid and limit annotation to the Document they belong to.
+		selector := bson.M{"documentid": params.DocID}
+		if params.AnnotationID != "" {
+			selector["_id"] = params.AnnotationID
+		} // or leave it undefined for all annotations of DocID
+		annotations, err := getAnnotations(selector)
+		if err != nil {
+			log.Printf("AnnotationID not found: error %#v\n", err)
+			http.Error(rw, "AnnotationID not found", http.StatusNotFound) // 404
+			return
+		}
+		result["annotations"] = annotations
 
 		// marshal and write out.
 		j, err := json.Marshal(result)

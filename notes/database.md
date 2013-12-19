@@ -2,9 +2,10 @@
 
 ### accounts
  - `_id` (bson.ObjectId)
- - `handle` (string, e.g. "GeertJohan" in "@GeertJohan", **indexed**)
+ - `username` (string, e.g. "GeertJohan" in "@GeertJohan", **indexed**)
  - `email` (string, optional)
  - `avatar` (to be decided, link to GridFS file?)
+ - `admin` (bool) whether user is administrator or ordinary user 
 
 ### documents
 technical parameters (for system)
