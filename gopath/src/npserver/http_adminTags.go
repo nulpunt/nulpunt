@@ -65,29 +65,29 @@ func adminAddTag(rw http.ResponseWriter, req *http.Request) {
 
 	switch req.Method {
 	case "POST":
-			body, _ := ioutil.ReadAll(req.Body)
-			tag := &Tag{}
-			err := json.Unmarshal(body, tag)
+		body, _ := ioutil.ReadAll(req.Body)
+		tag := &Tag{}
+		err := json.Unmarshal(body, tag)
 
-			if err != nil {
-				log.Printf("Tag is empty.\n")
-				http.Error(rw, "error", http.StatusBadRequest) // 400
-				return
-			}
+		if err != nil {
+			log.Printf("Tag is empty.\n")
+			http.Error(rw, "error", http.StatusBadRequest) // 400
+			return
+		}
 
-			if tag.Tag == "" {
-				log.Printf("Tag is empty.\n")
-				http.Error(rw, "error", http.StatusBadRequest) // 400
-				return
-			}
-			// Todo UPDATE complete tag when tag.ID != nil.
-			// Now, we just want the string value, to insert.
-			err = insertTag(newTag(tag.Tag))
-			if err != nil {
-				log.Printf("insertTag error: %v\n", err)
-				http.Error(rw, "We already have that tag.", http.StatusInternalServerError) // 500
-				return
-			}
+		if tag.Tag == "" {
+			log.Printf("Tag is empty.\n")
+			http.Error(rw, "error", http.StatusBadRequest) // 400
+			return
+		}
+		// Todo UPDATE complete tag when tag.ID != nil.
+		// Now, we just want the string value, to insert.
+		err = insertTag(newTag(tag.Tag))
+		if err != nil {
+			log.Printf("insertTag error: %v\n", err)
+			http.Error(rw, "We already have that tag.", http.StatusInternalServerError) // 500
+			return
+		}
 
 		// Get the tags and send them out.
 		getEm(rw, req)
@@ -121,19 +121,19 @@ func adminDeleteTag(rw http.ResponseWriter, req *http.Request) {
 		body, _ := ioutil.ReadAll(req.Body)
 		tag := &Tag{}
 		err := json.Unmarshal(body, tag)
-		
+
 		if err != nil {
 			log.Printf("Tag is empty.\n")
 			http.Error(rw, "error", http.StatusBadRequest) // 400
 			return
 		}
-		
+
 		if tag.Tag == "" {
 			log.Printf("Tag is empty.\n")
 			http.Error(rw, "error", http.StatusBadRequest) // 400
 			return
 		}
-		
+
 		err = removeTag(tag)
 		if err != nil {
 			log.Printf("removeTag error: %v\n", err)
@@ -143,9 +143,7 @@ func adminDeleteTag(rw http.ResponseWriter, req *http.Request) {
 
 		// Get the tags and send them out.
 		getEm(rw, req)
-		return		
+		return
 		// All done, get the results and show the updated list
 	}
 }
-
-

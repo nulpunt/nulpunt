@@ -61,7 +61,6 @@ func initHTTPServer() {
 	serviceRouter.Path("/getDocuments").HandlerFunc(getDocumentsHandler)
 	serviceRouter.Path("/getDocumentList").HandlerFunc(getDocumentListHandler)
 
-
 	// create sessionPathRouter for /service/session/*
 	sessionPathRouter := rootRouter.PathPrefix("/service/session/").Subrouter()
 
@@ -85,8 +84,8 @@ func initHTTPServer() {
 	adminRouter.Path("/upload").HandlerFunc(adminUpload)
 	adminRouter.Path("/getRawUploads").HandlerFunc(adminGetRawUploads)
 
-	serviceRouter.Path("/get-tags").HandlerFunc(adminGetTags)      //  /service/get-tags, ie for all
-	adminRouter.Path("/add-tag").HandlerFunc(adminAddTag)        //  /service/add-tags, ie only for admins
+	serviceRouter.Path("/get-tags").HandlerFunc(adminGetTags) //  /service/get-tags, ie for all
+	adminRouter.Path("/add-tag").HandlerFunc(adminAddTag)     //  /service/add-tags, ie only for admins
 	adminRouter.Path("/delete-tag").HandlerFunc(adminDeleteTag)
 
 	adminRouter.Path("/updateDocument").HandlerFunc(updateDocumentHandler)
