@@ -1,8 +1,9 @@
 ## Attribution
 Nulpunt uses several third-party libraries and packages. We wish to credit those responsible for creating and maintaining these libraries and packages.
-This page lists the third-party projects we incorporate. If you believe information is missing or obsolete, please create a pull request or mail contact@nulpunt.nu.
+This page lists the third-party projects we use. If you believe information is missing or obsolete, please create a pull request or mail contact@nulpunt.nu.
 
-### List of included software
+### List of included software (code)
+Software included in nulpunt
 #### Go
 ##### Go and the Go standard library
  - Source: [http://code.google.com/p/go](http://code.google.com/p/go)
@@ -92,6 +93,12 @@ This page lists the third-party projects we incorporate. If you believe informat
 #### Other
 Other types package/libraries that are being used
 
+### List of tools and platform dependencies
+The following software is being used by nulpunt and/or it's developers.
+
+#### Tools
+Tools that are being used, either during development or runtime.
+
 ##### pdftoppm
 While not incorporated in the nulpunt source code, this `pdftoppm` is used to convert pdf files into images.
  - Project: TODO
@@ -99,6 +106,8 @@ While not incorporated in the nulpunt source code, this `pdftoppm` is used to co
  - Authors: TODO
  - License: TODO
  - Location: Must be installed on systems running `npanalyse`.
+
+#### Libraries
 
 ##### libleptonica
 Used by `go.leptonica` for `npanalyse`.
