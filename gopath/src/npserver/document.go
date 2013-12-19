@@ -21,7 +21,7 @@ type Document struct {
 	Title        string
 	Summary      string
 	Source       string
-	Language	 string
+	Language     string
 	Category     string
 	Tags         []string // contains tag.Tag
 	OriginalDate time.Time
