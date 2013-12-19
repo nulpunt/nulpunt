@@ -63,4 +63,3 @@ func addAnnotationHandler(rw http.ResponseWriter, req *http.Request) {
 		http.Error(rw, "error", http.StatusMethodNotAllowed) // 405
 	}
 }
-
