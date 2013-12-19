@@ -5,6 +5,7 @@
 
 		<link href="css/bootstrap.min.css" rel="stylesheet" >
 		<link href="css/bootstrap-theme.css" rel="stylesheet" >
+		<link href="css/datepicker.css" rel="stylesheet" >
 		<link href="css/nulpunt.css" rel="stylesheet" >
 	</head>
 	<body ng-controller="MainCtrl" >
@@ -40,7 +41,7 @@
 								</a>
 								<ul class="dropdown-menu">
 									<li><a ng-href="/#/admin/upload"><span class="glyphicon glyphicon-file" ></span> Upload documents</a></li>
-									<li><a ng-href="/#/admin/analyse"><span class="glyphicon glyphicon-search" ></span> Analyse documents</a></li>
+									<li><a ng-href="/#/admin/analyse"><span class="glyphicon glyphicon-search" ></span> Ugly hack</a></li> <!-- remove this when OCR works -->
 									<li><a href="/#/admin/process"><span class="glyphicon glyphicon-asterisk" ></span> Process documents</a></li>
 									<li><a href="/#/admin/tags"><span class="glyphicon glyphicon-asterisk" ></span> Add/Remove tags</a></li>
 								</ul>
@@ -112,6 +113,7 @@
 		<!-- third party ng modules -->
 		<script src="js/angular-ui-bootstrap-0.6.0-tpls.min.js" ></script>
 		<script src="js/ngStorage.js" ></script>
+		<script src="js/checklist-model.js"></script>
 		
 		<!-- underscore, for work with datasets -->
 		<script src="js/underscore.min.js" ></script>
@@ -124,5 +126,7 @@
 		<script src="js/nulpunt-ClientSessionService.js" ></script>
 		<script src="js/nulpunt-AccountAuthService.js" ></script>
 		<script src="js/nulpunt-AccountDataService.js" ></script>
+
+		<script src="js/bootstrap-datepicker.js"></script>
 	</body>
 </html>

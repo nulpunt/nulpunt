@@ -9,16 +9,18 @@
 ### documents
 technical parameters (for system)
  - `_id` (bson.ObjectId)
- - `original` (string, refers to location of the orginal docuement in GridFS)
+ - `original` (string, refers to location of the orginal document in GridFS)
  - `published` boolean; true: document is visible for users; false: new or not yet processed document
- - `uploaded_date` (time.Time); date of *publication* on Nulpunt. 
+ - `upload_date` (time.Time); date of *publication* on Nulpunt.
 content parameters (for people)
  - `uploaderHandle` (string, refers to `accounts.handle`)
  - `title` (string)
  - `summary` (string)
  - `source` (string)
- - `tags` ([]string), as found in the tags collection
- - `originalDate` (time.Time) time of publishing by the gov-ment agency or date of FOI-response
+ - `category (string) // "Kamerbrief", "Rapport", ...
+ - `language` (string) // same value as in upload-table.
+ - `tags` ([]string)  // These come from the Tags-table
+ - `originalDate` (time.Time)  // Time of publishing by the gov-ment agency or date of FOI-response.
 
 ### tags
  - `_id` (bson.ObjectId)
@@ -43,22 +45,21 @@ Just insert the tag-string into other collections where needed.
 
 ### annotations
  - `_id` (bson.ObjectId)
- - `annotatorId` (bson.ObjectId, refers to `accounts._id`)
+ - `documentId` (bson.ObjectId, refers to Documents)
+ - `annotator` (string)
  - `createDate` (time.Time)
  - `annotation` (string)
- - `location` (object)
-  - `start` (object)
-   - `page` (int)
-   - `x` (int)
-   - `y` (int)
-  - `end` (object)
-   - `page` (int)
-   - `x` (int)
-   - `y` (int)
- - `comments` ([]comment) structure defined below
+ - `comments` (comment)
+ - `location` ([]object) // In future, there could be multiple sections in a single annotation.
+    - `page` (int)
+    - `x1` (int))
+    - `y1` (int)
+    - `x2` (int)
+    - `y2` (int)
 
 #### comment
- - `commenterHandle` (string, refers to `accounts.handle`)
+ - `_id` (bson.ObjectId) // needed to do treewalking to get new comments in the right place
+ - `commenter` (string, refers to `accounts.handle`)
  - `createDate` (time.Time)
  - `comment` (string)
  - `comments` ([]comment) *recursion, disabled for first version??*
@@ -66,7 +67,7 @@ Just insert the tag-string into other collections where needed.
 ### uploads
  - `_id` (bson.ObjectId)
  - `uploaderHandle` (string, refers to `accounts.handle`)
- - `original` (**what's this for??**)
+ - `original` (string); reference to the original pdf file.
  - `filename` (string)
  - `uploadDate` (time.Time)
  - `language` (string); language of the document to help the OCR (default 'nld')

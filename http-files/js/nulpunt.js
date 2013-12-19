@@ -5,7 +5,8 @@ var nulpunt = angular.module('nulpunt', [
 	'ngStorage',
 	'ui.bootstrap.collapse', 
 	'ui.bootstrap.dropdownToggle',
-	'angularFileUpload'
+	'angularFileUpload',
+	'checklist-model'
 ]);
 
 nulpunt.config(function($routeProvider) {
@@ -63,8 +64,12 @@ nulpunt.config(function($routeProvider) {
 		controller: "AdminAnalyseCtrl"
 	})
 	.when('/admin/process', {
-		templateUrl: "/html/admin-process.html",
+	        templateUrl: "/html/admin-process.html",
 		controller: "AdminProcessCtrl"
+	})
+	.when('/admin/process-editmeta/:docID', {
+		templateUrl: "/html/admin-process-editmeta.html",
+		controller: "AdminProcessEditMetaCtrl"
 	})
 	.when('/admin/tags', {
 		templateUrl: "/html/admin-tags.html",
@@ -104,17 +109,17 @@ nulpunt.controller("OverviewCtrl", function($scope){
 	//++
 });
 
-nulpunt.controller("InboxCtrl", function($scope) {
-	$scope.documents = {
-		items: [],
-	};
+nulpunt.controller("InboxCtrl", function($scope, $http) {
+    $scope.documents = [];
+    $http({method: "POST", url: "/service/getDocuments", data: {} }).
+	success(function(data) {
+	    console.log(data);
+	    $scope.documents = data.documents;
+	}).
+	error(function(error) {
+		console.log('error retrieving raw documents: ', error);
+	});
 
-	$scope.documents.items = [
-		{title: "Title of the document", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 6, nrOfDrafts: 2, nrOfComments: 8, nrOfBookmarks: 4, tags: [{title: "Iraq"}, {title:"Conspiracy"}, {title:"Another tag"}] },
-		{title: "Title of the document", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 32, nrOfDrafts: 7, nrOfComments: 18, nrOfBookmarks: 12, tags: [{title: "Random tag"}] },
-		{title: "Title of the document", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 2, nrOfDrafts: 14, nrOfComments: 25, nrOfBookmarks: 4, tags: [{title: "Iraq"}] },
-		{title: "Title of the document", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 10, nrOfDrafts: 55, nrOfComments: 3, nrOfBookmarks: 15, tags: [] },
-	];
 });
 
 nulpunt.controller("HistoryCtrl", function($scope, $routeParams) {
@@ -280,44 +285,51 @@ nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService
 });
 
 nulpunt.controller("AdminTagsCtrl", function($scope, $rootScope, $http) {
-    $http.get('/service/session/admin/tags').
+    $http.get('/service/get-tags').
 	success(function(data) {
-	    $scope.tags = data;
+	    $scope.tags = data.tags;
 	}).
 	error(function(data, status, headers, config) {
 	    console.log("error fetching tags");
 	    console.log(data, status, headers);
 	    $scope.error = data;
 	});
-
-    $scope.specify_add = function() {
-	this.url = '/service/session/admin/tags';
-    }
     
-    $scope.specify_delete = function() {
-	this.url = '/service/session/admin/tags/delete';
-    }
-
-    $scope.submit = function() {
-	    $scope.done = false;
-	    $scope.error = "";
-	    
+    $scope.delete_tag = function(tagname) {
+		console.log('deleting tag: '+tagname);
 		$http({
 		    method: 'POST', 
-		    url: this.url,
+		    url: '/service/session/admin/delete-tag',
+		    data: { tag: tagname } }).
+		success(function(data, status, headers, config) {
+		     console.log(data.tags)
+		    // TODO: This doesn't update the list of available tags correctly
+		    // Delete 1 tag (for example the second one), and then the tag in the same 'position' (ie. the now second tag)
+		    //   this will fail somehow...
+		    $scope.tags = data.tags;
+		}).
+		error(function(data, status, headers, config) {
+		    console.log("invalid response for delete Tag");
+			console.log(data, status, headers);
+			$scope.error = data;
+		});
+    }
+
+    $scope.add_tag = function() {
+		console.log('adding tag: '+$scope.tag);
+		$http({
+		    method: 'POST', 
+		    url: '/service/session/admin/add-tag',
 		    data: { tag: $scope.tag } }).
 		success(function(data, status, headers, config) {
-		    // console.log(data)
-		    // TODO: This doesn't update the list of available tags.
-		    // We need to signal the model-viewer somehow.
-		    $scope.tags = data
+		    $scope.tags = data.tags;
 		}).
 		error(function(data, status, headers, config) {
 		    console.log("invalid response for add Tag");
 			console.log(data, status, headers);
 			$scope.error = data;
 		});
-	};
+    }
 });
 
 nulpunt.controller("AdminUploadCtrl", function($scope, $upload) {
@@ -367,16 +379,122 @@ nulpunt.controller("AdminUploadCtrl", function($scope, $upload) {
 	};
 });
 
+// THIS CONTROLLER IS AN UGLY HACK! 
+// It copies uploaded-document data into new Document-record and a fake page-record. 
+// Remove after the OCR-processing creates the document/pages records.
 nulpunt.controller("AdminAnalyseCtrl", function($scope, $http) {
 	$scope.files = [];
 	$http({method: "POST", url: "/service/session/admin/getRawUploads"}).
 	success(function(data) {
-		console.dir(data);
+	    console.log(data);
 		$scope.files = data.files;
 	}).
 	error(function(error) {
 		console.log('error retrieving raw documents: ', error);
 	})
+
+    // create a new (unpublished) document to make testing document/pages possible
+    $scope.analyse = function(ind) {
+	$http({method: "POST", url: "/service/session/admin/insertDocument",
+	       data: { 
+		   //document: {
+		       title:                   $scope.files[ind].filename,
+		       uploader:          $scope.files[ind].uploaderUsername,
+		       uploadedDate: $scope.files[ind].uploadDate,
+		   //}
+	       }}).
+	    success(function(data) {
+		console.log('success updating document.');
+		alert("succes");
+	    }).
+	error(function(error) {
+		console.log('error updating document: ', error);
+	});
+    }});
+
+nulpunt.controller("AdminProcessCtrl", function($scope, $http) {
+    $scope.documents = [];
+    $http({method: "POST", url: "/service/getDocumentList", data: {} }).
+	success(function(data) {
+	    console.log(data);
+	    $scope.documents = data;
+	}).
+	error(function(error) {
+		console.log('error retrieving raw documents: ', error);
+	});
+});
+
+
+nulpunt.controller("AdminProcessEditMetaCtrl", function($scope, $http, $routeParams, $filter) {
+    $scope.done = false;
+    $scope.error = "";
+    console.log("DocID is " + $routeParams.docID );
+    // load the requested document
+    $http({
+    	method: "POST", 
+    	url: "/service/getDocument", 
+    	data: { 
+    		DocID: $routeParams.docID 
+    	} 
+    }).
+	success(function(data) {
+	    console.log(data);
+
+	    $scope.OriginalDateString = String($filter('date')(data.document.OriginalDate, 'dd-MM-yyyy'));
+	    $scope.document = data.document;
+	    // cheat to test: $scope.document.Categories = ["irak", "test"];
+	}).
+	error(function(error) {
+		console.log('error retrieving document: ', error);
+	})
+
+    // Helper to check the right checkboxes // take out if not needed..
+    /*$scope.checkTag = function(tag, list) {
+	console.log("List is: " + list)
+	console.log("Checking tag: " +tag)
+	for (i = 0; i <  list.lenght; i++) {
+	    if (list[i] == tag) { 
+		return true
+	    }
+	}
+	return false;
+    };*/
+
+    // save the updated document
+    $scope.submit = function() {
+		console.log("originalDateString: "+$scope.OriginalDateString);
+		
+		var dateInfo = $scope.OriginalDateString.split('-');
+		var day = dateInfo[0] || "01";
+		var month = dateInfo[1] || "01";
+		var year = dateInfo[2] || "0001";
+
+		var newStr = year + '-' + month + '-' + day + 'T00:00:00Z';
+		console.log('Saving in doc: '+newStr);
+		console.log('Reverse: '+String($filter('date')(newStr, 'dd-MM-yyyy')))
+		
+		var doc = $scope.document;
+		doc.OriginalDate = newStr;
+	
+		$scope.done = false;
+		$scope.error = "";
+		$http({
+		    method: 'POST', 
+		    url: "/service/session/admin/updateDocument",
+		    data: doc
+		}).
+		success(function(data, status, headers, config) {
+			console.log(data)
+			$scope.done = true
+		}).
+		error(function(data, status, headers, config) {
+			console.log("error add updateDocument");
+			console.log(data, status, headers);
+			$scope.error = data;
+		});
+	}
+
+    $("#originalDate").datepicker({format: 'dd-mm-yyyy'});
 });
 
 nulpunt.controller("SignOutCtrl", function($scope, AccountAuthService, ClientSessionService) {

@@ -56,6 +56,11 @@ func initHTTPServer() {
 	serviceRouter.Path("/sessionInit").HandlerFunc(sessionInitHandlerFunc)
 	serviceRouter.Path("/sessionCheck").HandlerFunc(sessionCheckHandlerFunc)
 
+	// Document handlers
+	serviceRouter.Path("/getDocument").HandlerFunc(getDocumentHandler)
+	serviceRouter.Path("/getDocuments").HandlerFunc(getDocumentsHandler)
+	serviceRouter.Path("/getDocumentList").HandlerFunc(getDocumentListHandler)
+
 	// create sessionPathRouter for /service/session/*
 	sessionPathRouter := rootRouter.PathPrefix("/service/session/").Subrouter()
 
@@ -78,7 +83,14 @@ func initHTTPServer() {
 	adminRouter := sessionRouter.PathPrefix("/admin/").Subrouter()
 	adminRouter.Path("/upload").HandlerFunc(adminUpload)
 	adminRouter.Path("/getRawUploads").HandlerFunc(adminGetRawUploads)
-	adminRouter.PathPrefix("/tags").HandlerFunc(adminTags)
+
+	serviceRouter.Path("/get-tags").HandlerFunc(adminGetTags) //  /service/get-tags, ie for all
+	adminRouter.Path("/add-tag").HandlerFunc(adminAddTag)     //  /service/add-tags, ie only for admins
+	adminRouter.Path("/delete-tag").HandlerFunc(adminDeleteTag)
+
+	adminRouter.Path("/updateDocument").HandlerFunc(updateDocumentHandler)
+	adminRouter.Path("/insertDocument").HandlerFunc(insertDocumentHandler)
+
 	adminRouter.PathPrefix("/").Handler(http.NotFoundHandler())
 
 	// 404 when /service/session/* was not found
