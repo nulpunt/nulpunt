@@ -13,11 +13,12 @@
 		<p class="np-document-description">{{ document.Summary }}</p>
 		<p><strong>Source:</strong> {{ document.Source }}</p>
 		<p><strong>Source date:</strong> {{ document.OriginalDate }}</p>
-		<p><strong>Upload data:</strong> {{ document.uploadDate }}</p>
-		<p><strong>Uploader:</strong> {{ document.uploader }}</p>
-		<span ng-repeat="tag in document.tags" class="np-document-tag">{{ tag }}</span>
+		<p><strong>Upload data:</strong> {{ document.UploadDate }}</p>
+		<p><strong>Uploader:</strong> {{ document.Uploader }}</p>
+		<span ng-repeat="tag in document.Tags" class="np-document-tag">{{ tag }}</span>
 	</div>
 	<div class="col-sm-3">
-		<button type="button" class="btn btn-black np-open-document">Open document...</button>
+	  <a href="/#/document/{{ document.ID }}">Open document</a>
+	  <!-- <button type="button" class="btn btn-black np-open-document">Open document...</button> -->
 	</div>
 </div>

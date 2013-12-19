@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
 	"time"
 )
@@ -11,12 +10,13 @@ var errAnnotationNotUnique = errors.New("We already have an annotation with that
 
 // type Annotation hold the document annotations
 type Annotation struct {
-	ID          bson.ObjectId `bson:"_id"`
-	AnnotatorID bson.ObjectId
-	CreateDate  time.Time
-	Annotation  string
-	Location    []Location
-	Comments    []Comment
+	ID         bson.ObjectId `bson:"_id"`
+	DocumentID bson.ObjectId // to which document belong these annotations.
+	Annotator  string
+	CreateDate time.Time
+	Annotation string
+	Location   []Location
+	Comments   []Comment
 }
 
 type Location struct {
@@ -67,10 +67,10 @@ func getAnnotations(selection interface{}) ([]Annotation, error) {
 func insertAnnotation(annotation *Annotation) error {
 	err := colAnnotations.Insert(annotation)
 	if err != nil {
-		mgoErr := err.(*mgo.LastError)
-		if mgoErr.Code == 11000 {
-			return errAnnotationNotUnique
-		}
+		//mgoErr := err.(*mgo.LastError)
+		//if mgoErr.Code == 11000 {
+		//	return errAnnotationNotUnique
+		//}
 		return err
 	}
 	// all done
