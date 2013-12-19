@@ -79,3 +79,7 @@ To get `npanalyse` up and running, perform the following:
 4. Change dir into the root of your nulpunt repository clone
 5. Build npanalyse: `GOPATH=$(pwd)/gopath go build npanalyse`
 6. Run npanalyse: `./npanalyse`
+
+#### Copyright
+Nulpunt is licensed under the AGPL version 3 license, except for third-party works as listed in the [attribution](notes/attribution.md) file.
+For developer information about copyright, view the [copyright-info](notes/copyright-info.md) file.
