@@ -285,9 +285,9 @@ nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService
 });
 
 nulpunt.controller("AdminTagsCtrl", function($scope, $rootScope, $http) {
-    $http.get('/service/session/admin/tags').
+    $http.get('/service/get-tags').
 	success(function(data) {
-	    $scope.tags = data;
+	    $scope.tags = data.tags;
 	}).
 	error(function(data, status, headers, config) {
 	    console.log("error fetching tags");
@@ -299,14 +299,14 @@ nulpunt.controller("AdminTagsCtrl", function($scope, $rootScope, $http) {
 		console.log('deleting tag: '+tagname);
 		$http({
 		    method: 'POST', 
-		    url: '/service/session/admin/tags/delete',
+		    url: '/service/session/admin/delete-tag',
 		    data: { tag: tagname } }).
 		success(function(data, status, headers, config) {
-		     console.log(data)
+		     console.log(data.tags)
 		    // TODO: This doesn't update the list of available tags correctly
 		    // Delete 1 tag (for example the second one), and then the tag in the same 'position' (ie. the now second tag)
 		    //   this will fail somehow...
-		    $scope.tags = data;
+		    $scope.tags = data.tags;
 		}).
 		error(function(data, status, headers, config) {
 		    console.log("invalid response for delete Tag");
@@ -319,7 +319,7 @@ nulpunt.controller("AdminTagsCtrl", function($scope, $rootScope, $http) {
 		console.log('adding tag: '+$scope.tag);
 		$http({
 		    method: 'POST', 
-		    url: '/service/session/admin/tags',
+		    url: '/service/session/admin/add-tag',
 		    data: { tag: $scope.tag } }).
 		success(function(data, status, headers, config) {
 		    $scope.tags = data;
