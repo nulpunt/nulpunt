@@ -162,18 +162,17 @@ Side effects:
 - if Published == yes, document will become visible on the site. No: remove from site;
 - if Delete == yes, document, all metadata and any comments will be deleted from the database.
 
-### /service/session/admin/tags
+### GET /service/get-tags
 
-A page devoted to managing the list of tags to assign to documents.
+Retrieve the list of tags,
+It returns a struct with a list.
 
-GET retrieve the list of tags,
-It returns a list of JSON-encoded 
-
-    [{ID: 123abc, Tag: 'example'}, ..]
+    { tags: [{ID: 123abc, Tag: 'example'}, ..] }
 
 With status code 200.
 
-POST adds a tags
+### POST /service/session/admin/add-tag
+
 It takes a JSON encoded object in the request-body:
 
     { Tag: 'example' }
@@ -183,14 +182,15 @@ way as the GET request. Clients can use this to update their view.
 
 On error, it returns a 400/405/500 status code with a plain text string in the page body.
 
-### /service/session/admin/delete-tag
-POST deletes a tag from the list. It cannot be selected anymore for new taggings.
+### POST /service/session/admin/delete-tag
 
-It takes the same parameter as POST admin/tags call.
+Deletes a tag from the list. It cannot be selected anymore for new taggings.
+
+It takes the same parameter as POST admin/add-tag call.
 It returns the same types of results. 
 
 NOTE: Documents tagged with it stay as they are. IE, Tags are used by
-value in the document classification, not by reference.
+value in the document.tags list, not by reference.
 
 
 # Document viewing
