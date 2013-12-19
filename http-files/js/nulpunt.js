@@ -322,7 +322,7 @@ nulpunt.controller("AdminTagsCtrl", function($scope, $rootScope, $http) {
 		    url: '/service/session/admin/add-tag',
 		    data: { tag: $scope.tag } }).
 		success(function(data, status, headers, config) {
-		    $scope.tags = data;
+		    $scope.tags = data.tags;
 		}).
 		error(function(data, status, headers, config) {
 		    console.log("invalid response for add Tag");
