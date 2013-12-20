@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"labix.org/v2/mgo/bson"
+	"sort"
 	"time"
 )
 
@@ -59,6 +60,7 @@ func getAnnotations(selection interface{}) ([]Annotation, error) {
 	if err != nil {
 		return nil, err
 	}
+	sort.Sort(AnByDate(annotations))
 	return annotations, nil
 }
 
@@ -91,3 +93,11 @@ func updateAnnotationID(annotationID bson.ObjectId, change interface{}) error {
 // 	err := colAnnotations.Remove(bson.M{"annotation": annotation.Annotation})
 // 	return err
 // }
+
+// Sorting
+
+type AnByDate []Annotation
+
+func (as AnByDate) Len() int           { return len(as) }
+func (as AnByDate) Swap(i, j int)      { as[i], as[j] = as[j], as[i] }
+func (as AnByDate) Less(i, j int) bool { return as[i].CreateDate.Before(as[j].CreateDate) }
