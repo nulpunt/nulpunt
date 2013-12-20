@@ -385,7 +385,7 @@ nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService
 });
 
 nulpunt.controller("AdminTagsCtrl", function($scope, $rootScope, $http) {
-    $http.get('/service/get-tags').
+    $http.get('/service/session/get-tags').
 	success(function(data) {
 	    $scope.tags = data.tags;
 	}).
