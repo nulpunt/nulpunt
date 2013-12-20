@@ -8,6 +8,7 @@ import (
 // package-wide shared variables pointing to collections in mongodb
 var (
 	colAccounts    *mgo.Collection
+	colProfiles    *mgo.Collection
 	colUploads     *mgo.Collection
 	colTags        *mgo.Collection
 	colDocuments   *mgo.Collection
@@ -35,13 +36,25 @@ func initPersistency() {
 	// get "accounts" collection
 	colAccounts = dbNulpunt.C("accounts")
 
-	// ensure that key "username" is unique for collection "users".
+	// ensure that key "username" is unique for collection "accounts".
 	err = colAccounts.EnsureIndex(mgo.Index{
 		Key:    []string{"username"},
 		Unique: true,
 	})
 	if err != nil {
 		log.Fatalf("fatal error when ensuring index on accounts.username: %s\n", err)
+	}
+
+	// get "profiles" collection
+	colProfiles = dbNulpunt.C("profiles")
+
+	// ensure that key "username" is unique for collection "profiles".
+	err = colProfiles.EnsureIndex(mgo.Index{
+		Key:    []string{"username"},
+		Unique: true,
+	})
+	if err != nil {
+		log.Fatalf("fatal error when ensuring index on profiles.username: %s\n", err)
 	}
 
 	// get "uploads" collection

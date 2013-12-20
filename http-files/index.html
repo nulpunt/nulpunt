@@ -52,7 +52,7 @@
 									<b class="caret"></b>
 								</a>
 								<ul class="dropdown-menu">
-									<li><a ng-href="/#/profile/{{account.username}}"><span class="glyphicon glyphicon-user" ></span> Profile</a></li>
+									<li><a ng-href="/#/profile"><span class="glyphicon glyphicon-user" ></span> Profile</a></li>
 									<li><a href="/#/settings"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
 									<li><a href="/#/sign-out"><span class="glyphicon glyphicon-off"></span> Sign out</a></li>
 								</ul>
@@ -82,7 +82,7 @@
 
 						<li ng-class="getClass('/settings')" class="np-tab-right"><a href="/#/settings">Settings</a></li>
 						<li ng-class="getClass('/messages')" class="np-tab-right"><a href="/#/messages">Messages <span class="badge">6</span></a></li>
-						<li ng-class="getClass('/profile')" class="np-tab-right"><a href="/#/profile/{{account.username}}">My profile</a></li>
+						<li ng-class="getClass('/profile')" class="np-tab-right"><a href="/#/profile">My profile</a></li>
 					</ul>
 					<ul class="nav nav-tabs" ng-hide="account.username">
 						<li ng-class="getClass('/trending')"><a href="/#/trending">Trending</a></li>
