@@ -33,11 +33,34 @@ func initAnalysers(numAnalysers uint) {
 		})
 	}
 
-	colUploads.Find(bson.M{""})
-	//++ find if there are unprocessed documents
-	//++ if not, sleep for a while, then retry
-	//++ if yes, get workLock, lock the message, send the message on workChan, release workLock
-
+	// find work
+	go func() {
+		for {
+			updateID := &struct {
+				ID bson.ObjectId `bson:"_id"`
+			}{}
+			err := colUploads.Find(bson.M{"analyseState": ""}).Select(bson.M{"_id": 1}).One(updateID)
+			if err != nil {
+				log.Printf("error searching for non-analysed update: %d\n", err)
+				goto Sleep
+			}
+			if updateID.ID != "" {
+				workLock.Lock()
+				err := colUploads.UpdateId(updateID.ID, bson.M{"$set": bson.M{"analyseState": "started"}})
+				if err != nil {
+					log.Printf("error setting analyseState for upload %s to 'started'\n", updateID.ID)
+					workLock.Unlock()
+					continue
+				}
+				workChan <- updateID.ID
+				workLock.Unlock()
+				// try to find next job right away
+				continue
+			}
+		Sleep:
+			time.Sleep(30 * time.Second)
+		}
+	}()
 }
 
 // analyser handles uploads-analyse messages
