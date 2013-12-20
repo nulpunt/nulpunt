@@ -68,6 +68,18 @@ Software included in nulpunt
  - License: ???
  - Location: [/gopath/src/github.com/bitly/go-nsq](/gopath/src/github.com/bitly/go-nsq)
 
+##### go-simplejson
+This package is a dependency for `go-nsq`
+ - Source: TODO
+
+##### go-snappystream
+This package is a dependency for `go-nsq`
+ - Source: TODO
+
+##### snappy-go
+This package is a dependency for `go-snappystream`
+ - Source: TODO
+
 #### HTML/CSS/Javascript
 ##### AngularJS
  - Project: [http://angularjs.org/](http://angularjs.org/)
