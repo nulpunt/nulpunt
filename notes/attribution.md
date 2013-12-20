@@ -61,6 +61,13 @@ Software included in nulpunt
  - License: [BSD-style License](https://github.com/jessevdk/go-flags/blob/master/LICENSE)
  - Location: [/gopath/src/github.com/jessevdk/go-flags](/gopath/src/github.com/jessevdk/go-flags)
 
+##### go-nsq
+ - Project: [https://bitly.github.io/nsq](https://bitly.github.io/nsq)
+ - Source: [https://github.com/bitly/go-nsq](https://github.com/bitly/go-nsq)
+ - Authors:  [Matt Reiferson](https://twitter.com/imsnakes) and [Jehiah Czebotar](https://twitter.com/jehiah) at [bitly](https://bitly.com/), and [contributors](https://github.com/bitly/nsq/graphs/contributors).
+ - License: ???
+ - Location: [/gopath/src/github.com/bitly/go-nsq](/gopath/src/github.com/bitly/go-nsq)
+
 #### HTML/CSS/Javascript
 ##### AngularJS
  - Project: [http://angularjs.org/](http://angularjs.org/)
