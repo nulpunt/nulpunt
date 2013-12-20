@@ -1,0 +1,84 @@
+<h1>Document: {{ document.Title }}</h1>
+
+<div>
+  <h2>{{ document.Title }}</h2>
+  <p class="np-document-description">{{ document.Summary }}</p>
+  <p><strong>Source:</strong> {{ document.Source }}</p>
+  <p><strong>Source date:</strong> {{ document.OriginalDate }}</p>
+  <p><strong>Upload data:</strong> {{ document.UploadDate }}</p>
+  <p><strong>Uploader:</strong> {{ document.Uploader }}</p>
+  <span ng-repeat="tag in document.Tags" class="np-document-tag">{{ tag }}</span>
+  
+  <hr/>
+
+  <div ng-repeat="page in pages">
+    <h3>Page {{ page.PageNr }}</h3>
+    <!-- img src="/pages/{{ document.ID }}/{{ page.PageNr }}.png" --> <p>"Expect the page-image here"</p>
+  
+    <div ng-repeat="annotation in annotations">
+      <h3>Annotation on this page</h3>
+      <p class="np-document-description">{{ annotation.Annotation }}</p>
+      <p><strong>By:</strong> {{ annotation.Annotator }}</p>
+      <p><strong>Date:</strong> {{ annotation.CreateDate }}</p>
+      <p><strong>Coordinates:</strong> {{ annotation.Location }}</p>
+      <p><strong>Annotator:</strong> {{ annotation.Annotator }}</p>
+
+      <div ng-repeat="comment in annotation.Comments">
+	<h4>Comment</h4>
+	<p class="np-document-description">{{ comment.Comment }}</p>
+	<p><strong>By:</strong> {{ comment.Commenter }}</p>
+	<p><strong>Date:</strong> {{ comment.CreateDate }}</p>
+	<p><strong>Threaded comments:</strong> {{ comment.Comments }}</p>
+      </div> <!-- repeat comments in annotation -->
+
+      <h5>Add a comment (non threaded)</h5>
+      
+      <div ng-controller="CommentSubmitCtrl">
+	<form ng-submit="submit()" role="form" class="form-horizontal">
+	  
+	  <div class="form-group">
+	    <label class="col-md-2 control-label">Your comment on these visions please</label>
+	    <div class="col-md-10">
+	      <textarea class="form-control" id="comment-text" placeholder="Comment text" ng-model="commentText"></textarea>
+	    </div>
+	  </div>
+	  
+	  <div class="form-group">
+	    <div class="col-md-offset-2 col-md-10">
+	      <button type="submit" class="btn btn-default">Publish</button>
+	    </div>
+	  </div>
+
+	</form>
+      </div><!-- CommentSubmitController -->	
+      <br><hr>
+    
+      <p>Here you can create an annotation... 
+	<br>This is the interface we need.
+	<br>Someone might want to rewrite it with a nice pointy-clicky user interface. It should give the coordinates:
+	<br> ng-model="locations" value: { [ { PageNr, x1, y1, x2, y2 }, ... ] } . We allow for multiple coordinates. These should be used when a single rectancle won't fit. For example when the selection starts indented. Or when an quote spans page boundaries. (future version).
+	<br>The server will add Annotator (username) and date-created.</p>
+    
+      <div ng-controller="AnnotationSubmitCtrl">
+	<form ng-submit="submit()" role="form" class="form-horizontal">
+
+	  <input type="hidden" ng-model="locations" value="{ [{ 1, 10, 20, 100, 40 }] }">
+	  
+	  <div class="form-group">
+	    <label class="col-md-2 control-label">Your visions please</label>
+	    <div class="col-md-10">
+	      <textarea class="form-control" id="annotation-text" placeholder="Annotation text" ng-model="annotationText"></textarea>
+	    </div>
+	  </div>
+	  
+	  <div class="form-group">
+	    <div class="col-md-offset-2 col-md-10">
+	      <button type="submit" class="btn btn-default">Publish</button>
+	    </div>
+	  </div>
+	  
+	  </form>
+      </div><!-- AnnotationSubmitController -->
+    </div><!-- ng-repeat="annotation in annotations" -->
+  </div><!-- ng-repeat="page in pages" -->
+</div><! -- top level -->

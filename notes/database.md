@@ -2,18 +2,24 @@
 
 ### accounts
  - `_id` (bson.ObjectId)
- - `handle` (string, e.g. "GeertJohan" in "@GeertJohan", **indexed**)
+ - `username` (string,) primary key. ( e.g. "GeertJohan" in "@GeertJohan", **indexed**)
  - `email` (string, optional)
  - `avatar` (to be decided, link to GridFS file?)
+ - `admin` (bool) whether user is administrator or ordinary user 
 
-### documents
+### profile
+ - `_id` (bson.ObjectId)
+ - `username` primary key, refers to account.documents
+ - `tags` ([]string) list of tags this user is interested in
+
+### username
 technical parameters (for system)
  - `_id` (bson.ObjectId)
  - `original` (string, refers to location of the orginal document in GridFS)
  - `published` boolean; true: document is visible for users; false: new or not yet processed document
  - `upload_date` (time.Time); date of *publication* on Nulpunt.
 content parameters (for people)
- - `uploaderHandle` (string, refers to `accounts.handle`)
+ - `uploader` (string, refers to `accounts.username`)
  - `title` (string)
  - `summary` (string)
  - `source` (string)

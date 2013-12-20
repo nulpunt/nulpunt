@@ -19,6 +19,10 @@ nulpunt.config(function($routeProvider) {
 		templateUrl: "/html/inbox.html",
 		controller: "InboxCtrl"
 	})
+	.when('/document/:docID', {
+		templateUrl: "/html/show-document.html",
+		controller: "ShowDocCtrl"
+	})
 	.when('/register', {
 		templateUrl: "/html/register.html",
 		controller: "RegisterCtrl"
@@ -47,7 +51,7 @@ nulpunt.config(function($routeProvider) {
 		templateUrl: '/html/search.html',
 		controller: "SearchCtrl"
 	})
-	.when('/profile/:userID', {
+	.when('/profile', {
 		templateUrl: '/html/profile.html',
 		controller: "ProfileCtrl"
 	})
@@ -122,6 +126,67 @@ nulpunt.controller("InboxCtrl", function($scope, $http) {
 
 });
 
+nulpunt.controller("ShowDocCtrl", function($scope, $http, $routeParams) {
+    //$scope.document =;
+    $http({method: "POST", url: "/service/getDocument", data: { docID: $routeParams.docID } }).
+	success(function(data) {
+	    console.log(data);
+	    $scope.document = data.document;
+	    $scope.pages = data.pages;
+	    $scope.annotations = data.annotations;
+	}).
+	error(function(error) {
+		console.log('error retrieving raw documents: ', error);
+	});
+
+});
+
+nulpunt.controller("AnnotationSubmitCtrl", function($scope, $http) {
+    $scope.submit = function() {
+		$http({method: 'POST', url: '/service/session/add-annotation', data: {
+		    documentId: $scope.document.ID,
+		    locations: $scope.locations,
+		    annotation: $scope.annotationText,
+		    
+		}}).
+		success(function(data, status, headers, config) {
+			if(data.success) {
+				$scope.done = true
+			} else {
+				$scope.error = data.error;
+			}
+		}).
+		error(function(data, status, headers, config) {
+			console.log("invalid response for registerAccount")
+			console.log(data, status, headers);
+			$scope.error = "Could not make request to server";
+		});
+	};
+});
+
+nulpunt.controller("CommentSubmitCtrl", function($scope, $http) {
+    $scope.submit = function() {
+		$http({method: 'POST', url: '/service/session/add-comment', data: {
+		    // $scope.annotation comes from the enclosing scope, ie, the page with the annotation 
+		    annotationId: $scope.annotation.ID,
+		    comment: $scope.commentText,
+		    // parentId: $scope.parentID, // is for threaded comments
+		}}).
+		success(function(data, status, headers, config) {
+			if(data.success) {
+				$scope.done = true
+			} else {
+				$scope.error = data.error;
+			}
+		}).
+		error(function(data, status, headers, config) {
+			console.log("invalid response for registerAccount")
+			console.log(data, status, headers);
+			$scope.error = "Could not make request to server";
+		});
+	};
+});
+
 nulpunt.controller("HistoryCtrl", function($scope, $routeParams) {
 	$scope.documents = {
 		items: [],
@@ -194,8 +259,43 @@ nulpunt.controller("SearchCtrl", function($scope, $routeParams) {
 	$scope.mySearch = $routeParams.searchValue.replace(/[+]/g, ' ');
 });
 
-nulpunt.controller("ProfileCtrl", function() {
-	//++
+nulpunt.controller("ProfileCtrl", function($scope, $http) {
+    $scope.done = false;
+    $scope.error = "";
+    // load the users' profile
+    $http({
+    	method: "GET", 
+    	url: "/service/session/get-profile", 
+    	// no parameters, the server uses the session.account.username value.
+    }).
+	success(function(data) {
+	    console.log(data);
+	    $scope.profile = data.profile;
+	}).
+	error(function(error) {
+	    console.log('error retrieving profile ', error);
+	    $scope.error = data
+	})
+
+    // save the updated document
+    $scope.submit = function() {
+		$scope.done = false;
+		$scope.error = "";
+		$http({
+		    method: 'POST', 
+		    url: "/service/session/update-profile",
+		    data: $scope.profile
+		}).
+		success(function(data, status, headers, config) {
+			console.log(data)
+			$scope.done = true
+		}).
+		error(function(data, status, headers, config) {
+			console.log("error updateProfile");
+			console.log(data, status, headers);
+			$scope.error = data;
+		});
+	}
 });
 
 nulpunt.controller('NotFoundCtrl', function($scope, $location) {
