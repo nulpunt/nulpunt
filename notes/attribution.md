@@ -35,6 +35,9 @@ Software included in nulpunt
  - License: [BSD-style License](https://github.com/GeertJohan/go.tesseract/blob/master/LICENSE)
  - Location: [/gopath/src/github.com/GeertJohan/go.tesseract](/gopath/src/github.com/GeertJohan/go.tesseract)
 
+##### go.incremental
+ - Source: TOOD
+
 ##### go-spew
  - Source: [https://github.com/davecgh/go-spew](https://github.com/davecgh/go-spew)
  - Author: Dave Collins
