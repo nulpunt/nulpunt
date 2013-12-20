@@ -80,6 +80,7 @@ func initHTTPServer() {
 	sessionRouter.Path("/dataBlobLoad").HandlerFunc(sessionDataBlobLoad)
 
 	sessionRouter.Path("/add-annotation").HandlerFunc(addAnnotationHandler)
+	sessionRouter.Path("/add-comment").HandlerFunc(addCommentHandler)
 
 	// register /service/session/admin/* handlers
 	adminRouter := sessionRouter.PathPrefix("/admin/").Subrouter()

@@ -77,6 +77,15 @@ func insertAnnotation(annotation *Annotation) error {
 	return nil
 }
 
+func updateAnnotationID(annotationID bson.ObjectId, change interface{}) error {
+	err := colAnnotations.UpdateId(annotationID, change)
+	if err != nil {
+		return err
+	}
+	// all done
+	return nil
+}
+
 // removeAnnotation removes a annotation from the DB
 // func removeAnnotation(annotation *Annotation) error {
 // 	err := colAnnotations.Remove(bson.M{"annotation": annotation.Annotation})
