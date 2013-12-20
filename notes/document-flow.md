@@ -18,7 +18,7 @@ This describes the document-flow through the nulpunt server.
 The `npanalyse` application analyses uploaded data. To let `npanalyse` do it's job, `npserver` must invoke it somehow. To not re-invent the wheel, we use NSQ, a Message Queue written in Go at bitly. Read up on NSQ [here](http://bitly.github.io/nsq/).
 
 The NSQ topic for the upload-job is: `uploads`
-The NSQ channel for the `npanalyse` consumer is: `ocr`
+The NSQ channel for the `npanalyse` consumer is: `analyse`
 
 During development, a single `nsqlookupd` and a single `nsqd` instance are ran. We can scale when required.
 

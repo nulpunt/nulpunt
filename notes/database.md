@@ -79,5 +79,10 @@ We're using GridFS to store files.
 Filename must be formatted as: `upload/<uploader-handle>/<unix-timestamp>-<random-string-10-chars>-<original-filename>`
 Holds original uploaded file.
 
-### images
-Filename must be formated as: `pages/<documentId>-<pageNumber>.png`
+### highres
+Filename must be formatted as: `highres/<docId>-<pageNr>.png`
+Holds png for each page for given document rendered at 600dpi from pdf file
+
+### docviewer-pages
+Filename must be formated as: `docviewer-pages/<docId>-<pageNr>.png`
+Holds png for each page for any given document resized to a width of 1000 px
