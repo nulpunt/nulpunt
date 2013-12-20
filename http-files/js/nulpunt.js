@@ -51,7 +51,7 @@ nulpunt.config(function($routeProvider) {
 		templateUrl: '/html/search.html',
 		controller: "SearchCtrl"
 	})
-	.when('/profile/:userID', {
+	.when('/profile', {
 		templateUrl: '/html/profile.html',
 		controller: "ProfileCtrl"
 	})
@@ -259,8 +259,43 @@ nulpunt.controller("SearchCtrl", function($scope, $routeParams) {
 	$scope.mySearch = $routeParams.searchValue.replace(/[+]/g, ' ');
 });
 
-nulpunt.controller("ProfileCtrl", function() {
-	//++
+nulpunt.controller("ProfileCtrl", function($scope, $http) {
+    $scope.done = false;
+    $scope.error = "";
+    // load the users' profile
+    $http({
+    	method: "GET", 
+    	url: "/service/session/get-profile", 
+    	// no parameters, the server uses the session.account.username value.
+    }).
+	success(function(data) {
+	    console.log(data);
+	    $scope.profile = data.profile;
+	}).
+	error(function(error) {
+	    console.log('error retrieving profile ', error);
+	    $scope.error = data
+	})
+
+    // save the updated document
+    $scope.submit = function() {
+		$scope.done = false;
+		$scope.error = "";
+		$http({
+		    method: 'POST', 
+		    url: "/service/session/update-profile",
+		    data: $scope.profile
+		}).
+		success(function(data, status, headers, config) {
+			console.log(data)
+			$scope.done = true
+		}).
+		error(function(data, status, headers, config) {
+			console.log("error updateProfile");
+			console.log(data, status, headers);
+			$scope.error = data;
+		});
+	}
 });
 
 nulpunt.controller('NotFoundCtrl', function($scope, $location) {
