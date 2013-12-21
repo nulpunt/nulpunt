@@ -8,6 +8,7 @@ import (
 	"github.com/GeertJohan/go.incremental"
 	"github.com/GeertJohan/go.leptonica"
 	"github.com/GeertJohan/go.tesseract"
+	"github.com/nfnt/resize"
 	"image/png"
 	"io"
 	"labix.org/v2/mgo"
@@ -269,7 +270,7 @@ func (an *analyser) work() {
 					}
 					defer outputTmpFile.Close()
 
-					outputGridFileHighresName := fmt.Sprintf("highres/%s-%s.png", documentID, pageNumberString)
+					outputGridFileHighresName := fmt.Sprintf("highres/%s-%s.png", documentID.Hex(), pageNumberString)
 					outputGridFileHighres, err := gridFS.Create(outputGridFileHighresName)
 					if err != nil {
 						log.Printf("error creating GridFS file(%s): %s\n", outputGridFileHighresName, err)
@@ -301,6 +302,18 @@ func (an *analyser) work() {
 						return
 					}
 					imgResized := resize.Resize(1000, 0, img, resize.MitchellNetravali)
+					outputGridFileDocviewerName := fmt.Sprintf("docviewer-pages/%s-%s.png", documentID.Hex(), pageNumberString)
+					outputGridFileDocviewer, err := gridFS.Create(outputGridFileDocviewerName)
+					if err != nil {
+						log.Printf("error creating GridFS file(%s): %s\n", outputGridFileDocviewerName, err)
+						return
+					}
+					defer outputGridFileDocviewer.Close()
+					err = png.Encode(outputGridFileDocviewer, imgResized)
+					if err != nil {
+						log.Printf("error encoding imgResized to gridFile(%s): %s\n", outputGridFileDocviewerName, err)
+						return
+					}
 
 					// hand leptonica pix to tess
 					tess.SetImagePix(pix)
