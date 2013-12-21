@@ -20,22 +20,17 @@ func main() {
 		os.Exit(1)
 	}
 
-	// check start || sto
-	if flags.Start == flags.Stop {
-		fmt.Println("require `--start` or `--stop` flag")
-	}
-	if len(flags.NP) == 0 {
-		fmt.Println("require `--np` <npcmd> flag")
+	// check start OR stop
+	if (len(flags.Start) > 0 && len(flags.Stop) > 0) || (len(flags.Start) == 0 && len(flags.Stop) == 0) {
+		fmt.Println("require `--start` OR `--stop` flag")
 	}
 
-	if flags.Start {
-		startDaemon(flags.NP)
+	if len(flags.Stop) > 0 {
+		stopDaemon(flags.Stop)
 	}
-	if flags.Stop {
-		stopDaemon(flags.NP)
+	if len(flags.Start) > 0 {
+		startDaemon(flags.Start)
 	}
-
-	// all good :)
 }
 
 func startDaemon(np string) {
