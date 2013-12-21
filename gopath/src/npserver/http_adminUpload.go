@@ -61,10 +61,10 @@ func adminUpload(w http.ResponseWriter, r *http.Request) {
 			gridFilename := fmt.Sprintf("uploads/%s/%s-%s-%s", acc.Username, strconv.FormatInt(time.Now().Unix(), 10), RandomString(10), file.Filename)
 			// metadata instance
 			uploadedFile := &uploadedFileMetadata{
-				Uploader:     acc.Username,
-				Filename:     file.Filename,
-				GridFilename: gridFilename,
-				Language:     language,
+				UploaderUsername: acc.Username,
+				Filename:         file.Filename,
+				GridFilename:     gridFilename,
+				Language:         &language,
 			}
 
 			// save file
