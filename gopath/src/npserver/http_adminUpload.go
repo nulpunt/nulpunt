@@ -10,11 +10,11 @@ import (
 )
 
 type uploadedFileMetadata struct {
-	UploaderUsername string  `json:"uploaderUsername"`
-	Filename         string  `json:"filename"`
-	GridFilename     string  `json:"gridFilename"` //++ timestamp + randomstring + filename
-	Size             int64   `json:"size"`
-	Language         *string `json:"language"`
+	Uploader     string `json:"uploader"`
+	Filename     string `json:"filename"`
+	GridFilename string `json:"gridFilename"` //++ timestamp + randomstring + filename
+	Size         int64  `json:"size"`
+	Language     string `json:"language"`
 	//++ more metadata
 }
 
@@ -28,7 +28,7 @@ func adminUpload(w http.ResponseWriter, r *http.Request) {
 	}
 	defer cs.done()
 
-	// get accuont
+	// get account
 	acc := cs.account
 	if acc == nil {
 		http.Error(w, "forbidden", http.StatusForbidden)
@@ -42,17 +42,30 @@ func adminUpload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// let's get the language
+	language := "nl_NL"
+	for field, value := range r.MultipartForm.Value {
+		if field == "language" {
+			language = value[0] // take the first, should only be one.
+			log.Printf("got language: %s\n", language)
+		}
+	}
+	log.Printf("multipart.Form is: %#v\n", r.MultipartForm)
+
 	// loop over fields and files
 	for fieldname, files := range r.MultipartForm.File {
+
 		log.Printf("have fieldname %s\n", fieldname)
+		log.Printf("Have files: %#v\n", files)
 		for _, file := range files {
 			// generate unique name
 			gridFilename := strconv.FormatInt(time.Now().Unix(), 10) + "-" + RandomString(10) + "-" + file.Filename
 			// metadata instance
 			uploadedFile := &uploadedFileMetadata{
-				UploaderUsername: acc.Username,
-				Filename:         file.Filename,
-				GridFilename:     gridFilename,
+				Uploader:     acc.Username,
+				Filename:     file.Filename,
+				GridFilename: gridFilename,
+				Language:     language,
 			}
 
 			// save file

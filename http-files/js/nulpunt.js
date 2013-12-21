@@ -433,7 +433,8 @@ nulpunt.controller("AdminTagsCtrl", function($scope, $rootScope, $http) {
 });
 
 nulpunt.controller("AdminUploadCtrl", function($scope, $upload) {
-	$scope.uploading = false;
+    $scope.uploading = false;
+    $scope.language = "nl_NL"; // default
 
 	$scope.onFileSelect = function($files) {
 		$scope.files = [];
@@ -457,7 +458,7 @@ nulpunt.controller("AdminUploadCtrl", function($scope, $upload) {
 				url: 'service/session/admin/upload',
 				// headers: {'X-Nulpunt-SessionKey': 'headerValue'},
 				// withCredential: true,
-				data: {/*aditional data*/},
+			    data:  { language: $scope.language },
 				file: file.file,
 				//fileFormDataName: myFile, //(optional) sets 'Content-Desposition' formData name for file
 				progress: function(evt) {
@@ -499,8 +500,9 @@ nulpunt.controller("AdminAnalyseCtrl", function($scope, $http) {
 	       data: { 
 		   //document: {
 		       title:                   $scope.files[ind].filename,
-		       uploader:          $scope.files[ind].uploaderUsername,
+		       uploader:          $scope.files[ind].uploader,
 		       uploadedDate: $scope.files[ind].uploadDate,
+		       language:         $scope.files[ind].language,
 		   //}
 	       }}).
 	    success(function(data) {

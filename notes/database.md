@@ -72,11 +72,11 @@ Just insert the tag-string into other collections where needed.
 
 ### uploads
  - `_id` (bson.ObjectId)
- - `uploaderHandle` (string, refers to `accounts.handle`)
+ - `uploader` (string, refers to `accounts.username`)
  - `original` (string); reference to the original pdf file.
  - `filename` (string)
  - `uploadDate` (time.Time)
- - `language` (string); language of the document to help the OCR (default 'nld')
+ - `language` (string); language of the document to help the OCR (default 'nl_NL')
 
 ## GridFS
 We're using GridFS to store files.
