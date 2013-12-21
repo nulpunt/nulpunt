@@ -36,7 +36,16 @@ Software included in nulpunt
  - Location: [/gopath/src/github.com/GeertJohan/go.tesseract](/gopath/src/github.com/GeertJohan/go.tesseract)
 
 ##### go.incremental
- - Source: TOOD
+ - Source: [https://github.com/geertjohan/go.inremental](https://github.com/geertjohan/go.inremental)
+ - Author: Geert-Johan Riemer
+ - License: [BSD-style License](https://github.com/GeertJohan/go.inremental/blob/master/LICENSE)
+ - Location: [/gopath/src/github.com/GeertJohan/go.inremental](/gopath/src/github.com/GeertJohan/go.inremental)
+
+##### resize
+ - Source: [https://github.com/nfnt/resize](github.com/nfnt/resize)
+ - Author: Jan Schlicht
+ - License: [Copyright license](https://github.com/nfnt/resize/blob/master/LICENSE)
+ - Location: [/gopath/src/github.comnfnt/resize](/gopath/src/github.comnfnt/resize)
 
 ##### go-spew
  - Source: [https://github.com/davecgh/go-spew](https://github.com/davecgh/go-spew)
