@@ -21,6 +21,9 @@ type Document struct {
 	Title        string
 	Summary      string
 	Source       string
+	Country      string
+	FOIRequester string
+	FOIARequest  string
 	Language     string
 	Category     string
 	Tags         []string // contains tag.Tag
