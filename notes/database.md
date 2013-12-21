@@ -12,14 +12,14 @@
  - `username` primary key, refers to account.documents
  - `tags` ([]string) list of tags this user is interested in
 
-### username
+### documents
 technical parameters (for system)
  - `_id` (bson.ObjectId)
- - `original` (string, refers to location of the orginal document in GridFS)
+ - `originalGridFilename` (string, refers to location of the orginal document in GridFS)
  - `published` boolean; true: document is visible for users; false: new or not yet processed document
  - `upload_date` (time.Time); date of *publication* on Nulpunt.
 content parameters (for people)
- - `uploader` (string, refers to `accounts.username`)
+ - `uploaderUsername` (string, refers to `accounts.username`)
  - `title` (string)
  - `summary` (string)
  - `source` (string)
@@ -38,7 +38,7 @@ Just insert the tag-string into other collections where needed.
 ### pages
  - `_id` (bson.ObjectId)
  - `documentId` (bson.ObjectId, refers to `documents._id`)
- - `pageNr` (int, page number)
+ - `pageNumber` (int, page number)
  - `lines` ([][]char-object)
  - `text` (string); the text in the same order as the lines-attribute, use for search/sharing. Contains ocr-errors
 
@@ -65,16 +65,16 @@ Just insert the tag-string into other collections where needed.
 
 #### comment
  - `_id` (bson.ObjectId) // needed to do treewalking to get new comments in the right place
- - `commenter` (string, refers to `accounts.handle`)
+ - `commenter` (string, refers to `accounts.username`)
  - `createDate` (time.Time)
  - `comment` (string)
  - `comments` ([]comment) *recursion, disabled for first version??*
 
 ### uploads
  - `_id` (bson.ObjectId)
- - `uploader` (string, refers to `accounts.username`)
- - `original` (string); reference to the original pdf file.
- - `filename` (string)
+ - `uploaderUsername` (string, refers to `accounts.username`)
+ - `filename` (string); reference to the original pdf file name.
+ - `gridFilename` (string)
  - `uploadDate` (time.Time)
  - `language` (string); language of the document to help the OCR (default 'nl_NL')
 
@@ -82,8 +82,13 @@ Just insert the tag-string into other collections where needed.
 We're using GridFS to store files.
 
 ### uploads
-Filename must be formatted as: `upload/<uploader-handle>/<unix-timestamp>-<random-string-10-chars>-<original-filename>`
+Filename must be formatted as: `uploads/<uploader-username>-<unix-timestamp>-<random-string-10-chars>-<original-filename>`
 Holds original uploaded file.
 
-### images
-Filename must be formated as: `pages/<documentId>-<pageNumber>.png`
+### highres
+Filename must be formatted as: `highres/<docId>-<pageNr>.png`
+Holds png for each page for given document rendered at 600dpi from pdf file
+
+### docviewer-pages
+Filename must be formated as: `docviewer-pages/<docId>-<pageNr>.png`
+Holds png for each page for any given document resized to a width of 1000 px
