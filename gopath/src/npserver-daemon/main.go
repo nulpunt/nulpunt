@@ -122,8 +122,7 @@ func stopDaemon(np string) {
 	}
 
 	// all done
-	fmt.Printf("%s(%d) stopped successfully\n", np)
-
+	fmt.Printf("%s(%d) stopped successfully\n", np, pid)
 }
 
 func killDaemon(np string) {
