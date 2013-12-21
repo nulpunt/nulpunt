@@ -22,16 +22,17 @@ func main() {
 
 	// check start || sto
 	if flags.Start == flags.Stop {
-		fmt.Println("need --start or --stop flag")
+		fmt.Println("require `--start` or `--stop` flag")
+	}
+	if len(flags.NP) == 0 {
+		fmt.Println("require `--np` <npcmd> flag")
 	}
 
 	if flags.Start {
-		startDaemon("npanalyse")
-		startDaemon("npserver")
+		startDaemon(flags.NP)
 	}
 	if flags.Stop {
-		stopDaemon("npserver")
-		stopDaemon("npanalyse")
+		stopDaemon(flags.NP)
 	}
 
 	// all good :)
