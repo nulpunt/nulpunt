@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"labix.org/v2/mgo/bson"
 	"log"
 	"net/http"
 )
@@ -33,7 +32,7 @@ func adminGetRawUploads(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get uploads that are not analyzed or listed to analyze yet
-	err = colUploads.Find(bson.M{"language": nil}).All(&outData.Files)
+	err = colUploads.Find(nil).All(&outData.Files)
 	if err != nil {
 		log.Printf("error retrieving uploaded files from uploads collections: %s\n", err)
 		http.Error(w, "error", http.StatusInternalServerError)
