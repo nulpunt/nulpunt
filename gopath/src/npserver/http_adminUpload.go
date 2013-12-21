@@ -10,12 +10,11 @@ import (
 )
 
 type uploadedFileMetadata struct {
-	UploaderUsername string  `json:"uploaderUsername"`
-	Filename         string  `json:"filename"`
-	GridFilename     string  `json:"gridFilename"` //++ timestamp + randomstring + filename
-	Size             int64   `json:"size"`
-	Language         *string `json:"language"`
-	//++ more metadata
+	UploaderUsername string  `json:"uploaderUsername" bson:"uploaderUsername"`
+	Filename         string  `json:"filename" bson:"filename"`
+	GridFilename     string  `json:"gridFilename" bson:"gridFilename"` // Consists of: timestamp + randomstring + filename. See database.md GridFS section
+	Size             int64   `json:"size" bson:"size"`                 //++ TODO: drop this and use size from gridFS instead?
+	Language         *string `json:"language" bson:"language"`
 }
 
 func adminUpload(w http.ResponseWriter, r *http.Request) {
@@ -47,7 +46,7 @@ func adminUpload(w http.ResponseWriter, r *http.Request) {
 		log.Printf("have fieldname %s\n", fieldname)
 		for _, file := range files {
 			// generate unique name
-			gridFilename := strconv.FormatInt(time.Now().Unix(), 10) + "-" + RandomString(10) + "-" + file.Filename
+			gridFilename := fmt.Sprintf("uploads/%s/%s-%s-%s", acc.Username, strconv.FormatInt(time.Now().Unix(), 10), RandomString(10), file.Filename)
 			// metadata instance
 			uploadedFile := &uploadedFileMetadata{
 				UploaderUsername: acc.Username,
@@ -63,7 +62,7 @@ func adminUpload(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			defer multipartFile.Close()
-			gridFile, err := gridFS.Create(fmt.Sprintf("/uploads/%s/%s", acc.Username, gridFilename))
+			gridFile, err := gridFS.Create(gridFilename)
 			if err != nil {
 				log.Printf("error creating gridFile for %s: %s\n", file.Filename, err)
 				http.Error(w, "error", http.StatusInternalServerError)

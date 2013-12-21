@@ -1,22 +1,50 @@
 package main
 
 import (
+	"bytes"
+	"encoding/base32"
+	"encoding/binary"
+	"fmt"
 	"github.com/GeertJohan/go.incremental"
+	"github.com/GeertJohan/go.leptonica"
+	"github.com/GeertJohan/go.tesseract"
+	"image/png"
+	"io"
+	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
 	"log"
+	"os"
+	"os/exec"
+	"path"
+	"regexp"
+	"strconv"
+	"strings"
+	"sync"
 	"time"
 )
 
 var (
+	pollInterval   = 2 * time.Second
+	instanceUnique = "" // filled by init()
+
 	analyserCount incremental.Uint
+
+	regexpOutputFileName = regexp.MustCompile(`^output-[0]*([0-9]+).png$`)
 )
 
-var (
-	interval = 30 * time.Second
-)
+func init() {
+	// setup instanceUnique
+	unixNano := time.Now().UnixNano()
+	varint := make([]byte, 10)
+	n := binary.PutVarint(varint, unixNano)
+	base32Unique := base32.StdEncoding.EncodeToString(varint[:n])
+	instanceUnique = strings.Replace(base32Unique, "=", "", -1)
+	log.Printf("generated unique instance code %s\n", instanceUnique)
+}
 
 func initAnalysers(numAnalysers uint) {
 	workChan := make(chan bson.ObjectId)
+	var workLock sync.Mutex
 	doneChan := make(chan bool)
 
 	processEndFuncs = append(processEndFuncs, func() {
@@ -39,9 +67,14 @@ func initAnalysers(numAnalysers uint) {
 			updateID := &struct {
 				ID bson.ObjectId `bson:"_id"`
 			}{}
-			err := colUploads.Find(bson.M{"analyseState": ""}).Select(bson.M{"_id": 1}).One(updateID)
+			err := colUploads.Find(bson.M{"$or": []bson.M{
+				bson.M{"analyseState": bson.M{"$exists": false}},
+				bson.M{"analyseState": ""},
+			}}).Select(bson.M{"_id": 1}).One(updateID)
 			if err != nil {
-				log.Printf("error searching for non-analysed update: %d\n", err)
+				if err != mgo.ErrNotFound {
+					log.Printf("error searching for non-analysed update: %s\n", err)
+				}
 				goto Sleep
 			}
 			if updateID.ID != "" {
@@ -58,7 +91,7 @@ func initAnalysers(numAnalysers uint) {
 				continue
 			}
 		Sleep:
-			time.Sleep(30 * time.Second)
+			time.Sleep(pollInterval)
 		}
 	}()
 }
@@ -82,26 +115,240 @@ func newAnalyser(workChan chan bson.ObjectId, doneChan chan bool) *analyser {
 }
 
 type uploadData struct {
-	//++ stuff
+	ID             bson.ObjectId `bson:"_id"`
+	UploaderHandle string        `bson:"uploaderHandle"`
+	Filename       string        `bson:"filename"`
+	GridFilename   string        `bson:"gridFilename"`
+	UploadDate     time.Time     `bson:"uploadDate"`
+	Language       string        `bson:"language"`
+}
+
+type pageData struct {
+	ID         bson.ObjectId  `bson:"_id"`
+	DocumentID bson.ObjectId  `bson:"documentId"` // refers to `documents._id`)
+	PageNumber uint           `bson:"pageNumber"` // page number
+	Lines      []*[]*charData `bson:"lines"`
+	Text       string         `bson:"text"` //  the text in the same order as the lines-attribute, use for search/sharing. Contains ocr-errors
+
+}
+
+type charData struct {
+	X1 uint32 `bson:"x1"` // offset-left in pixels
+	Y1 uint32 `bson:"y1"` // offset-top in pixels
+	X2 uint32 `bson:"x2"` // offset-bottom in pixels
+	Y2 uint32 `bson:"y2"` // offset-right in pixels
+	C  rune   `bson:"c"`  // character
 }
 
 func (an *analyser) work() {
-	jobNum := an.jobCount.Next()
 	for {
-		uploadId, ok := <-an.workChan
+		uploadID, ok := <-an.workChan
+		jobNum := an.jobCount.Next()
 		if !ok {
 			log.Printf("workChan closed, worker %d stopped\n", an.num)
 			an.doneChan <- true
 			return
 		}
 		if flags.Verbose {
-			log.Printf("Starting job %d-%d uploadId: %s\n", an.num, jobNum, uploadId)
+			log.Printf("Starting job %d-%d uploadID: %s\n", an.num, jobNum, uploadID)
 
 		}
 
 		upload := &uploadData{}
-		colUploads.FindId(uploadId).One(upload)
+		err := colUploads.FindId(uploadID).One(upload)
+		if err != nil {
+			log.Printf("error analysing doc %s: %s\n", uploadID, err)
+			continue
+		}
 
-		//++ process
+		var tessLanguage string
+		switch upload.Language {
+		case "nl_NL", "":
+			tessLanguage = "nld"
+		case "en_EN":
+			tessLanguage = "eng"
+		default:
+			log.Printf("error invalid language '%s' for upload %s\n", upload.Language, uploadID)
+			continue
+		}
+
+		func() {
+			documentID := bson.NewObjectId()
+			//++ defer a function that checks if this func was successfull (update with updateId has analyseState "completed")
+			//++ when was not successfull, set state to error, remove any pages with documentId
+
+			tmpDirName := fmt.Sprintf("/tmp/npanalyse-%s-%d-%d", instanceUnique, an.num, jobNum)
+			err = os.Mkdir(tmpDirName, 0774)
+			if err != nil {
+				log.Printf("failed to create tmp dir '%s': %s\n", tmpDirName, err)
+				return
+			}
+			defer func() {
+				// clean up temp dir
+				err = os.RemoveAll(tmpDirName)
+				if err != nil {
+					log.Printf("error cleaning up tmp dir %s: %s\n", tmpDirName, err)
+				}
+			}()
+
+			originalFileGridFS, err := gridFS.Open(upload.GridFilename)
+			if err != nil {
+				log.Printf("error opening original file (%s) from GridFS: %s\n", upload.GridFilename, err)
+				return
+			}
+			defer originalFileGridFS.Close()
+			originalFileTmp, err := os.Create(path.Join(tmpDirName, "original.pdf"))
+			if err != nil {
+				log.Printf("error creating original file in tmpDir: %s\n", err)
+				return
+			}
+			defer originalFileTmp.Close()
+
+			// copy contents
+			_, err = io.Copy(originalFileTmp, originalFileGridFS)
+			if err != nil {
+				log.Printf("error copying data from gridFS to tmp file: %s\n", err)
+				return
+			}
+
+			// convert pdf to png's
+			pdftoppmPath, err := exec.LookPath("pdftoppm")
+			if err != nil {
+				log.Printf("failed to find `pdftoppm` in PATH, is it even installed? err: %s\n", err)
+				return
+			}
+			pdftoppm := exec.Cmd{
+				Path: pdftoppmPath,
+				Args: []string{
+					"pdftoppm",
+					"-r", "900",
+					"-png",
+					"original.pdf",
+					"output",
+				},
+				Dir:    tmpDirName,
+				Stdout: os.Stdout,
+				Stderr: os.Stderr,
+			}
+
+			err = pdftoppm.Run()
+			if err != nil {
+				log.Printf("error running pdftoppm: %s\n", err)
+				return
+			}
+
+			tess, err := tesseract.NewTess("/usr/share/tesseract-ocr/tessdata/", tessLanguage)
+			if err != nil {
+				log.Printf("error creating new tesseract instance: %s\n", err)
+				return
+			}
+			defer tess.Close()
+
+			tmpDir, err := os.Open(tmpDirName)
+			if err != nil {
+				log.Printf("error opening tmpDir(%s): %s\n", tmpDirName, err)
+				return
+			}
+
+			fileInfos, err := tmpDir.Readdir(0)
+			if err != nil {
+				log.Printf("error reading tmpDir(%s): %s\n", tmpDirName, err)
+				return
+			}
+			for _, fileInfo := range fileInfos {
+				if regexpOutputFileName.MatchString(fileInfo.Name()) {
+					pageNumberSubmatch := regexpOutputFileName.FindStringSubmatch(fileInfo.Name())
+					pageNumberString := pageNumberSubmatch[0]
+					pageNumberUint64, _ := strconv.ParseUint(pageNumberString, 10, 32)
+					pageNumber := uint(pageNumberUint64)
+
+					outputTmpFile, err := os.Open(path.Join(tmpDirName, fileInfo.Name()))
+					if err != nil {
+						log.Printf("error opening output file(%s): %s\n", fileInfo.Name(), err)
+						return
+					}
+					defer outputTmpFile.Close()
+
+					outputGridFileHighresName := fmt.Sprintf("highres/%s-%s.png", documentID, pageNumberString)
+					outputGridFileHighres, err := gridFS.Create(outputGridFileHighresName)
+					if err != nil {
+						log.Printf("error creating GridFS file(%s): %s\n", outputGridFileHighresName, err)
+						return
+					}
+					defer outputGridFileHighres.Close()
+
+					// create buffer to be filled with image data
+					imageBuf := bytes.NewBuffer(make([]byte, 0, fileInfo.Size()))
+
+					// copy image data to gridFile while tee-reading to imageBuf
+					_, err = io.Copy(outputGridFileHighres, io.TeeReader(outputTmpFile, imageBuf))
+					if err != nil {
+						log.Printf("error copying data from tempFile to gridFile: %s\n", err)
+						return
+					}
+
+					// get bytes from imageBuf and create leptonica pix
+					imageBytes := imageBuf.Bytes()
+					pix, err := leptonica.NewPixReadMem(&imageBytes)
+					if err != nil {
+						log.Printf("error creating new pix from imageBuf: %s\n", err)
+						return
+					}
+
+					img, err := png.Decode(imageBuf)
+					if err != nil {
+						log.Printf("error decoding image data: %s\n", err)
+						return
+					}
+					imgResized := resize.Resize(1000, 0, img, resize.MitchellNetravali)
+
+					// hand leptonica pix to tess
+					tess.SetImagePix(pix)
+
+					// create page object
+					page := &pageData{
+						ID:         bson.NewObjectId(),
+						DocumentID: documentID,
+						PageNumber: pageNumber,
+						Text:       tess.Text(),
+						Lines:      make([]*[]*charData, 0),
+					}
+
+					// get boxed text
+					boxText, err := tess.BoxText(0)
+					if err != nil {
+						log.Printf("error retrieving boxText: %s\n", err)
+						return
+					}
+					// loop over box text and create lines
+					var line []*charData
+					for _, tessChar := range boxText.Characters {
+						char := &charData{
+							X1: tessChar.StartX,
+							Y1: tessChar.StartY,
+							X2: tessChar.EndX,
+							Y2: tessChar.EndY,
+							C:  tessChar.Character,
+						}
+						//TODO: \n won't ever happen with BoxText()
+						// ++ need to mix this information with .Text() information to have whitespace
+						if line == nil || char.C == '\n' {
+							line = make([]*charData, 0)
+							page.Lines = append(page.Lines, &line)
+						}
+
+						line = append(line, char)
+					}
+
+					err = colPages.Insert(page)
+					if err != nil {
+						log.Printf("error inserting page into collection: %s\n", err)
+						return
+					}
+				}
+			}
+
+			//++ create document in documents collection
+		}()
 	}
 }

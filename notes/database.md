@@ -38,7 +38,7 @@ Just insert the tag-string into other collections where needed.
 ### pages
  - `_id` (bson.ObjectId)
  - `documentId` (bson.ObjectId, refers to `documents._id`)
- - `pageNr` (int, page number)
+ - `pageNumber` (int, page number)
  - `lines` ([][]char-object)
  - `text` (string); the text in the same order as the lines-attribute, use for search/sharing. Contains ocr-errors
 
@@ -73,8 +73,8 @@ Just insert the tag-string into other collections where needed.
 ### uploads
  - `_id` (bson.ObjectId)
  - `uploaderHandle` (string, refers to `accounts.handle`)
- - `original` (string); reference to the original pdf file.
- - `filename` (string)
+ - `filename` (string); reference to the original pdf file name.
+ - `gridFilename` (string)
  - `uploadDate` (time.Time)
  - `language` (string); language of the document to help the OCR (default 'nld')
 
@@ -82,7 +82,7 @@ Just insert the tag-string into other collections where needed.
 We're using GridFS to store files.
 
 ### uploads
-Filename must be formatted as: `upload/<uploader-handle>/<unix-timestamp>-<random-string-10-chars>-<original-filename>`
+Filename must be formatted as: `uploads/<uploader-handle>-<unix-timestamp>-<random-string-10-chars>-<original-filename>`
 Holds original uploaded file.
 
 ### highres
