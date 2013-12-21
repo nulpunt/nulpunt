@@ -97,7 +97,7 @@ func initAnalysers(numAnalysers uint) {
 	}()
 }
 
-// analyser handles uploads-analyse messages
+// analyser usernames uploads-analyse messages
 type analyser struct {
 	num      uint
 	workChan chan bson.ObjectId
@@ -116,12 +116,20 @@ func newAnalyser(workChan chan bson.ObjectId, doneChan chan bool) *analyser {
 }
 
 type uploadData struct {
-	ID             bson.ObjectId `bson:"_id"`
-	UploaderHandle string        `bson:"uploaderHandle"`
-	Filename       string        `bson:"filename"`
-	GridFilename   string        `bson:"gridFilename"`
-	UploadDate     time.Time     `bson:"uploadDate"`
-	Language       string        `bson:"language"`
+	ID               bson.ObjectId `bson:"_id"`
+	UploaderUsername string        `bson:"uploaderUsername"`
+	Filename         string        `bson:"filename"`
+	GridFilename     string        `bson:"gridFilename"`
+	UploadDate       time.Time     `bson:"uploadDate"`
+	Language         string        `bson:"language"`
+}
+
+type documentData struct {
+	ID                 bson.ObjectId `bson:"_id"`
+	UploadGridFilename string        `bson:"uploadGridFilename"`
+	UploadDate         time.Time     `bson:"upload_date"`
+	UploaderUsername   string        `bson:"uploaderUsername"`
+	Language           string        `bson:"language"`
 }
 
 type pageData struct {
@@ -360,8 +368,18 @@ func (an *analyser) work() {
 					}
 				}
 			}
-
-			//++ create document in documents collection
+			document := &documentData{
+				ID:                 documentID,
+				UploadGridFilename: upload.GridFilename,
+				UploadDate:         upload.UploadDate,
+				UploaderUsername:   upload.UploaderUsername,
+				Language:           upload.Language,
+			}
+			err = colDocuments.Insert(document)
+			if err != nil {
+				log.Printf("error inserting document: %s\n", err)
+				return
+			}
 		}()
 	}
 }
