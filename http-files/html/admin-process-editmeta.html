@@ -41,6 +41,29 @@
 				<input type="text" class="form-control" id="source" placeholder="Source" required ng-model="document.Source">
 			</div>
 		</div>
+
+		<div class="form-group">
+			<label for="source" class="col-md-2 control-label">Country</label>
+			<div class="col-md-10">
+				<input type="text" class="form-control" id="source" placeholder="Source" required ng-model="document.Country">
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label for="source" class="col-md-2 control-label">Wobber (Freedom of Information Act Requester) (Person)</label>
+			<div class="col-md-10">
+				<input type="text" class="form-control" id="source" placeholder="Source" required ng-model="document.FOIRequester">
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label for="source" class="col-md-2 control-label">Wob-verzoek (Freedom of Information Act Request)</label>
+			<div class="col-md-10">
+				<input type="text" class="form-control" id="source" placeholder="Source" required ng-model="document.FOIARequest">
+			</div>
+		</div>
+
+
 		<div class="form-group">
 			<label for="originalDate" class="col-md-2 control-label">Document date</label>
 			<div class="col-md-10">
@@ -52,8 +75,8 @@
 			<label for="language" class="col-md-2 control-label">Language</label>
 			<div class="col-md-10">
 				<select id="language" class="form-control" ng-model="document.Language">
-					<option value="dutch">Dutch</option>
-					<option value="english">English</option>
+					<option value="nl_NL">Dutch</option>
+					<option value="en_EN">English</option>
 				</select>
 			</div>
 		</div>

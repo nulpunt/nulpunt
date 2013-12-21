@@ -27,7 +27,7 @@ func adminUpload(w http.ResponseWriter, r *http.Request) {
 	}
 	defer cs.done()
 
-	// get accuont
+	// get account
 	acc := cs.account
 	if acc == nil {
 		http.Error(w, "forbidden", http.StatusForbidden)
@@ -41,17 +41,30 @@ func adminUpload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// let's get the language
+	language := "nl_NL"
+	for field, value := range r.MultipartForm.Value {
+		if field == "language" {
+			language = value[0] // take the first, should only be one.
+			log.Printf("got language: %s\n", language)
+		}
+	}
+	log.Printf("multipart.Form is: %#v\n", r.MultipartForm)
+
 	// loop over fields and files
 	for fieldname, files := range r.MultipartForm.File {
+
 		log.Printf("have fieldname %s\n", fieldname)
+		log.Printf("Have files: %#v\n", files)
 		for _, file := range files {
 			// generate unique name
 			gridFilename := fmt.Sprintf("uploads/%s/%s-%s-%s", acc.Username, strconv.FormatInt(time.Now().Unix(), 10), RandomString(10), file.Filename)
 			// metadata instance
 			uploadedFile := &uploadedFileMetadata{
-				UploaderUsername: acc.Username,
-				Filename:         file.Filename,
-				GridFilename:     gridFilename,
+				Uploader:     acc.Username,
+				Filename:     file.Filename,
+				GridFilename: gridFilename,
+				Language:     language,
 			}
 
 			// save file

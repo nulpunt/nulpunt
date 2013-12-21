@@ -76,7 +76,7 @@ Just insert the tag-string into other collections where needed.
  - `filename` (string); reference to the original pdf file name.
  - `gridFilename` (string)
  - `uploadDate` (time.Time)
- - `language` (string); language of the document to help the OCR (default 'nld')
+ - `language` (string); language of the document to help the OCR (default 'nl_NL')
 
 ## GridFS
 We're using GridFS to store files.
