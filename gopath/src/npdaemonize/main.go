@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
+	"strings"
 	"syscall"
 )
 
@@ -87,7 +88,9 @@ func stopDaemon(np string) {
 		killDaemon(np)
 		return
 	}
-	pid, err := strconv.Atoi(string(pidBytes))
+	pidString := string(pidBytes)
+	pidString = strings.Replace(pidString, "\n", "", 0)
+	pid, err := strconv.Atoi(pidString)
 	if err != nil {
 		fmt.Printf("error converting pidFile(%s) contents(%s) to pid number: %s\n", np, string(pidBytes), err)
 		killDaemon(np)
