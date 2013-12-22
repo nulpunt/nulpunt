@@ -10,9 +10,8 @@ import (
 // never write to this struct from outside this file
 // flags is filled with defaults from the tags and the initFlags function
 var flags struct {
-	Verbose       bool   `short:"v" long:"verbose" description:"Show verbose debug information"`
-	NumWorkers    uint   `long:"num-workers" description:"Number of workers that should be running concurrently" default:"1"`
-	MemoryProfile string `long:"memory-profile" description:"Writes a memory profile to given argument (e.g. --memory-profile=myprofile.mprof)"`
+	Verbose    bool `short:"v" long:"verbose" description:"Show verbose debug information"`
+	NumWorkers uint `long:"num-workers" description:"Number of workers that should be running concurrently" default:"1"`
 }
 
 // initFlags parses the given flags.
