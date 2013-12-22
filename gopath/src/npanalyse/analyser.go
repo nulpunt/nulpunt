@@ -270,6 +270,11 @@ func (an *analyser) work() {
 				return
 			}
 			for _, fileInfo := range fileInfos {
+				//++ TODO: sort by filename (page 1, 2, 3, 4, etc.)
+				// ++ make map[string(filename)]os.FileInfo
+				// ++ make slice []string (filenames)
+				// ++ sort slice
+				// ++ loop over slice and get fileInfo for each item
 				if regexpOutputFileName.MatchString(fileInfo.Name()) {
 					success := an.analyseFile(documentID, tess, tmpDirName, fileInfo)
 					runtime.GC()
