@@ -9,7 +9,7 @@
 
 ### profile
  - `_id` (bson.ObjectId)
- - `username` primary key, refers to account.documents
+ - `username` primary key, refers to account.username
  - `tags` ([]string) list of tags this user is interested in
 
 ### document
