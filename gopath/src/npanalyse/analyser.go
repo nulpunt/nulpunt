@@ -18,6 +18,7 @@ import (
 	"os/exec"
 	"path"
 	"regexp"
+	"runtime"
 	"strconv"
 	"strings"
 	"sync"
@@ -158,10 +159,8 @@ func (an *analyser) work() {
 			an.doneChan <- true
 			return
 		}
-		if flags.Verbose {
-			log.Printf("Starting job %d-%d uploadID: %s\n", an.num, jobNum, uploadID)
 
-		}
+		an.Logf("starting job %d-%d uploadID: %s\n", an.num, jobNum, uploadID)
 
 		upload := &uploadData{}
 		err := colUploads.FindId(uploadID).One(upload)
@@ -180,9 +179,11 @@ func (an *analyser) work() {
 			log.Printf("error invalid language '%s' for upload %s\n", upload.Language, uploadID)
 			continue
 		}
+		an.Logf("tesseract language: %s", tessLanguage)
 
 		func() {
 			documentID := bson.NewObjectId()
+			an.Logf("docID: %s", documentID.Hex())
 			//++ defer a function that checks if this func was successfull (update with updateId has analyseState "completed")
 			//++ when was not successfull, set state to error, remove any pages with documentId
 
@@ -192,12 +193,14 @@ func (an *analyser) work() {
 				log.Printf("failed to create tmp dir '%s': %s\n", tmpDirName, err)
 				return
 			}
+			an.Logf("created tmp dir %s", tmpDirName)
 			defer func() {
 				// clean up temp dir
 				err = os.RemoveAll(tmpDirName)
 				if err != nil {
 					log.Printf("error cleaning up tmp dir %s: %s\n", tmpDirName, err)
 				}
+				an.Logf("cleaning up tmp dir %s", tmpDirName)
 			}()
 
 			originalFileGridFS, err := gridFS.Open(upload.GridFilename)
@@ -219,6 +222,7 @@ func (an *analyser) work() {
 				log.Printf("error copying data from gridFS to tmp file: %s\n", err)
 				return
 			}
+			originalFileGridFS.Close()
 
 			// convert pdf to png's
 			pdftoppmPath, err := exec.LookPath("pdftoppm")
@@ -245,6 +249,7 @@ func (an *analyser) work() {
 				log.Printf("error running pdftoppm: %s\n", err)
 				return
 			}
+			an.Logf("ran pdftoppm for document %s", documentID.Hex())
 
 			tess, err := tesseract.NewTess("/usr/share/tesseract-ocr/tessdata/", tessLanguage)
 			if err != nil {
@@ -270,6 +275,7 @@ func (an *analyser) work() {
 					pageNumberString := pageNumberSubmatch[0]
 					pageNumberUint64, _ := strconv.ParseUint(pageNumberString, 10, 32)
 					pageNumber := uint(pageNumberUint64)
+					an.Logf("found page %d", pageNumber)
 
 					outputTmpFile, err := os.Open(path.Join(tmpDirName, fileInfo.Name()))
 					if err != nil {
@@ -295,6 +301,8 @@ func (an *analyser) work() {
 						log.Printf("error copying data from tempFile to gridFile: %s\n", err)
 						return
 					}
+					outputGridFileHighres.Close()
+					an.Logf("saved highres page %d", pageNumber)
 
 					// get bytes from imageBuf and create leptonica pix
 					imageBytes := imageBuf.Bytes()
@@ -303,13 +311,8 @@ func (an *analyser) work() {
 						log.Printf("error creating new pix from imageBuf: %s\n", err)
 						return
 					}
+					defer pix.Close()
 
-					img, err := png.Decode(imageBuf)
-					if err != nil {
-						log.Printf("error decoding image data: %s\n", err)
-						return
-					}
-					imgResized := resize.Resize(1000, 0, img, resize.MitchellNetravali)
 					outputGridFileDocviewerName := fmt.Sprintf("docviewer-pages/%s-%s.png", documentID.Hex(), pageNumberString)
 					outputGridFileDocviewer, err := gridFS.Create(outputGridFileDocviewerName)
 					if err != nil {
@@ -317,11 +320,14 @@ func (an *analyser) work() {
 						return
 					}
 					defer outputGridFileDocviewer.Close()
-					err = png.Encode(outputGridFileDocviewer, imgResized)
+					err = readResizeWrite(imageBuf, outputGridFileDocviewer)
+					runtime.GC()
 					if err != nil {
-						log.Printf("error encoding imgResized to gridFile(%s): %s\n", outputGridFileDocviewerName, err)
+						log.Printf("error performing readResizeWrite for gridFile(%s): %s\n", outputGridFileDocviewerName, err)
 						return
 					}
+					outputGridFileDocviewer.Close()
+					an.Logf("resized page %d", pageNumber)
 
 					// hand leptonica pix to tess
 					tess.SetImagePix(pix)
@@ -341,6 +347,11 @@ func (an *analyser) work() {
 						log.Printf("error retrieving boxText: %s\n", err)
 						return
 					}
+					// cleanup tess and pix for this page
+					tess.Clear()
+					pix.Close()
+					an.Logf("retrieved boxText for page %d", pageNumber)
+
 					// loop over box text and create lines
 					var line []*charData
 					for _, tessChar := range boxText.Characters {
@@ -366,6 +377,7 @@ func (an *analyser) work() {
 						log.Printf("error inserting page into collection: %s\n", err)
 						return
 					}
+					an.Logf("inserted page %s", page.ID.Hex())
 				}
 			}
 			document := &documentData{
@@ -380,6 +392,26 @@ func (an *analyser) work() {
 				log.Printf("error inserting document: %s\n", err)
 				return
 			}
+			an.Logf("inserted document %s", documentID.Hex())
 		}()
 	}
+}
+
+func (an *analyser) Logf(format string, stuff ...interface{}) {
+	if flags.Verbose {
+		log.Printf(fmt.Sprintf("%d-%d: %s\n", an.num, an.jobCount.Last(), format), stuff...)
+	}
+}
+
+func readResizeWrite(imageBuf io.Reader, to io.Writer) error {
+	img, err := png.Decode(imageBuf)
+	if err != nil {
+		return err
+	}
+	imgResized := resize.Resize(1000, 0, img, resize.MitchellNetravali)
+	err = png.Encode(to, imgResized)
+	if err != nil {
+		return err
+	}
+	return nil
 }
