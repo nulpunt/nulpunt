@@ -91,10 +91,10 @@ func upsertDocument(doc *Document) error {
 }
 
 // removeDocument removes a document from the DB
-//func removeTag(doc *Document) error {
-//	err := colDocument.RemoveId(doc.ID)
-//	return err
-//}
+func removeDocument(docID bson.ObjectId) error {
+	err := colDocuments.RemoveId(docID)
+	return err
+}
 
 //===========================================================
 
@@ -159,8 +159,12 @@ func insertPage(doc *Page) error {
 	return nil
 }
 
-// removePage removes a page from the DB
-//func removePage(page *Page) error {
-//	err := colPages.RemoveId(Page.ID)
-//	return err
-//}
+// removePages remove pages from the DB
+func removePages(selection interface{}) error {
+	err := colPages.Remove(selection)
+	// removing a page that does not exist is NOT an error. It's just not there.
+	if err == mgo.ErrNotFound {
+		return nil
+	}
+	return err
+}

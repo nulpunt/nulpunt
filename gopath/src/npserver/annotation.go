@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
 	"sort"
 	"time"
@@ -88,11 +89,15 @@ func updateAnnotationID(annotationID bson.ObjectId, change interface{}) error {
 	return nil
 }
 
-// removeAnnotation removes a annotation from the DB
-// func removeAnnotation(annotation *Annotation) error {
-// 	err := colAnnotations.Remove(bson.M{"annotation": annotation.Annotation})
-// 	return err
-// }
+// removeAnnotations remove  annotations from the DB
+func removeAnnotations(selection interface{}) error {
+	err := colAnnotations.Remove(selection)
+	// removing an annotation that does not exist is NOT an error. It's just not there.
+	if err == mgo.ErrNotFound {
+		return nil
+	}
+	return err
+}
 
 // Sorting
 

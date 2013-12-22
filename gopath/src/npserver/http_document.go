@@ -10,7 +10,7 @@ import (
 
 // type Document struct is defined in document.go
 
-type getDocumentParams struct {
+type DocumentParams struct {
 	DocID        bson.ObjectId
 	AnnotationID bson.ObjectId
 	// CommentID bson.ObjectId
@@ -29,7 +29,7 @@ func getDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 		// get document, annotation and comment parameters
 		body, _ := ioutil.ReadAll(req.Body)
 		log.Printf("request body is %s\n", string(body))
-		params := &getDocumentParams{}
+		params := &DocumentParams{}
 		err := json.Unmarshal(body, params)
 		log.Printf("Params is: %#v\n", params)
 		if err != nil {
@@ -104,7 +104,7 @@ func getDocumentsHandler(rw http.ResponseWriter, req *http.Request) {
 		// get document, annotation and comment parameters
 		body, _ := ioutil.ReadAll(req.Body)
 		log.Printf("request body is %s\n", string(body))
-		params := &getDocumentParams{}
+		params := &DocumentParams{}
 		err := json.Unmarshal(body, params)
 		log.Printf("Params is: %#v\n", params)
 		if err != nil {
@@ -161,7 +161,7 @@ func getDocumentListHandler(rw http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case "POST": // Use POST as that's the easiest to encode json parameters
 		body, _ := ioutil.ReadAll(req.Body)
-		params := &getDocumentParams{}
+		params := &DocumentParams{}
 		err := json.Unmarshal(body, params)
 		if err != nil {
 			log.Printf("JSON unmarshal error %#v\n", err)
@@ -266,6 +266,70 @@ func updateDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 
 		rw.WriteHeader(200)
 		rw.Write([]byte(`OK, updated`))
+		return
+	default:
+		http.Error(rw, "error", http.StatusMethodNotAllowed) // 405
+	}
+}
+
+func deleteDocumentHandler(rw http.ResponseWriter, req *http.Request) {
+	log.Printf("\n\ndelete-Document-request: %v\n", req)
+
+	// get session
+	cs, err := getClientSession(req.Header.Get(headerKeySessionKey))
+	if err != nil {
+		http.Error(rw, "error", http.StatusInternalServerError)
+		return
+	}
+	defer cs.done()
+
+	// get account
+	acc := cs.account
+	if acc == nil {
+		http.Error(rw, "forbidden", http.StatusForbidden)
+		return
+	}
+	// TODO: test for Admin-user flag.
+
+	switch req.Method {
+	case "POST":
+		body, _ := ioutil.ReadAll(req.Body)
+		log.Printf("\n\nbody is %s\n", string(body))
+		params := &DocumentParams{}
+		err := json.Unmarshal(body, params)
+		if err != nil {
+			log.Printf("\n\nJSON unmarshal error %#v\n", err)
+			http.Error(rw, "JSON unmarshal error", http.StatusBadRequest) // 400
+			return
+		}
+
+		// Delete Annotation-records with DocID
+		err = removeAnnotations(bson.M{"documentid": params.DocID})
+		if err != nil {
+			log.Printf("Error deleting annotation on document: error %#v\n", err)
+			http.Error(rw, "error deleting annotation on document", http.StatusInternalServerError) // 500
+			return
+		}
+
+		// Delete Page-records with DocID
+		err = removePages(bson.M{"documentid": params.DocID})
+		if err != nil {
+			log.Printf("Error deleting pages of document: error %#v\n", err)
+			http.Error(rw, "error deleting pages of document", http.StatusInternalServerError) // 500
+			return
+		}
+
+		// Delete the document record.
+		log.Printf("\n\nDocumentID to delete is: %#v\n", params.DocID)
+		err = removeDocument(params.DocID)
+		if err != nil {
+			log.Printf("Error deleting document: error %#v\n", err)
+			http.Error(rw, "error deleting document", http.StatusInternalServerError) // 500
+			return
+		}
+
+		rw.WriteHeader(200)
+		rw.Write([]byte(`OK, deleted`))
 		return
 	default:
 		http.Error(rw, "error", http.StatusMethodNotAllowed) // 405

@@ -124,6 +124,10 @@ nulpunt.controller("InboxCtrl", function($scope, $http) {
 		console.log('error retrieving raw documents: ', error);
 	});
 
+//    $scope.TagSearch = function() {
+//	console.log("Searching for: " + $scope.tags)
+//    };
+
 });
 
 nulpunt.controller("ShowDocCtrl", function($scope, $http, $routeParams) {
@@ -273,6 +277,7 @@ nulpunt.controller("ProfileCtrl", function($scope, $http) {
 	    $scope.profile = data.profile;
 	}).
 	error(function(error) {
+	    
 	    console.log('error retrieving profile ', error);
 	    $scope.error = data
 	})
@@ -527,7 +532,7 @@ nulpunt.controller("AdminProcessCtrl", function($scope, $http) {
 });
 
 
-nulpunt.controller("AdminProcessEditMetaCtrl", function($scope, $http, $routeParams, $filter) {
+nulpunt.controller("AdminProcessEditMetaCtrl", function($scope, $http, $routeParams, $filter, $window) {
     $scope.done = false;
     $scope.error = "";
     console.log("DocID is " + $routeParams.docID );
@@ -536,8 +541,8 @@ nulpunt.controller("AdminProcessEditMetaCtrl", function($scope, $http, $routePar
     	method: "POST", 
     	url: "/service/getDocument", 
     	data: { 
-    		DocID: $routeParams.docID 
-    	} 
+    	    DocID: $routeParams.docID,
+    	}
     }).
 	success(function(data) {
 	    console.log(data);
@@ -548,19 +553,7 @@ nulpunt.controller("AdminProcessEditMetaCtrl", function($scope, $http, $routePar
 	}).
 	error(function(error) {
 		console.log('error retrieving document: ', error);
-	})
-
-    // Helper to check the right checkboxes // take out if not needed..
-    /*$scope.checkTag = function(tag, list) {
-	console.log("List is: " + list)
-	console.log("Checking tag: " +tag)
-	for (i = 0; i <  list.lenght; i++) {
-	    if (list[i] == tag) { 
-		return true
-	    }
-	}
-	return false;
-    };*/
+	});
 
     // save the updated document
     $scope.submit = function() {
@@ -595,8 +588,33 @@ nulpunt.controller("AdminProcessEditMetaCtrl", function($scope, $http, $routePar
 			$scope.error = data;
 		});
 	}
-
+    
     $("#originalDate").datepicker({format: 'dd-mm-yyyy'});
+
+    $scope.deleteDocument = function(docID) {
+	doit = confirm("Delete this document,\nall annotations and comments.\n\nDeleting is permanent.\n");
+	if (doit == true) {
+	    $http({
+		method: 'POST', 
+		url: "/service/session/admin/deleteDocument",
+		data: { DocID: docID }
+	    }).
+		success(function(data, status, headers, config) {
+		    console.log(data);
+		    alert("Your document is gone (forever).");
+		    $scope.done = true;
+		}).
+		error(function(data, status, headers, config) {
+		    console.log("error add updateDocument");
+		    console.log(data, status, headers);
+		    alert("Deletion gave an error. Your document might or might not be there.");
+		    $scope.error = data;
+		});
+	    $window.location.href = "/#/admin/process";
+	} else {
+	    $scope.deleteflag = false;
+	};
+    };
 });
 
 nulpunt.controller("SignOutCtrl", function($scope, AccountAuthService, ClientSessionService) {
