@@ -311,6 +311,7 @@ func (an *analyser) work() {
 						log.Printf("error creating new pix from imageBuf: %s\n", err)
 						return
 					}
+					defer pix.Close()
 
 					outputGridFileDocviewerName := fmt.Sprintf("docviewer-pages/%s-%s.png", documentID.Hex(), pageNumberString)
 					outputGridFileDocviewer, err := gridFS.Create(outputGridFileDocviewerName)
