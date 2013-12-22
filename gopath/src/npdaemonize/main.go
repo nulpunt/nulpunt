@@ -17,7 +17,7 @@ func main() {
 
 	// check permissions
 	if os.Getuid() != 0 && os.Geteuid() != 0 {
-		fmt.Printf("npserver-daemon should be run as root, have uid=%d and euid=%d\n", os.Getuid(), os.Geteuid())
+		fmt.Printf("npdaemonize should be run as root, have uid=%d and euid=%d\n", os.Getuid(), os.Geteuid())
 		os.Exit(1)
 	}
 
@@ -89,7 +89,7 @@ func stopDaemon(np string) {
 		return
 	}
 	pidString := string(pidBytes)
-	pidString = strings.Replace(pidString, "\n", "", 0)
+	pidString = strings.Replace(pidString, "\n", "", -1)
 	pid, err := strconv.Atoi(pidString)
 	if err != nil {
 		fmt.Printf("error converting pidFile(%s) contents(%s) to pid number: %s\n", np, string(pidBytes), err)
