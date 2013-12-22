@@ -9,10 +9,10 @@
 
 ### profile
  - `_id` (bson.ObjectId)
- - `username` primary key, refers to account.documents
+ - `username` primary key, refers to account.username
  - `tags` ([]string) list of tags this user is interested in
 
-### documents
+### document
 technical parameters (for system)
  - `_id` (bson.ObjectId)
  - `originalGridFilename` (string, refers to location of the orginal document in GridFS)
@@ -23,6 +23,9 @@ content parameters (for people)
  - `title` (string)
  - `summary` (string)
  - `source` (string)
+ - `country` (string)
+ - `FOIRequester` (string) // Wobber
+ - `FOIARequest` (string) // Wob-verzoek
  - `category (string) // "Kamerbrief", "Rapport", ...
  - `language` (string) // same value as in upload-table.
  - `tags` ([]string)  // These come from the Tags-table

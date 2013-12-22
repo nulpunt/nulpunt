@@ -96,6 +96,7 @@ func initHTTPServer() {
 
 	adminRouter.Path("/updateDocument").HandlerFunc(updateDocumentHandler)
 	adminRouter.Path("/insertDocument").HandlerFunc(insertDocumentHandler)
+	adminRouter.Path("/deleteDocument").HandlerFunc(deleteDocumentHandler)
 
 	adminRouter.PathPrefix("/").Handler(http.NotFoundHandler())
 
