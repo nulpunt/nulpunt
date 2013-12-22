@@ -160,7 +160,7 @@ func (an *analyser) work() {
 			return
 		}
 
-		an.Logf("starting job %d-%d uploadID: %s\n", an.num, jobNum, uploadID)
+		an.Logf("starting job %d-%d uploadID: %s", an.num, jobNum, uploadID)
 
 		upload := &uploadData{}
 		err := colUploads.FindId(uploadID).One(upload)
