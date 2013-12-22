@@ -2,10 +2,8 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/signal"
-	"runtime/pprof"
 )
 
 var processEndFuncs = make([]func(), 0)
@@ -33,20 +31,4 @@ func initProcess() {
 			os.Exit(0)
 		}
 	}()
-
-	// write memory profile on process shutdown
-	if len(flags.MemoryProfile) > 0 {
-		processEndFuncs = append(processEndFuncs, func() {
-			mprof, err := os.Create(flags.MemoryProfile)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			err = pprof.WriteHeapProfile(mprof)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			mprof.Close()
-			log.Println("wrote memory profile")
-		})
-	}
 }

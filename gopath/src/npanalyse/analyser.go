@@ -332,7 +332,7 @@ func (an *analyser) analyseFile(documentID bson.ObjectId, tess *tesseract.Tess, 
 		return false
 	}
 	outputGridFileHighres.Close()
-	an.Logf("saved highres page %d", pageNumber)
+	an.Logf("read output png, saved highres. page %d", pageNumber)
 
 	// get bytes from imageBuf and create leptonica pix
 	imageBytes := imageBuf.Bytes()
