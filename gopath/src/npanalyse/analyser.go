@@ -160,7 +160,7 @@ func (an *analyser) work() {
 			return
 		}
 
-		an.Logf("starting job %d-%d uploadID: %s\n", an.num, jobNum, uploadID)
+		an.Logf("starting job %d-%d uploadID: %s", an.num, jobNum, uploadID)
 
 		upload := &uploadData{}
 		err := colUploads.FindId(uploadID).One(upload)
@@ -271,113 +271,11 @@ func (an *analyser) work() {
 			}
 			for _, fileInfo := range fileInfos {
 				if regexpOutputFileName.MatchString(fileInfo.Name()) {
-					pageNumberSubmatch := regexpOutputFileName.FindStringSubmatch(fileInfo.Name())
-					pageNumberString := pageNumberSubmatch[1]
-					pageNumberUint64, _ := strconv.ParseUint(pageNumberString, 10, 32)
-					pageNumber := uint(pageNumberUint64)
-					an.Logf("found page %d", pageNumber)
-
-					outputTmpFile, err := os.Open(path.Join(tmpDirName, fileInfo.Name()))
-					if err != nil {
-						log.Printf("error opening output file(%s): %s\n", fileInfo.Name(), err)
-						return
-					}
-					defer outputTmpFile.Close()
-
-					outputGridFileHighresName := fmt.Sprintf("highres/%s-%s.png", documentID.Hex(), pageNumberString)
-					outputGridFileHighres, err := gridFS.Create(outputGridFileHighresName)
-					if err != nil {
-						log.Printf("error creating GridFS file(%s): %s\n", outputGridFileHighresName, err)
-						return
-					}
-					defer outputGridFileHighres.Close()
-
-					// create buffer to be filled with image data
-					imageBuf := bytes.NewBuffer(make([]byte, 0, fileInfo.Size()))
-
-					// copy image data to gridFile while tee-reading to imageBuf
-					_, err = io.Copy(outputGridFileHighres, io.TeeReader(outputTmpFile, imageBuf))
-					if err != nil {
-						log.Printf("error copying data from tempFile to gridFile: %s\n", err)
-						return
-					}
-					outputGridFileHighres.Close()
-					an.Logf("saved highres page %d", pageNumber)
-
-					// get bytes from imageBuf and create leptonica pix
-					imageBytes := imageBuf.Bytes()
-					pix, err := leptonica.NewPixReadMem(&imageBytes)
-					if err != nil {
-						log.Printf("error creating new pix from imageBuf: %s\n", err)
-						return
-					}
-					defer pix.Close()
-
-					outputGridFileDocviewerName := fmt.Sprintf("docviewer-pages/%s-%s.png", documentID.Hex(), pageNumberString)
-					outputGridFileDocviewer, err := gridFS.Create(outputGridFileDocviewerName)
-					if err != nil {
-						log.Printf("error creating GridFS file(%s): %s\n", outputGridFileDocviewerName, err)
-						return
-					}
-					defer outputGridFileDocviewer.Close()
-					err = readResizeWrite(imageBuf, outputGridFileDocviewer)
+					success := an.analyseFile(documentID, tess, tmpDirName, fileInfo)
 					runtime.GC()
-					if err != nil {
-						log.Printf("error performing readResizeWrite for gridFile(%s): %s\n", outputGridFileDocviewerName, err)
+					if !success {
 						return
 					}
-					outputGridFileDocviewer.Close()
-					an.Logf("resized page %d", pageNumber)
-
-					// hand leptonica pix to tess
-					tess.SetImagePix(pix)
-
-					// create page object
-					page := &pageData{
-						ID:         bson.NewObjectId(),
-						DocumentID: documentID,
-						PageNumber: pageNumber,
-						Text:       tess.Text(),
-						Lines:      make([]*[]*charData, 0),
-					}
-
-					// get boxed text
-					boxText, err := tess.BoxText(0)
-					if err != nil {
-						log.Printf("error retrieving boxText: %s\n", err)
-						return
-					}
-					// cleanup tess and pix for this page
-					tess.Clear()
-					pix.Close()
-					an.Logf("retrieved boxText for page %d", pageNumber)
-
-					// loop over box text and create lines
-					var line []*charData
-					for _, tessChar := range boxText.Characters {
-						char := &charData{
-							X1: tessChar.StartX,
-							Y1: tessChar.StartY,
-							X2: tessChar.EndX,
-							Y2: tessChar.EndY,
-							C:  tessChar.Character,
-						}
-						//TODO: \n won't ever happen with BoxText()
-						// ++ need to mix this information with .Text() information to have whitespace
-						if line == nil || char.C == '\n' {
-							line = make([]*charData, 0)
-							page.Lines = append(page.Lines, &line)
-						}
-
-						line = append(line, char)
-					}
-
-					err = colPages.Insert(page)
-					if err != nil {
-						log.Printf("error inserting page into collection: %s\n", err)
-						return
-					}
-					an.Logf("inserted page %s", page.ID.Hex())
 				}
 			}
 			document := &documentData{
@@ -395,6 +293,116 @@ func (an *analyser) work() {
 			an.Logf("inserted document %s", documentID.Hex())
 		}()
 	}
+}
+
+func (an *analyser) analyseFile(documentID bson.ObjectId, tess *tesseract.Tess, tmpDirName string, fileInfo os.FileInfo) bool {
+	pageNumberSubmatch := regexpOutputFileName.FindStringSubmatch(fileInfo.Name())
+	pageNumberString := pageNumberSubmatch[1]
+	pageNumberUint64, _ := strconv.ParseUint(pageNumberString, 10, 32)
+	pageNumber := uint(pageNumberUint64)
+	an.Logf("found page %d", pageNumber)
+
+	outputTmpFile, err := os.Open(path.Join(tmpDirName, fileInfo.Name()))
+	if err != nil {
+		log.Printf("error opening output file(%s): %s\n", fileInfo.Name(), err)
+		return false
+	}
+	defer outputTmpFile.Close()
+
+	outputGridFileHighresName := fmt.Sprintf("highres/%s-%s.png", documentID.Hex(), pageNumberString)
+	outputGridFileHighres, err := gridFS.Create(outputGridFileHighresName)
+	if err != nil {
+		log.Printf("error creating GridFS file(%s): %s\n", outputGridFileHighresName, err)
+		return false
+	}
+	defer outputGridFileHighres.Close()
+
+	// create buffer to be filled with image data
+	imageBuf := bytes.NewBuffer(make([]byte, 0, fileInfo.Size()))
+
+	// copy image data to gridFile while tee-reading to imageBuf
+	_, err = io.Copy(outputGridFileHighres, io.TeeReader(outputTmpFile, imageBuf))
+	if err != nil {
+		log.Printf("error copying data from tempFile to gridFile: %s\n", err)
+		return false
+	}
+	outputGridFileHighres.Close()
+	an.Logf("saved highres page %d", pageNumber)
+
+	// get bytes from imageBuf and create leptonica pix
+	imageBytes := imageBuf.Bytes()
+	pix, err := leptonica.NewPixReadMem(&imageBytes)
+	if err != nil {
+		log.Printf("error creating new pix from imageBuf: %s\n", err)
+		return false
+	}
+	defer pix.Close()
+
+	outputGridFileDocviewerName := fmt.Sprintf("docviewer-pages/%s-%s.png", documentID.Hex(), pageNumberString)
+	outputGridFileDocviewer, err := gridFS.Create(outputGridFileDocviewerName)
+	if err != nil {
+		log.Printf("error creating GridFS file(%s): %s\n", outputGridFileDocviewerName, err)
+		return false
+	}
+	defer outputGridFileDocviewer.Close()
+	err = readResizeWrite(imageBuf, outputGridFileDocviewer)
+	if err != nil {
+		log.Printf("error performing readResizeWrite for gridFile(%s): %s\n", outputGridFileDocviewerName, err)
+		return false
+	}
+	outputGridFileDocviewer.Close()
+	an.Logf("resized page %d", pageNumber)
+
+	// hand leptonica pix to tess
+	tess.SetImagePix(pix)
+
+	// create page object
+	page := &pageData{
+		ID:         bson.NewObjectId(),
+		DocumentID: documentID,
+		PageNumber: pageNumber,
+		Text:       tess.Text(),
+		Lines:      make([]*[]*charData, 0),
+	}
+
+	// get boxed text
+	boxText, err := tess.BoxText(0)
+	if err != nil {
+		log.Printf("error retrieving boxText: %s\n", err)
+		return false
+	}
+	// cleanup tess and pix for this page
+	tess.Clear()
+	pix.Close()
+	an.Logf("retrieved boxText for page %d", pageNumber)
+
+	// loop over box text and create lines
+	var line []*charData
+	for _, tessChar := range boxText.Characters {
+		char := &charData{
+			X1: tessChar.StartX,
+			Y1: tessChar.StartY,
+			X2: tessChar.EndX,
+			Y2: tessChar.EndY,
+			C:  tessChar.Character,
+		}
+		//TODO: \n won't ever happen with BoxText()
+		// ++ need to mix this information with .Text() information to have whitespace
+		if line == nil || char.C == '\n' {
+			line = make([]*charData, 0)
+			page.Lines = append(page.Lines, &line)
+		}
+
+		line = append(line, char)
+	}
+
+	err = colPages.Insert(page)
+	if err != nil {
+		log.Printf("error inserting page into collection: %s\n", err)
+		return false
+	}
+	an.Logf("inserted page %s", page.ID.Hex())
+	return true
 }
 
 func (an *analyser) Logf(format string, stuff ...interface{}) {
