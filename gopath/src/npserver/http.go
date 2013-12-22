@@ -90,7 +90,7 @@ func initHTTPServer() {
 	adminRouter.Path("/upload").HandlerFunc(adminUpload)
 	adminRouter.Path("/getRawUploads").HandlerFunc(adminGetRawUploads)
 
-	serviceRouter.Path("/get-tags").HandlerFunc(adminGetTags) //  /service/get-tags, ie for all
+	sessionRouter.Path("/get-tags").HandlerFunc(adminGetTags) //  /service/get-tags, ie for all
 	adminRouter.Path("/add-tag").HandlerFunc(adminAddTag)     //  /service/add-tags, ie only for admins
 	adminRouter.Path("/delete-tag").HandlerFunc(adminDeleteTag)
 

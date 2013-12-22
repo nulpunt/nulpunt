@@ -10,12 +10,9 @@ import (
 // never write to this struct from outside this file
 // flags is filled with defaults from the tags and the initFlags function
 var flags struct {
-	Start   bool   `long:"start" description:"start npserver"`
-	Stop    bool   `long:"stop" description:"stop npserver"`
-	PIDFile string `long:"pid-file" description:"pid file for the npserver" default:"/var/run/npserver.pid"`
+	Verbose    bool `short:"v" long:"verbose" description:"Show verbose debug information"`
+	NumWorkers uint `long:"num-workers" description:"Number of workers that should be running concurrently" default:"1"`
 }
-
-var extraArgs []string
 
 // initFlags parses the given flags.
 // when the user asks for help (-h or --help): the application exists with status 0
@@ -26,7 +23,6 @@ func initFlags() {
 		// assert the err to be a flags.Error
 		flagError := err.(*goflags.Error)
 		if flagError.Type == goflags.ErrHelp {
-			fmt.Println("npserver-daemon wraps npserver with daemon functionality.")
 			// user asked for help on flags.
 			// program can exit successfully
 			os.Exit(0)
@@ -38,5 +34,11 @@ func initFlags() {
 		fmt.Printf("Error parsing flags: %s\n", err)
 		os.Exit(1)
 	}
-	extraArgs = args
+
+	// check for unexpected arguments
+	// when an unexpected argument is given: the application exists with status 1
+	if len(args) > 0 {
+		fmt.Printf("Unknown argument '%s'.\n", args[0])
+		os.Exit(1)
+	}
 }
