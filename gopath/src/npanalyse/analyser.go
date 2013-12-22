@@ -272,7 +272,7 @@ func (an *analyser) work() {
 			for _, fileInfo := range fileInfos {
 				if regexpOutputFileName.MatchString(fileInfo.Name()) {
 					pageNumberSubmatch := regexpOutputFileName.FindStringSubmatch(fileInfo.Name())
-					pageNumberString := pageNumberSubmatch[0]
+					pageNumberString := pageNumberSubmatch[1]
 					pageNumberUint64, _ := strconv.ParseUint(pageNumberString, 10, 32)
 					pageNumber := uint(pageNumberUint64)
 					an.Logf("found page %d", pageNumber)
