@@ -123,6 +123,7 @@ type documentData struct {
 	Language           string    `bson:"language"`
 	Title              string    `bson:"title"` //++ what for?
 	PageCount          int       `bson:"pageCount"`
+	AnalyseState       string    `bson:"analyseState"`
 }
 
 type pageData struct {
@@ -264,9 +265,10 @@ func (an *analyser) work() {
 			var fileNames []string
 			var fileInfosByName = make(map[string]os.FileInfo)
 			for _, fileInfo := range fileInfos {
+				fileName := fileInfo.Name()
 				if regexpOutputFileName.MatchString(fileName) {
-					fileInfosByName[fileInfo.Name()] = fileInfo
-					fileNames = append(fileNames, fileInfo.Name())
+					fileInfosByName[fileName] = fileInfo
+					fileNames = append(fileNames, fileName)
 				}
 			}
 			sort.Strings(fileNames)
@@ -279,6 +281,7 @@ func (an *analyser) work() {
 			}
 			document.PageCount = len(fileNames)
 			document.AnalyseState = "completed"
+			document.Title = document.UploadFilename
 			err = colDocuments.UpdateId(documentID, bson.M{"$set": document})
 			if err != nil {
 				log.Printf("error inserting document: %s\n", err)
