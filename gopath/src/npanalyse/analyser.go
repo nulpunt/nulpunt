@@ -9,6 +9,7 @@ import (
 	"github.com/GeertJohan/go.leptonica"
 	"github.com/GeertJohan/go.tesseract"
 	"github.com/nfnt/resize"
+	"image"
 	"image/png"
 	"io"
 	"labix.org/v2/mgo"
@@ -19,6 +20,7 @@ import (
 	"path"
 	"regexp"
 	"runtime"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -66,28 +68,25 @@ func initAnalysers(numAnalysers uint) {
 	// find work
 	go func() {
 		for {
-			updateID := &struct {
+			documentIDHolder := &struct {
 				ID bson.ObjectId `bson:"_id"`
 			}{}
-			err := colUploads.Find(bson.M{"$or": []bson.M{
-				bson.M{"analyseState": bson.M{"$exists": false}},
-				bson.M{"analyseState": ""},
-			}}).Select(bson.M{"_id": 1}).One(updateID)
+			err := colDocuments.Find(bson.M{"analyseState": "uploaded"}).Select(bson.M{"_id": 1}).One(documentIDHolder)
 			if err != nil {
 				if err != mgo.ErrNotFound {
 					log.Printf("error searching for non-analysed update: %s\n", err)
 				}
 				goto Sleep
 			}
-			if updateID.ID != "" {
+			if documentIDHolder.ID != "" {
 				workLock.Lock()
-				err := colUploads.UpdateId(updateID.ID, bson.M{"$set": bson.M{"analyseState": "started"}})
+				err := colDocuments.UpdateId(documentIDHolder.ID, bson.M{"$set": bson.M{"analyseState": "started"}})
 				if err != nil {
-					log.Printf("error setting analyseState for upload %s to 'started'\n", updateID.ID)
+					log.Printf("error setting analyseState for upload %s to 'started'\n", documentIDHolder.ID)
 					workLock.Unlock()
 					continue
 				}
-				workChan <- updateID.ID
+				workChan <- documentIDHolder.ID
 				workLock.Unlock()
 				// try to find next job right away
 				continue
@@ -116,46 +115,38 @@ func newAnalyser(workChan chan bson.ObjectId, doneChan chan bool) *analyser {
 	}
 }
 
-type uploadData struct {
-	ID               bson.ObjectId `bson:"_id"`
-	UploaderUsername string        `bson:"uploaderUsername"`
-	Filename         string        `bson:"filename"`
-	GridFilename     string        `bson:"gridFilename"`
-	UploadDate       time.Time     `bson:"uploadDate"`
-	Language         string        `bson:"language"`
-}
-
 type documentData struct {
-	ID                 bson.ObjectId `bson:"_id"`
-	UploadGridFilename string        `bson:"uploadGridFilename"`
-	UploadDate         time.Time     `bson:"uploadDate"`
-	UploaderUsername   string        `bson:"uploaderUsername"`
-	Language           string        `bson:"language"`
-	Title              string        `bson:"title"`
-	OriginalFilename   string        `bson:"originalFilename"`
-	PageCount          int           `bson:"pageCount"`
+	UploadFilename     string    `bson:"uploadFilename"`
+	UploadGridFilename string    `bson:"uploadGridFilename"`
+	UploadDate         time.Time `bson:"uploadDate"`
+	UploaderUsername   string    `bson:"uploaderUsername"`
+	Language           string    `bson:"language"`
+	Title              string    `bson:"title"` //++ what for?
+	PageCount          int       `bson:"pageCount"`
+	AnalyseState       string    `bson:"analyseState"`
 }
 
 type pageData struct {
-	ID         bson.ObjectId  `bson:"_id"`
-	DocumentID bson.ObjectId  `bson:"documentId"` // refers to `documents._id`)
-	PageNumber uint           `bson:"pageNumber"` // page number
-	Lines      []*[]*charData `bson:"lines"`
-	Text       string         `bson:"text"` //  the text in the same order as the lines-attribute, use for search/sharing. Contains ocr-errors
-
+	ID            bson.ObjectId  `bson:"_id"`
+	DocumentID    bson.ObjectId  `bson:"documentId"` // refers to `documents._id`)
+	PageNumber    uint           `bson:"pageNumber"` // page number
+	Lines         []*[]*charData `bson:"lines"`
+	Text          string         `bson:"text"` //  the text in the same order as the lines-attribute, use for search/sharing. Contains ocr-errors
+	HighresWidth  int            `bson:"highresWidth"`
+	HighresHeight int            `bson:"highresHeight"`
 }
 
 type charData struct {
-	X1 uint32 `bson:"x1"` // offset-left in pixels
-	Y1 uint32 `bson:"y1"` // offset-top in pixels
-	X2 uint32 `bson:"x2"` // offset-bottom in pixels
-	Y2 uint32 `bson:"y2"` // offset-right in pixels
-	C  rune   `bson:"c"`  // character
+	X1 float32 `bson:"x1"` // offset-left in pixels
+	Y1 float32 `bson:"y1"` // offset-top in pixels
+	X2 float32 `bson:"x2"` // offset-bottom in pixels
+	Y2 float32 `bson:"y2"` // offset-right in pixels
+	C  string  `bson:"c"`  // character
 }
 
 func (an *analyser) work() {
 	for {
-		uploadID, ok := <-an.workChan
+		documentID, ok := <-an.workChan
 		jobNum := an.jobCount.Next()
 		if !ok {
 			log.Printf("workChan closed, worker %d stopped\n", an.num)
@@ -163,29 +154,28 @@ func (an *analyser) work() {
 			return
 		}
 
-		an.Logf("starting job %d-%d uploadID: %s", an.num, jobNum, uploadID)
+		an.Logf("starting job %d-%d documentID: %s", an.num, jobNum, documentID.Hex())
 
-		upload := &uploadData{}
-		err := colUploads.FindId(uploadID).One(upload)
+		document := &documentData{}
+		err := colDocuments.FindId(documentID).One(document)
 		if err != nil {
-			log.Printf("error analysing doc %s: %s\n", uploadID, err)
+			log.Printf("error analysing doc %s: %s\n", documentID, err)
 			continue
 		}
 
 		var tessLanguage string
-		switch upload.Language {
+		switch document.Language {
 		case "nl_NL", "":
 			tessLanguage = "nld"
 		case "en_EN":
 			tessLanguage = "eng"
 		default:
-			log.Printf("error invalid language '%s' for upload %s\n", upload.Language, uploadID)
+			log.Printf("error invalid language '%s' for document %s\n", document.Language, documentID.Hex())
 			continue
 		}
 		an.Logf("tesseract language: %s", tessLanguage)
 
 		func() {
-			documentID := bson.NewObjectId()
 			an.Logf("docID: %s", documentID.Hex())
 			//++ defer a function that checks if this func was successfull (update with updateId has analyseState "completed")
 			//++ when was not successfull, set state to error, remove any pages with documentId
@@ -206,9 +196,9 @@ func (an *analyser) work() {
 				an.Logf("cleaning up tmp dir %s", tmpDirName)
 			}()
 
-			originalFileGridFS, err := gridFS.Open(upload.GridFilename)
+			originalFileGridFS, err := gridFS.Open(document.UploadGridFilename)
 			if err != nil {
-				log.Printf("error opening original file (%s) from GridFS: %s\n", upload.GridFilename, err)
+				log.Printf("error opening original file (%s) from GridFS: %s\n", document.UploadGridFilename, err)
 				return
 			}
 			defer originalFileGridFS.Close()
@@ -272,28 +262,27 @@ func (an *analyser) work() {
 				log.Printf("error reading tmpDir(%s): %s\n", tmpDirName, err)
 				return
 			}
+			var fileNames []string
+			var fileInfosByName = make(map[string]os.FileInfo)
 			for _, fileInfo := range fileInfos {
-				//++ TODO: sort by filename (page 1, 2, 3, 4, etc.)
-				// ++ make map[string(filename)]os.FileInfo
-				// ++ make slice []string (filenames)
-				// ++ sort slice
-				// ++ loop over slice and get fileInfo for each item
-				if regexpOutputFileName.MatchString(fileInfo.Name()) {
-					success := an.analyseFile(documentID, tess, tmpDirName, fileInfo)
-					runtime.GC()
-					if !success {
-						return
-					}
+				fileName := fileInfo.Name()
+				if regexpOutputFileName.MatchString(fileName) {
+					fileInfosByName[fileName] = fileInfo
+					fileNames = append(fileNames, fileName)
 				}
 			}
-			document := &documentData{
-				ID:                 documentID,
-				UploadGridFilename: upload.GridFilename,
-				UploadDate:         upload.UploadDate,
-				UploaderUsername:   upload.UploaderUsername,
-				Language:           upload.Language,
+			sort.Strings(fileNames)
+			for _, fileName := range fileNames {
+				success := an.analyseFile(documentID, tess, tmpDirName, fileInfosByName[fileName])
+				runtime.GC()
+				if !success {
+					return
+				}
 			}
-			err = colDocuments.Insert(document)
+			document.PageCount = len(fileNames)
+			document.AnalyseState = "completed"
+			document.Title = document.UploadFilename
+			err = colDocuments.UpdateId(documentID, bson.M{"$set": document})
 			if err != nil {
 				log.Printf("error inserting document: %s\n", err)
 				return
@@ -353,7 +342,7 @@ func (an *analyser) analyseFile(documentID bson.ObjectId, tess *tesseract.Tess, 
 		return false
 	}
 	defer outputGridFileDocviewer.Close()
-	err = readResizeWrite(imageBuf, outputGridFileDocviewer)
+	err, sizes := readResizeWrite(imageBuf, outputGridFileDocviewer)
 	if err != nil {
 		log.Printf("error performing readResizeWrite for gridFile(%s): %s\n", outputGridFileDocviewerName, err)
 		return false
@@ -366,11 +355,13 @@ func (an *analyser) analyseFile(documentID bson.ObjectId, tess *tesseract.Tess, 
 
 	// create page object
 	page := &pageData{
-		ID:         bson.NewObjectId(),
-		DocumentID: documentID,
-		PageNumber: pageNumber,
-		Text:       tess.Text(),
-		Lines:      make([]*[]*charData, 0),
+		ID:            bson.NewObjectId(),
+		DocumentID:    documentID,
+		PageNumber:    pageNumber,
+		Text:          tess.Text(),
+		Lines:         make([]*[]*charData, 0),
+		HighresWidth:  sizes.Dx(),
+		HighresHeight: sizes.Dy(),
 	}
 
 	// get boxed text
@@ -388,15 +379,15 @@ func (an *analyser) analyseFile(documentID bson.ObjectId, tess *tesseract.Tess, 
 	var line []*charData
 	for _, tessChar := range boxText.Characters {
 		char := &charData{
-			X1: tessChar.StartX,
-			Y1: tessChar.StartY,
-			X2: tessChar.EndX,
-			Y2: tessChar.EndY,
-			C:  tessChar.Character,
+			X1: (float32(tessChar.StartX) / float32(page.HighresWidth) * float32(100)),
+			Y1: (float32(tessChar.StartY) / float32(page.HighresHeight) * float32(100)),
+			X2: (float32(tessChar.EndX) / float32(page.HighresWidth) * float32(100)),
+			Y2: (float32(tessChar.EndY) / float32(page.HighresHeight) * float32(100)),
+			C:  string(tessChar.Character),
 		}
 		//TODO: \n won't ever happen with BoxText()
 		// ++ need to mix this information with .Text() information to have whitespace
-		if line == nil || char.C == '\n' {
+		if line == nil || char.C == "\n" {
 			line = make([]*charData, 0)
 			page.Lines = append(page.Lines, &line)
 		}
@@ -419,15 +410,16 @@ func (an *analyser) Logf(format string, stuff ...interface{}) {
 	}
 }
 
-func readResizeWrite(imageBuf io.Reader, to io.Writer) error {
+func readResizeWrite(imageBuf io.Reader, to io.Writer) (error, *image.Rectangle) {
 	img, err := png.Decode(imageBuf)
 	if err != nil {
-		return err
+		return err, nil
 	}
 	imgResized := resize.Resize(1000, 0, img, resize.MitchellNetravali)
 	err = png.Encode(to, imgResized)
 	if err != nil {
-		return err
+		return err, nil
 	}
-	return nil
+	sizes := img.Bounds()
+	return nil, &sizes
 }
