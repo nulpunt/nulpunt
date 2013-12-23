@@ -128,9 +128,12 @@ type uploadData struct {
 type documentData struct {
 	ID                 bson.ObjectId `bson:"_id"`
 	UploadGridFilename string        `bson:"uploadGridFilename"`
-	UploadDate         time.Time     `bson:"upload_date"`
+	UploadDate         time.Time     `bson:"uploadDate"`
 	UploaderUsername   string        `bson:"uploaderUsername"`
 	Language           string        `bson:"language"`
+	Title              string        `bson:"title"`
+	OriginalFilename   string        `bson:"originalFilename"`
+	PageCount          int           `bson:"pageCount"`
 }
 
 type pageData struct {
