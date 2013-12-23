@@ -223,7 +223,7 @@ func insertDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 		// Add page-record
 		page := newPage()
 		page.DocumentID = doc.ID
-		page.PageNr = 1
+		page.PageNumber = 1
 		page.Text = "Hallo"
 		// page.Lines = [][]CharObject{ [ { ...
 		err = insertPage(page)

@@ -102,7 +102,7 @@ func removeDocument(docID bson.ObjectId) error {
 type Page struct {
 	ID         bson.ObjectId `bson:"_id"`
 	DocumentID bson.ObjectId
-	PageNr     int
+	PageNumber int
 	Text       string
 	Lines      [][]CharObject
 }
