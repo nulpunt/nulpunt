@@ -149,11 +149,11 @@ type pageData struct {
 }
 
 type charData struct {
-	X1 float6432 `bson:"x1"` // offset-left in pixels
-	Y1 float6432 `bson:"y1"` // offset-top in pixels
-	X2 float6432 `bson:"x2"` // offset-bottom in pixels
-	Y2 float6432 `bson:"y2"` // offset-right in pixels
-	C  string    `bson:"c"`  // character
+	X1 float32 `bson:"x1"` // offset-left in pixels
+	Y1 float32 `bson:"y1"` // offset-top in pixels
+	X2 float32 `bson:"x2"` // offset-bottom in pixels
+	Y2 float32 `bson:"y2"` // offset-right in pixels
+	C  string  `bson:"c"`  // character
 }
 
 func (an *analyser) work() {
@@ -275,7 +275,7 @@ func (an *analyser) work() {
 				log.Printf("error reading tmpDir(%s): %s\n", tmpDirName, err)
 				return
 			}
-			var fileNames []strings
+			var fileNames []string
 			var fileInfosByName map[string]os.FileInfo
 			for _, fileInfo := range fileInfos {
 				fileInfosByName[fileInfo.Name()] = fileInfo
@@ -283,8 +283,8 @@ func (an *analyser) work() {
 			}
 			sort.Strings(fileNames)
 			for _, fileName := range fileNames {
-				if regexpOutputFileName.MatchString(fileInfo.Name()) {
-					success := an.analyseFile(documentID, tess, tmpDirName, fileInfo)
+				if regexpOutputFileName.MatchString(fileName) {
+					success := an.analyseFile(documentID, tess, tmpDirName, fileInfosByName[fileName])
 					runtime.GC()
 					if !success {
 						return
@@ -434,7 +434,7 @@ func readResizeWrite(imageBuf io.Reader, to io.Writer) (error, *image.Rectangle)
 	imgResized := resize.Resize(1000, 0, img, resize.MitchellNetravali)
 	err = png.Encode(to, imgResized)
 	if err != nil {
-		return err
+		return err, nil
 	}
 	sizes := img.Bounds()
 	return nil, &sizes
