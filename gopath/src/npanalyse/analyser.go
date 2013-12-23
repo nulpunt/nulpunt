@@ -71,10 +71,7 @@ func initAnalysers(numAnalysers uint) {
 			documentIDHolder := &struct {
 				ID bson.ObjectId `bson:"_id"`
 			}{}
-			err := colDocuments.Find(bson.M{"$or": []bson.M{
-				bson.M{"analyseState": bson.M{"$exists": false}},
-				bson.M{"analyseState": ""},
-			}}).Select(bson.M{"_id": 1}).One(documentIDHolder)
+			err := colDocuments.Find(bson.M{"analyseState": "uploaded"}).Select(bson.M{"_id": 1}).One(documentIDHolder)
 			if err != nil {
 				if err != mgo.ErrNotFound {
 					log.Printf("error searching for non-analysed update: %s\n", err)
@@ -119,14 +116,14 @@ func newAnalyser(workChan chan bson.ObjectId, doneChan chan bool) *analyser {
 }
 
 type documentData struct {
-	ID                 bson.ObjectId `bson:"_id"`
-	UploadFilename     string        `bson:"uploadFilename"`
-	UploadGridFilename string        `bson:"uploadGridFilename"`
-	UploadDate         time.Time     `bson:"uploadDate"`
-	UploaderUsername   string        `bson:"uploaderUsername"`
-	Language           string        `bson:"language"`
-	Title              string        `bson:"title"` //++ what for?
-	PageCount          int           `bson:"pageCount"`
+	UploadFilename     string    `bson:"uploadFilename"`
+	UploadGridFilename string    `bson:"uploadGridFilename"`
+	UploadDate         time.Time `bson:"uploadDate"`
+	UploaderUsername   string    `bson:"uploaderUsername"`
+	Language           string    `bson:"language"`
+	Title              string    `bson:"title"` //++ what for?
+	PageCount          int       `bson:"pageCount"`
+	AnalyseState       string    `bson:"analyseState"`
 }
 
 type pageData struct {
@@ -266,23 +263,26 @@ func (an *analyser) work() {
 				return
 			}
 			var fileNames []string
-			var fileInfosByName map[string]os.FileInfo
+			var fileInfosByName = make(map[string]os.FileInfo)
 			for _, fileInfo := range fileInfos {
-				fileInfosByName[fileInfo.Name()] = fileInfo
-				fileNames = append(fileNames, fileInfo.Name())
+				fileName := fileInfo.Name()
+				if regexpOutputFileName.MatchString(fileName) {
+					fileInfosByName[fileName] = fileInfo
+					fileNames = append(fileNames, fileName)
+				}
 			}
 			sort.Strings(fileNames)
 			for _, fileName := range fileNames {
-				if regexpOutputFileName.MatchString(fileName) {
-					success := an.analyseFile(documentID, tess, tmpDirName, fileInfosByName[fileName])
-					runtime.GC()
-					if !success {
-						return
-					}
+				success := an.analyseFile(documentID, tess, tmpDirName, fileInfosByName[fileName])
+				runtime.GC()
+				if !success {
+					return
 				}
 			}
-			document.PageCount = 42 //++ TODO: real page count
-			err = colDocuments.UpdateId(document.ID, bson.M{"$set": document})
+			document.PageCount = len(fileNames)
+			document.AnalyseState = "completed"
+			document.Title = document.UploadFilename
+			err = colDocuments.UpdateId(documentID, bson.M{"$set": document})
 			if err != nil {
 				log.Printf("error inserting document: %s\n", err)
 				return
