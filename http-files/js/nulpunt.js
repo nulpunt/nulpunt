@@ -115,7 +115,14 @@ nulpunt.controller("OverviewCtrl", function($scope){
 
 nulpunt.controller("InboxCtrl", function($scope, $http) {
     $scope.documents = [];
-    $http({method: "POST", url: "/service/getDocuments", data: {} }).
+    $scope.profiles = [];
+    //$scope.tags = [];
+});
+
+// This controllers is used on inbox-page to query on users' selected Tags
+nulpunt.controller("DocumentsByTagsCtrl", function ($scope, $http) {
+    console.log("DocumentsByTagsCtrl has found profile: "+ $scope.profiles);
+    $http({method: "POST", url: "/service/session/get-documents-by-tags", data: {tags: $scope.profiles[0].Tags} }).
 	success(function(data) {
 	    console.log(data);
 	    $scope.documents = data.documents;
@@ -123,10 +130,12 @@ nulpunt.controller("InboxCtrl", function($scope, $http) {
 	error(function(error) {
 		console.log('error retrieving raw documents: ', error);
 	});
-
-//    $scope.TagSearch = function() {
-//	console.log("Searching for: " + $scope.tags)
-//    };
+    
+    $scope.TagSearch = function(tags) {
+	console.log("Searching for: " + tags);
+	$scope.profiles[0].Tags = tags;
+	$apply;
+    };
 
 });
 
@@ -266,6 +275,7 @@ nulpunt.controller("SearchCtrl", function($scope, $routeParams) {
 nulpunt.controller("ProfileCtrl", function($scope, $http) {
     $scope.done = false;
     $scope.error = "";
+    $scope.profile = [];
     // load the users' profile
     $http({
     	method: "GET", 
@@ -273,11 +283,14 @@ nulpunt.controller("ProfileCtrl", function($scope, $http) {
     	// no parameters, the server uses the session.account.username value.
     }).
 	success(function(data) {
-	    console.log(data);
-	    $scope.profile = data.profile;
+	    console.log("profileCtr has profile: "+ data);
+	    // UGLY HACK: 
+	    // Each user has only one profile, yet  we create an array.
+	    // This is so that the inbox.html template can use a ng-repeat
+	    // That makes the dependencies between that and this controller clear to Angular.
+	    $scope.profiles = [ data.profile ];
 	}).
 	error(function(error) {
-	    
 	    console.log('error retrieving profile ', error);
 	    $scope.error = data
 	})

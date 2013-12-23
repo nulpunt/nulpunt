@@ -14,7 +14,7 @@ import (
 // Get a single profile, specified by Session.Account.Username.
 // You can only get your own profile.
 func getProfileHandler(rw http.ResponseWriter, req *http.Request) {
-	log.Printf("getProfile-request: %v\n", req)
+	log.Printf("getProfile-request: %v\n", req.URL)
 
 	// assemble results into a json-object
 	result := make(map[string]interface{})
