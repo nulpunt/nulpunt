@@ -5,30 +5,10 @@ import (
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
 	"log"
-	"time"
 )
 
 var errDocumentNotUnique = errors.New("Document not unique")
 var errPageNotUnique = errors.New("Page not unique")
-
-// type Document holds the document properties
-type Document struct {
-	ID           bson.ObjectId `bson:"_id"`
-	Original     string        // original PDF file to download the whole thing. Filename into GridFS
-	Published    bool
-	UploadDate   time.Time
-	Uploader     string
-	Title        string
-	Summary      string
-	Source       string
-	Country      string
-	FOIRequester string
-	FOIARequest  string
-	Language     string
-	Category     string
-	Tags         []string // contains tag.Tag
-	OriginalDate time.Time
-}
 
 // newDocument returns a new empty one.
 func newDocument() *Document {
@@ -102,7 +82,7 @@ func removeDocument(docID bson.ObjectId) error {
 type Page struct {
 	ID         bson.ObjectId `bson:"_id"`
 	DocumentID bson.ObjectId
-	PageNr     int
+	PageNumber int
 	Text       string
 	Lines      [][]CharObject
 }

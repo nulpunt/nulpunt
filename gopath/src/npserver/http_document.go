@@ -55,7 +55,7 @@ func getDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 		result["document"] = doc
 
 		// get Pages, expect at least 1.
-		pages, err := getPages(bson.M{"documentid": doc.ID})
+		pages, err := getPages(bson.M{"documentId": doc.ID})
 		if err != nil {
 			log.Printf("Pages with DocID not found: error %#v\n", err)
 			http.Error(rw, "DocID not found", http.StatusNotFound) // 404
@@ -64,7 +64,7 @@ func getDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 		result["pages"] = pages
 
 		// Be paranoid and limit annotation to the Document they belong to.
-		selector := bson.M{"documentid": params.DocID}
+		selector := bson.M{"documentId": params.DocID}
 		if params.AnnotationID != "" {
 			selector["_id"] = params.AnnotationID
 		} // or leave it undefined for all annotations of DocID
@@ -269,7 +269,7 @@ func insertDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 		// Add page-record
 		page := newPage()
 		page.DocumentID = doc.ID
-		page.PageNr = 1
+		page.PageNumber = 1
 		page.Text = "Hallo"
 		// page.Lines = [][]CharObject{ [ { ...
 		err = insertPage(page)
@@ -350,7 +350,7 @@ func deleteDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 		}
 
 		// Delete Annotation-records with DocID
-		err = removeAnnotations(bson.M{"documentid": params.DocID})
+		err = removeAnnotations(bson.M{"documentId": params.DocID})
 		if err != nil {
 			log.Printf("Error deleting annotation on document: error %#v\n", err)
 			http.Error(rw, "error deleting annotation on document", http.StatusInternalServerError) // 500
@@ -358,7 +358,7 @@ func deleteDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 		}
 
 		// Delete Page-records with DocID
-		err = removePages(bson.M{"documentid": params.DocID})
+		err = removePages(bson.M{"documentId": params.DocID})
 		if err != nil {
 			log.Printf("Error deleting pages of document: error %#v\n", err)
 			http.Error(rw, "error deleting pages of document", http.StatusInternalServerError) // 500

@@ -159,7 +159,7 @@ nulpunt.controller("AnnotationSubmitCtrl", function($scope, $http) {
 		$http({method: 'POST', url: '/service/session/add-annotation', data: {
 		    documentId: $scope.document.ID,
 		    locations: $scope.locations,
-		    annotation: $scope.annotationText,
+		    annotationText: $scope.annotationText,
 		    
 		}}).
 		success(function(data, status, headers, config) {
@@ -180,9 +180,8 @@ nulpunt.controller("AnnotationSubmitCtrl", function($scope, $http) {
 nulpunt.controller("CommentSubmitCtrl", function($scope, $http) {
     $scope.submit = function() {
 		$http({method: 'POST', url: '/service/session/add-comment', data: {
-		    // $scope.annotation comes from the enclosing scope, ie, the page with the annotation 
 		    annotationId: $scope.annotation.ID,
-		    comment: $scope.commentText,
+		    commentText: $scope.commentText,
 		    // parentId: $scope.parentID, // is for threaded comments
 		}}).
 		success(function(data, status, headers, config) {
@@ -518,8 +517,8 @@ nulpunt.controller("AdminAnalyseCtrl", function($scope, $http) {
 	       data: { 
 		   //document: {
 		       title:                   $scope.files[ind].filename,
-		       uploader:          $scope.files[ind].uploader,
-		       uploadedDate: $scope.files[ind].uploadDate,
+		       uploaderUsername:          $scope.files[ind].uploader,
+		       uploadDate: $scope.files[ind].uploadDate,
 		       language:         $scope.files[ind].language,
 		   //}
 	       }}).

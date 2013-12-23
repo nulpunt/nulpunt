@@ -43,7 +43,7 @@ func addAnnotationHandler(rw http.ResponseWriter, req *http.Request) {
 
 		// Set every other field to things we control.
 		annot.ID = bson.NewObjectId()
-		annot.Annotator = acc.Username
+		annot.AnnotatorUsername = acc.Username
 		annot.CreateDate = time.Now()
 		annot.Comments = []Comment{}
 
@@ -69,7 +69,7 @@ type AddCommentParams struct {
 	//DocumentID bson.ObjectId
 	AnnotationID bson.ObjectId
 	// Parent bson.ObjectId
-	Comment string
+	CommentText string
 }
 
 // Add a comment to an annotation (non threaded for now)
@@ -104,11 +104,11 @@ func addCommentHandler(rw http.ResponseWriter, req *http.Request) {
 		}
 
 		comment := Comment{
-			ID:         bson.NewObjectId(),
-			Commenter:  acc.Username,
-			CreateDate: time.Now(),
-			Comment:    params.Comment,
-			Comments:   []Comment{},
+			ID:                bson.NewObjectId(),
+			CommenterUsername: acc.Username,
+			CreateDate:        time.Now(),
+			CommentText:       params.CommentText,
+			Comments:          []Comment{},
 		}
 		log.Printf("\n\ncomment to add is: %#v\n", comment)
 

@@ -3,6 +3,7 @@
 /npanalyse
 
 *sublime*
+*.mprof
 
 /gopath/pkg
 /gopath/bin

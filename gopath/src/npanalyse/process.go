@@ -31,5 +31,4 @@ func initProcess() {
 			os.Exit(0)
 		}
 	}()
-
 }

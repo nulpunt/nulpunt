@@ -128,9 +128,12 @@ type uploadData struct {
 type documentData struct {
 	ID                 bson.ObjectId `bson:"_id"`
 	UploadGridFilename string        `bson:"uploadGridFilename"`
-	UploadDate         time.Time     `bson:"upload_date"`
+	UploadDate         time.Time     `bson:"uploadDate"`
 	UploaderUsername   string        `bson:"uploaderUsername"`
 	Language           string        `bson:"language"`
+	Title              string        `bson:"title"`
+	OriginalFilename   string        `bson:"originalFilename"`
+	PageCount          int           `bson:"pageCount"`
 }
 
 type pageData struct {
@@ -270,6 +273,11 @@ func (an *analyser) work() {
 				return
 			}
 			for _, fileInfo := range fileInfos {
+				//++ TODO: sort by filename (page 1, 2, 3, 4, etc.)
+				// ++ make map[string(filename)]os.FileInfo
+				// ++ make slice []string (filenames)
+				// ++ sort slice
+				// ++ loop over slice and get fileInfo for each item
 				if regexpOutputFileName.MatchString(fileInfo.Name()) {
 					success := an.analyseFile(documentID, tess, tmpDirName, fileInfo)
 					runtime.GC()
@@ -327,7 +335,7 @@ func (an *analyser) analyseFile(documentID bson.ObjectId, tess *tesseract.Tess, 
 		return false
 	}
 	outputGridFileHighres.Close()
-	an.Logf("saved highres page %d", pageNumber)
+	an.Logf("read output png, saved highres. page %d", pageNumber)
 
 	// get bytes from imageBuf and create leptonica pix
 	imageBytes := imageBuf.Bytes()
