@@ -68,28 +68,28 @@ func initAnalysers(numAnalysers uint) {
 	// find work
 	go func() {
 		for {
-			updateID := &struct {
+			documentIDHolder := &struct {
 				ID bson.ObjectId `bson:"_id"`
 			}{}
-			err := colUploads.Find(bson.M{"$or": []bson.M{
+			err := colDocuments.Find(bson.M{"$or": []bson.M{
 				bson.M{"analyseState": bson.M{"$exists": false}},
 				bson.M{"analyseState": ""},
-			}}).Select(bson.M{"_id": 1}).One(updateID)
+			}}).Select(bson.M{"_id": 1}).One(documentIDHolder)
 			if err != nil {
 				if err != mgo.ErrNotFound {
 					log.Printf("error searching for non-analysed update: %s\n", err)
 				}
 				goto Sleep
 			}
-			if updateID.ID != "" {
+			if documentIDHolder.ID != "" {
 				workLock.Lock()
-				err := colUploads.UpdateId(updateID.ID, bson.M{"$set": bson.M{"analyseState": "started"}})
+				err := colDocuments.UpdateId(documentIDHolder.ID, bson.M{"$set": bson.M{"analyseState": "started"}})
 				if err != nil {
-					log.Printf("error setting analyseState for upload %s to 'started'\n", updateID.ID)
+					log.Printf("error setting analyseState for upload %s to 'started'\n", documentIDHolder.ID)
 					workLock.Unlock()
 					continue
 				}
-				workChan <- updateID.ID
+				workChan <- documentIDHolder.ID
 				workLock.Unlock()
 				// try to find next job right away
 				continue
@@ -118,23 +118,14 @@ func newAnalyser(workChan chan bson.ObjectId, doneChan chan bool) *analyser {
 	}
 }
 
-type uploadData struct {
-	ID               bson.ObjectId `bson:"_id"`
-	UploaderUsername string        `bson:"uploaderUsername"`
-	Filename         string        `bson:"filename"`
-	GridFilename     string        `bson:"gridFilename"`
-	UploadDate       time.Time     `bson:"uploadDate"`
-	Language         string        `bson:"language"`
-}
-
 type documentData struct {
 	ID                 bson.ObjectId `bson:"_id"`
+	UploadFilename     string        `bson:"uploadFilename"`
 	UploadGridFilename string        `bson:"uploadGridFilename"`
 	UploadDate         time.Time     `bson:"uploadDate"`
 	UploaderUsername   string        `bson:"uploaderUsername"`
 	Language           string        `bson:"language"`
-	Title              string        `bson:"title"`
-	OriginalFilename   string        `bson:"originalFilename"`
+	Title              string        `bson:"title"` //++ what for?
 	PageCount          int           `bson:"pageCount"`
 }
 
@@ -158,7 +149,7 @@ type charData struct {
 
 func (an *analyser) work() {
 	for {
-		uploadID, ok := <-an.workChan
+		documentID, ok := <-an.workChan
 		jobNum := an.jobCount.Next()
 		if !ok {
 			log.Printf("workChan closed, worker %d stopped\n", an.num)
@@ -166,29 +157,28 @@ func (an *analyser) work() {
 			return
 		}
 
-		an.Logf("starting job %d-%d uploadID: %s", an.num, jobNum, uploadID)
+		an.Logf("starting job %d-%d documentID: %s", an.num, jobNum, documentID.Hex())
 
-		upload := &uploadData{}
-		err := colUploads.FindId(uploadID).One(upload)
+		document := &documentData{}
+		err := colDocuments.FindId(documentID).One(document)
 		if err != nil {
-			log.Printf("error analysing doc %s: %s\n", uploadID, err)
+			log.Printf("error analysing doc %s: %s\n", documentID, err)
 			continue
 		}
 
 		var tessLanguage string
-		switch upload.Language {
+		switch document.Language {
 		case "nl_NL", "":
 			tessLanguage = "nld"
 		case "en_EN":
 			tessLanguage = "eng"
 		default:
-			log.Printf("error invalid language '%s' for upload %s\n", upload.Language, uploadID)
+			log.Printf("error invalid language '%s' for document %s\n", document.Language, documentID.Hex())
 			continue
 		}
 		an.Logf("tesseract language: %s", tessLanguage)
 
 		func() {
-			documentID := bson.NewObjectId()
 			an.Logf("docID: %s", documentID.Hex())
 			//++ defer a function that checks if this func was successfull (update with updateId has analyseState "completed")
 			//++ when was not successfull, set state to error, remove any pages with documentId
@@ -209,9 +199,9 @@ func (an *analyser) work() {
 				an.Logf("cleaning up tmp dir %s", tmpDirName)
 			}()
 
-			originalFileGridFS, err := gridFS.Open(upload.GridFilename)
+			originalFileGridFS, err := gridFS.Open(document.UploadGridFilename)
 			if err != nil {
-				log.Printf("error opening original file (%s) from GridFS: %s\n", upload.GridFilename, err)
+				log.Printf("error opening original file (%s) from GridFS: %s\n", document.UploadGridFilename, err)
 				return
 			}
 			defer originalFileGridFS.Close()
@@ -291,14 +281,8 @@ func (an *analyser) work() {
 					}
 				}
 			}
-			document := &documentData{
-				ID:                 documentID,
-				UploadGridFilename: upload.GridFilename,
-				UploadDate:         upload.UploadDate,
-				UploaderUsername:   upload.UploaderUsername,
-				Language:           upload.Language,
-			}
-			err = colDocuments.Insert(document)
+			document.PageCount = 42 //++ TODO: real page count
+			err = colDocuments.UpdateId(document.ID, bson.M{"$set": document})
 			if err != nil {
 				log.Printf("error inserting document: %s\n", err)
 				return
