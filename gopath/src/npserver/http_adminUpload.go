@@ -93,9 +93,9 @@ func adminUpload(w http.ResponseWriter, r *http.Request) {
 			}
 
 			// save metadata
-			err = colUploads.Insert(uploadedFile)
+			err = colDocuments.Insert(uploadedFile)
 			if err != nil {
-				log.Printf("error saving uploadedFile data in colUploads: %s\n", err)
+				log.Printf("error saving uploadedFile data in colDocuments: %s\n", err)
 				http.Error(w, "error", http.StatusInternalServerError)
 				return
 			}
