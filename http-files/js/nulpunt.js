@@ -590,6 +590,11 @@ nulpunt.controller("AdminProcessEditMetaCtrl", function($scope, $http, $routePar
     
     $("#originalDate").datepicker({format: 'dd-mm-yyyy'});
 
+    // disable the publish checkbox when OCR is not completed yet
+    $scope.isDisabled = function(state) {
+	return (state != "completed");
+    };
+
     $scope.deleteDocument = function(docID) {
 	doit = confirm("Delete this document,\nall annotations and comments.\n\nDeleting is permanent.\n");
 	if (doit == true) {
