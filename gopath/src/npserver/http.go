@@ -113,7 +113,7 @@ func initHTTPServer() {
 		port := "8000"
 
 		// inform user of startup
-		log.Printf("starting http server on port %s\n", port)
+		log.Printf("starting http server on http://localhost:%s\n", port)
 
 		// listen and serve on given port
 		// error is fatal
