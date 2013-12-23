@@ -68,9 +68,9 @@ Just insert the tag-string into other collections where needed.
  - `documentId` (bson.ObjectId, refers to Documents)
  - `annotator` (string)
  - `createDate` (time.Time)
- - `annotation` (string)
+ - `annotationText` (string)
  - `comments` ([]comment)
- - `location` ([]object) // In future, there could be multiple sections in a single annotation.
+ - `locations` ([]object) // In future, there could be multiple sections in a single annotation.
     - `pageNumber` (int) index
     - `y1` (float32, left) in percentage relative to the image
     - `x1` (float32, top) in percentage relative to the image

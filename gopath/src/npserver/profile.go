@@ -8,13 +8,6 @@ import (
 
 var errProfileNotUnique = errors.New("Profile not unique")
 
-// type Profile holds the profile properties
-type Profile struct {
-	ID       bson.ObjectId `bson:"_id"`
-	Username string
-	Tags     []string // contains tag.Tag
-}
-
 // newProfile returns a new empty one.
 func newProfile() *Profile {
 	return &Profile{

@@ -22,7 +22,7 @@
 				<tr ng-repeat="doc in documents" >
 					<td>{{ doc.ID }}</td>
 					<td>{{ doc.Title }}</td>
-					<td>{{ doc.Uploader }}</td>
+					<td>{{ doc.UploaderUsername }}</td>
 					<td><a ng-href="/#/admin/process-editmeta/{{ doc.ID }}">Edit Metadata</a></td>
 				</tr>
 			</tbody>
