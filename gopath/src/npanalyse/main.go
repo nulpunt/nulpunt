@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	log.Println("starting nulpunt analyse application v0.1")
+	log.Println("starting nulpunt analyse application")
 
 	// parse the command-line flags
 	initFlags()

@@ -21,8 +21,9 @@ technical parameters (for system)
  - `uploadGridFilename` (string, refers to location of the orginal document in GridFS)
  - `uploadDate` (time.Time); date of *publication* on Nulpunt.
 content parameters (for people)
- - `language` (string) // same value as in upload-table.
+ - `language` (string) // language of the document to help the OCR (default 'nl_NL')
  - `pageCount` (int) // number of pages
+ - `analyseState` (string) options("uploaded", "started", "completed", "error")
 
  - `title` (string)
  - `summary` (string)
@@ -52,6 +53,8 @@ Just insert the tag-string into other collections where needed.
  - `pageNumber` (int, page number)
  - `lines` ([][]char-object)
  - `text` (string); the text in the same order as the lines-attribute, use for search/sharing. Contains ocr-errors
+ - `highresWidth` (int) The width (in pixels) for the highres(900dpi) render.
+ - `highresHeight` (int) The height (in pixels) for the highres(900dpi) render.
 
 #### char-object
  - `x1` (float32, left) in percentage relative to the image
@@ -80,14 +83,6 @@ Just insert the tag-string into other collections where needed.
  - `createDate` (time.Time)
  - `commentText` (string)
  - `comments` ([]comment) *recursion, disabled for first version??* (JANUARI/FEBRUARI)
-
-### uploads
- - `_id` (bson.ObjectId)
- - `uploaderUsername` (string, refers to `accounts.username`)
- - `filename` (string); reference to the original pdf file name.
- - `gridFilename` (string)
- - `uploadDate` (time.Time)
- - `language` (string); language of the document to help the OCR (default 'nl_NL')
 
 ## GridFS
 We're using GridFS to store files.
