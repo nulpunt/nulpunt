@@ -78,23 +78,6 @@ func removeDocument(docID bson.ObjectId) error {
 
 //===========================================================
 
-// type Page holds the page properties
-type Page struct {
-	ID         bson.ObjectId `bson:"_id"`
-	DocumentID bson.ObjectId
-	PageNumber int
-	Text       string
-	Lines      [][]CharObject
-}
-
-type CharObject struct {
-	X1   int
-	Y1   int
-	X2   int
-	Y2   int
-	Char string
-}
-
 // newPage returns a new empty one.
 func newPage() *Page {
 	return &Page{
