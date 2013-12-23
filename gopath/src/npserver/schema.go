@@ -71,7 +71,7 @@ type Tag struct {
 	Tag string        `bson:"tag"`
 }
 
-type Pages struct {
+type Page struct {
 	ID            bson.ObjectId `bson:"_id"`
 	DocumentID    bson.ObjectId `bson:"documentId"` // refers to `documents._id`)
 	PageNumber    uint          `bson:"pageNumber"` // page number
