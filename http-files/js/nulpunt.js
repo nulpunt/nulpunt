@@ -138,6 +138,12 @@ nulpunt.controller("ShowDocCtrl", function($scope, $http, $routeParams) {
 	    $scope.document = data.document;
 	    $scope.pages = data.pages;
 	    $scope.annotations = data.annotations;
+	    _.each($scope.pages, function(page) {
+	    	page.imageboxStyle = {
+	    		"background-image": "url('/docfiles/pages/" + $scope.document.ID + "/" + page.PageNumber + ".png');"
+	    	};
+	    	console.dir(page);
+	    });
 	}).
 	error(function(error) {
 		console.log('error retrieving raw documents: ', error);

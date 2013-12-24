@@ -1,5 +1,58 @@
 <h1>Document: {{ document.Title }}</h1>
 
+<style>
+	html {
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;  /* Chrome all / Safari all */
+		-khtml-user-select: none;
+		-moz-user-select: none;     /* Firefox all */
+		-ms-user-select: none;      /* IE 10+ */
+
+		/* No support for these yet, use at own risk */
+		-o-user-select: none;
+		user-select: none;     
+	}
+
+	.selectable, .selectable div {
+		-webkit-touch-callout: all;
+		-webkit-user-select: all;
+		-khtml-user-select: all;
+		-moz-user-select: all;
+		-ms-user-select: all;
+		-o-user-select: all;
+		user-select: all;
+	}
+
+	.pageView { 
+		position: relative;
+		display: table;
+	}
+	.charpos {
+		position: absolute;
+		display: inline;
+		font-weight: bold;
+		color: rgba(0,0,0,0);
+	}
+	.charpos::selection {
+		background: rgba(255,255,0,0.5); 
+		}
+	.charpos::-moz-selection {
+		background: rgba(255,255,0,0.5);
+	}
+	/*.character {
+		padding-left: 20px;
+	}
+	.character::selection {
+		background: rgba(255,255,0,0.5); 
+		}
+	.character::-moz-selection {
+		background: rgba(255,255,0,0.5); 
+	}*/
+	/*.imageBox {
+		width: 1000px;
+	}*/
+</style>
+
 <div>
   <h2>{{ document.Title }}</h2>
   <p class="np-document-description">{{ document.Summary }}</p>
@@ -11,9 +64,21 @@
   
   <hr/>
 
-  <div ng-repeat="page in pages">
+  <div ng-repeat="page in pages" >
     <h3>Page {{ page.PageNumber }}</h3>
-    <!-- img src="/pages/{{ document.ID }}/{{ page.PageNumber }}.png" --> <p>"Expect the page-image here"</p>
+    <div class="pageView" id="pageView-{{page.PageNumber}}">
+			<div class="imageBox"  >
+				<img ng-src="/docfiles/pages/{{document.ID}}/{{page.PageNumber}}.png" />
+			</div> <!-- ng-style="page.imageboxStyle" -->
+			<div id="lines" class="selectable" >
+				<div class="line" ng-repeat="line in page.Lines">
+					<div ng-repeat="character in line"
+							class="charpos charpos-{{character.C}}" style="bottom: {{character.Y1}}%; left: {{character.X1}}%;"
+							>{{character.C}}</div>
+				</div>
+			</div>
+		</div>
+	</div>
   
     <div ng-repeat="annotation in annotations">
       <h3>Annotation on this page</h3>
