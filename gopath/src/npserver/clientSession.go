@@ -18,7 +18,7 @@ var (
 )
 
 // configuration constants
-const clientSessionTimeoutDuration = 7 * time.Minute
+const clientSessionTimeoutDuration = 7 * time.Hour
 
 // ClientSession defines the session for a given client.
 type ClientSession struct {

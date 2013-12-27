@@ -4,7 +4,7 @@ nulpunt.run(function(ClientSessionService) {
 	ClientSessionService.startSession();
 });
 
-nulpunt.factory('ClientSessionService', function($rootScope, $http, $sessionStorage, $timeout, AccountAuthService) {
+nulpunt.factory('ClientSessionService', function($rootScope, $http, $sessionStorage, $timeout, $q, AccountAuthService) {
 	var service = {
 		sessionKey: ""
 	};
@@ -72,19 +72,23 @@ nulpunt.factory('ClientSessionService', function($rootScope, $http, $sessionStor
 
 	// stop the session: destroy on server, destroy locally
 	service.stopSession = function() {
+		var deferred = $q.defer();
+
 		console.log($http.defaults.headers);
 		$http({method: 'GET', url: '/service/session/destroy'}).
 		success(function(data, status, headers, config) {
 			console.log(status, data);
 			setKey("");
+			deferred.resolve();
 		}).
 		error(function(data, status, headers, config) {
 			console.error(status, data);
 			setKey("");
+			deferred.reject();
 		});
-	};
 
-	//++ add websocket (?)
+		return deferred.promise;
+	};
 
 	return service;
 });

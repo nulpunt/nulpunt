@@ -121,7 +121,7 @@ type documentData struct {
 	UploadDate         time.Time `bson:"uploadDate"`
 	UploaderUsername   string    `bson:"uploaderUsername"`
 	Language           string    `bson:"language"`
-	Title              string    `bson:"title"` //++ what for?
+	Title              string    `bson:"title"`
 	PageCount          int       `bson:"pageCount"`
 	AnalyseState       string    `bson:"analyseState"`
 }
