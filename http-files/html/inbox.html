@@ -3,18 +3,19 @@
 <p>This pages shows the files that match any of the tags in your <a href="/#/profile">Profile</a>.<br>
   Not what you expect? Change it there...</p>
 <p>Selected:
-  <div ng-controller="ProfileCtrl">
-    <!-- UGLY  HACK.
-	 ProfileCntr returns a list with a single profile.
-	 We use the ng-repeat "profile in profiles" to make it clear to angular that
-	DocumentsByTagsCntr below needs the Tags from ProfileCtrl!!! -->
-    <div ng-repeat="profile in profiles">
-      <div ng-controller="DocumentsByTagsCtrl">
-	
-	<!-- show tag-cloud -->
+   <div ng-controller="ProfileCtrl">
+     <!-- UGLY  HACK. 
+	  ProfileCntr returns a list with a single profile.
+	  We use the ng-repeat "profile in profiles" to make it clear to angular that
+	  DocumentsByTagsCntr below needs the Tags from ProfileCtrl!!!
+       -->
+     <div ng-repeat="profile in profiles">
+       
+       <div ng-controller="DocumentsByTagsCtrl">
+  	 <!-- show tag-cloud -->
 	<div ng-controller="AdminTagsCtrl">
 	  <span class="checkbox" ng-repeat="tag in tags">
-	    <input type="checkbox" checklist-model="profile.Tags" checklist-value="tag.Tag" ng-click="TagSearch(profile.Tags)"/`> {{ tag.Tag }}
+	    <input type="checkbox" checklist-model="profile.Tags" checklist-value="tag.Tag" ng-click="TagSearch(profile.Tags, tag.Tag)"/`> {{ tag.Tag }}
 	  </span>
 	</div> <!-- ng-controller="AdminTagsCtrl" -->
 	  
@@ -54,6 +55,6 @@
 	  
 	</div> <!-- ng-repeat="document in documents" -->
       </div> <!-- ng-controller="DocumentsByTagsCtrl" -->
-  </div> <!-- ng-repeat="profile in profiles" -->
+    </div> <!-- ng-repeat="profile in profiles" -->
   </div> <!-- ng-controller="ProfileCtrl" -->
 </p>
