@@ -143,16 +143,16 @@ nulpunt.controller("DocumentsByTagsCtrl", function ($scope, $http, ProfileServic
      	}});
 	
     // Tagsearch gets the tag to add or remove.
-    $scope.TagSearch = function(profile_tags, tag) {
-	console.log("TagSearch has: ", profile_tags, tag)
-	var tags = profile_tags.filter(function(x) {return true}); // copy into new array to make it idempotent.
+    $scope.TagSearch = function(tags, tag) {
+	//console.log("TagSearch has: ", profile_tags, tag)
+	//var tags = profile_tags.filter(function(x) {return true}); // copy into new array to make it idempotent.
 	var index = tags.indexOf(tag)
 	if (index > -1) { // found it, remove from tags list
 	    tags.splice(index, 1);
 	} else { // not in there, add it
 	    tags.push(tag);
 	};
-	console.log("TagSearch has: ", profile_tags, tag, " -> ", tags)
+	//console.log("TagSearch has: ", profile_tags, tag, " -> ", tags)
 	SearchDocumentService.searchDocuments(tags).then(
 		function(data) {
 		    console.log("TagSearch got from SearchDoc promise: ", data);
@@ -162,6 +162,12 @@ nulpunt.controller("DocumentsByTagsCtrl", function ($scope, $http, ProfileServic
      		    console.log('error retrieving raw documents: ', error);
      		    deferred.reject('error');
 		});
+    };
+    
+    // To assist in ng-show/hide
+    $scope.isElement = function(tags, tag) {
+	var index = tags.indexOf(tag);
+	return index != -1;
     };
 });
 

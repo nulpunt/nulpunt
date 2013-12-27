@@ -14,13 +14,19 @@
        <div ng-controller="DocumentsByTagsCtrl">
   	 <!-- show tag-cloud -->
 	<div ng-controller="AdminTagsCtrl">
-	  <span class="checkbox" ng-repeat="tag in tags">
-	    <input type="checkbox" checklist-model="profile.Tags" checklist-value="tag.Tag" ng-click="TagSearch(profile.Tags, tag.Tag)"/`> {{ tag.Tag }}
-	  </span>
+
+	  <div class="clearfix">
+	    <ul>
+	      <li class="np-document-tag" ng-repeat="tag in tags">{{tag.Tag}} 
+		<span ng-show="isElement(profile.Tags, tag.Tag)" class="glyphicon glyphicon-star glyphicon-delete-button" ng-click="TagSearch(profile.Tags, tag.Tag)"></span>
+		<span ng-hide="isElement(profile.Tags, tag.Tag)" class="glyphicon glyphicon-remove glyphicon-delete-button" ng-click="TagSearch(profile.Tags, tag.Tag)"></span>
+	      </li>
+	    </ul>
+	  </div>
+
 	</div> <!-- ng-controller="AdminTagsCtrl" -->
-	  
-	  
-	  <div ng-repeat="document in documents" class="row np-row np-document" ng-class-even="'np-row-even'">
+ 	  
+	<div ng-repeat="document in documents" class="row np-row np-document" ng-class-even="'np-row-even'">
 	    <div class="col-sm-1">
 	    <h5>Stats</h5>
 	    <p><span class="glyphicon glyphicon-align-justify"></span> {{ document.nrOfAnnotations }}</p> <!-- annotations -->
