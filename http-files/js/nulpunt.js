@@ -147,7 +147,8 @@ nulpunt.controller("ShowDocCtrl", function($scope, $http, $routeParams) {
 	}
 
 	$scope.$watch('currentPage.number', function() {
-		if($scope.currentPage.number > $scope.document.PageCount) {
+		if($scope.document != undefined && $scope.currentPage.number > $scope.document.PageCount) {
+			//++ TODO WARNING: this check is skipped when document wasn't loaded yet..
 			$scope.currentPage.number = $scope.document.PageCount;
 			return;
 		}
