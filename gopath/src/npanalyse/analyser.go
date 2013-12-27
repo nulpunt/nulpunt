@@ -27,7 +27,8 @@ import (
 	"time"
 )
 
-const resizeWidth = 780
+const docviewerWidth = 780
+const thumbnailWidth = 100
 
 var (
 	pollInterval   = 2 * time.Second
@@ -337,6 +338,25 @@ func (an *analyser) analyseFile(documentID bson.ObjectId, tess *tesseract.Tess, 
 	}
 	defer pix.Close()
 
+	// resize for thumbnail
+	if pageNumber == 1 {
+		outputGridFileThumbnailName := fmt.Sprintf("document-thumbnails/%s.png", documentID.Hex())
+		outputGridFileThumbnail, err := gridFS.Create(outputGridFileThumbnailName)
+		if err != nil {
+			log.Printf("error creating GridFS file(%s): %s\n", outputGridFileThumbnailName, err)
+			return false
+		}
+		defer outputGridFileThumbnail.Close()
+		err, _ = readResizeWrite(imageBuf, outputGridFileThumbnail, thumbnailWidth)
+		if err != nil {
+			log.Printf("error performing readResizeWrite for gridFile(%s): %s\n", outputGridFileThumbnailName, err)
+			return false
+		}
+		outputGridFileThumbnail.Close()
+		an.Logf("resized page for thumbnail %d", pageNumber)
+	}
+
+	// resize for docviewer
 	outputGridFileDocviewerName := fmt.Sprintf("docviewer-pages/%s-%s.png", documentID.Hex(), pageNumberString)
 	outputGridFileDocviewer, err := gridFS.Create(outputGridFileDocviewerName)
 	if err != nil {
@@ -344,13 +364,13 @@ func (an *analyser) analyseFile(documentID bson.ObjectId, tess *tesseract.Tess, 
 		return false
 	}
 	defer outputGridFileDocviewer.Close()
-	err, sizes := readResizeWrite(imageBuf, outputGridFileDocviewer)
+	err, sizes := readResizeWrite(imageBuf, outputGridFileDocviewer, docviewerWidth)
 	if err != nil {
 		log.Printf("error performing readResizeWrite for gridFile(%s): %s\n", outputGridFileDocviewerName, err)
 		return false
 	}
 	outputGridFileDocviewer.Close()
-	an.Logf("resized page %d", pageNumber)
+	an.Logf("resized page for docviewer %d", pageNumber)
 
 	// hand leptonica pix to tess
 	tess.SetImagePix(pix)
@@ -412,12 +432,12 @@ func (an *analyser) Logf(format string, stuff ...interface{}) {
 	}
 }
 
-func readResizeWrite(imageBuf io.Reader, to io.Writer) (error, *image.Rectangle) {
+func readResizeWrite(imageBuf io.Reader, to io.Writer, width uint) (error, *image.Rectangle) {
 	img, err := png.Decode(imageBuf)
 	if err != nil {
 		return err, nil
 	}
-	imgResized := resize.Resize(resizeWidth, 0, img, resize.MitchellNetravali)
+	imgResized := resize.Resize(width, 0, img, resize.MitchellNetravali)
 	err = png.Encode(to, imgResized)
 	if err != nil {
 		return err, nil
