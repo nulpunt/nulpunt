@@ -105,9 +105,9 @@ nulpunt.controller("NavbarCtrl", function($scope, $rootScope, $location, Account
 
 	$scope.getClass = function(path) {
 		if ($location.path().substr(0, path.length) == path) {
-		  return "active"
+		  return "active";
 		} else {
-		  return ""
+		  return "";
 		}
 	}
 });
@@ -147,7 +147,8 @@ nulpunt.controller("ShowDocCtrl", function($scope, $http, $routeParams) {
 	}
 
 	$scope.$watch('currentPage.number', function() {
-		if($scope.currentPage.number > $scope.document.PageCount) {
+		if($scope.document != undefined && $scope.currentPage.number > $scope.document.PageCount) {
+			//++ TODO WARNING: this check is skipped when document wasn't loaded yet..
 			$scope.currentPage.number = $scope.document.PageCount;
 			return;
 		}
@@ -157,7 +158,7 @@ nulpunt.controller("ShowDocCtrl", function($scope, $http, $routeParams) {
 		}
 
 		loadPage();
-	}, false);
+	});
 
 	function loadPage() {
 		$http({method: 'POST', url: "/service/getPage", data: {documentID: $routeParams.docID, pageNumber: $scope.currentPage.number}}).
