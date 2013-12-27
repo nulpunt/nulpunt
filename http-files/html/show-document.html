@@ -44,7 +44,7 @@
 	}
 	.character::selection {
 		background: rgba(255,255,0,0.5); 
-		}
+	}
 	.character::-moz-selection {
 		background: rgba(255,255,0,0.5); 
 	}*/
@@ -61,17 +61,19 @@
 	<p><strong>Upload data:</strong> {{ document.UploadDate }}</p>
 	<p><strong>Uploader:</strong> {{ document.UploaderUsername }}</p>
 	<span ng-repeat="tag in document.Tags" class="np-document-tag">{{ tag }}</span>
-	
 	<hr/>
+	<a class="btn" ng-click="prevPage()">Previous page</a>
+	<input ng-model="currentPage.number" type="number" /> / {{document.PageCount}}
+	<a class="btn" ng-click="nextPage()">Next page</a>
 
 	<!-- <div ng-repeat="page in pages" > -->
-	<h3>Page {{ page.PageNumber }}</h3>
-	<div class="pageView" id="pageView-{{page.PageNumber}}">
+	<h3>Page {{ currentPage.number }}</h3>
+	<div class="pageView" id="pageView-{{currentPage.number}}">
 		<div class="imageBox"  >
-			<img ng-src="/docfiles/pages/{{document.ID}}/{{page.PageNumber}}.png" />
-		</div> <!-- ng-style="page.imageboxStyle" -->
+			<img ng-src="/docfiles/pages/{{document.ID}}/{{currentPage.number}}.png" />
+		</div>
 		<div id="lines" class="selectable" >
-			<div class="line" ng-repeat="line in page.Lines">
+			<div class="line" ng-repeat="line in currentPage.data.Lines">
 				<div ng-repeat="character in line"
 						class="charpos charpos-{{character.C}}" style="bottom: {{character.Y1}}%; left: {{character.X1}}%;"
 						>{{character.C}}</div>

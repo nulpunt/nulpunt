@@ -62,6 +62,7 @@ func initHTTPServer() {
 
 	// Document handlers
 	serviceRouter.Path("/getDocument").HandlerFunc(getDocumentHandler)
+	serviceRouter.Path("/getPage").HandlerFunc(getPageHandlerFunc)
 	serviceRouter.Path("/getDocuments").HandlerFunc(getDocumentsHandler)
 	serviceRouter.Path("/getDocumentList").HandlerFunc(getDocumentListHandler)
 

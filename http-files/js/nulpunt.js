@@ -134,23 +134,50 @@ nulpunt.controller("InboxCtrl", function($scope, $http) {
 });
 
 nulpunt.controller("ShowDocCtrl", function($scope, $http, $routeParams) {
-	//$scope.document =;
+	$scope.currentPage = {
+		number: 1,
+		data: {},
+	};
+
+	$scope.nextPage = function() {
+		$scope.currentPage.number++;
+	}
+	$scope.prevPage = function() {
+		$scope.currentPage.number--;
+	}
+
+	$scope.$watch('currentPage.number', function() {
+		if($scope.currentPage.number > $scope.document.PageCount) {
+			$scope.currentPage.number = $scope.document.PageCount;
+			return;
+		}
+		if($scope.currentPage.number < 1) {
+			$scope.currentPage.number = 1;
+			return;
+		}
+
+		loadPage();
+	}, false);
+
+	function loadPage() {
+		$http({method: 'POST', url: "/service/getPage", data: {documentID: $routeParams.docID, pageNumber: $scope.currentPage.number}}).
+			success(function(data) {
+					console.log(data);
+					$scope.currentPage.data = data;
+			}).
+			error(function(error) {
+					console.error('error retrieving page information: ', error);
+			});
+	}
+
 	$http({method: "POST", url: "/service/getDocument", data: { docID: $routeParams.docID } }).
-	success(function(data) {
-		console.log(data);
-		$scope.document = data.document;
-		$scope.pages = data.pages;
-		$scope.annotations = data.annotations;
-		_.each($scope.pages, function(page) {
-			page.imageboxStyle = {
-				"background-image": "url('/docfiles/pages/" + $scope.document.ID + "/" + page.PageNumber + ".png');"
-			};
-			console.dir(page);
+		success(function(data) {
+			console.log(data);
+			$scope.document = data.document;
+			$scope.annotations = data.annotations;
+		}).error(function(error) {
+			console.log('error retrieving raw documents: ', error);
 		});
-	}).
-	error(function(error) {
-		console.log('error retrieving raw documents: ', error);
-	});
 
 });
 

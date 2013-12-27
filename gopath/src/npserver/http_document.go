@@ -21,6 +21,40 @@ type DocumentParams struct {
 	// CommentID bson.ObjectId
 }
 
+func getPageHandlerFunc(w http.ResponseWriter, r *http.Request) {
+	type inDataType struct {
+		DocumentIDString string `json:"documentID"`
+		PageNumber       uint   `json:"pageNumber"`
+	}
+
+	inData := &inDataType{}
+	err := json.NewDecoder(r.Body).Decode(inData)
+	defer r.Body.Close()
+	if err != nil {
+		log.Printf("error decoding json body for getPage request: %s\n", err)
+		http.Error(w, "error", http.StatusInternalServerError)
+		return
+	}
+
+	documentID := bson.ObjectIdHex(inData.DocumentIDString)
+
+	page, err := getPage(bson.M{"documentId": documentID, "pageNumber": inData.PageNumber})
+	if err != nil {
+		log.Printf("error getting page for document %s page %d: %s\n", documentID, inData.PageNumber, err)
+		http.Error(w, "error", http.StatusInternalServerError)
+		return
+	}
+
+	err = json.NewEncoder(w).Encode(page)
+	if err != nil {
+		log.Printf("error writing page data to client: %s\n", err)
+		http.Error(w, "error", http.StatusInternalServerError)
+		return
+	}
+
+	// all done :)
+}
+
 // Get a single document, specified by DocID,
 // Get the Annotation, if specified.
 func getDocumentHandler(rw http.ResponseWriter, req *http.Request) {
