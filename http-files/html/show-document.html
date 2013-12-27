@@ -10,7 +10,7 @@
 
 		/* No support for these yet, use at own risk */
 		-o-user-select: none;
-		user-select: none;     
+		user-select: none;
 	}
 
 	.selectable, .selectable div {
@@ -85,7 +85,7 @@
 		</div> <!-- repeat comments in annotation -->
 
 		<h5>Add a comment (non threaded)</h5>
-		  
+
 		<div ng-controller="CommentSubmitCtrl">
 			<form ng-submit="submit()" role="form" class="form-horizontal">
 				<div class="form-group">
@@ -102,13 +102,13 @@
 			</form>
 		</div>
 		<br><hr>
-		
+
 		<p>Here you can create an annotation... 
 		<br>This is the interface we need.
 		<br>Someone might want to rewrite it with a nice pointy-clicky user interface. It should give the coordinates:
 		<br> ng-model="locations" value: { [ { PageNumber, x1, y1, x2, y2 }, ... ] } . We allow for multiple coordinates. These should be used when a single rectancle won't fit. For example when the selection starts indented. Or when an quote spans page boundaries. (future version).
 		<br>The server will add Annotator (username) and date-created.</p>
-		
+
 		<div ng-controller="AnnotationSubmitCtrl">
 			<form ng-submit="submit()" role="form" class="form-horizontal">
 				<input type="hidden" ng-model="locations" value="{ [{ 1, 10, 20, 100, 40 }] }">
