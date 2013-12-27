@@ -21,7 +21,7 @@ func adminGetRawUploads(w http.ResponseWriter, r *http.Request) {
 
 	// get accuont
 	acc := cs.account
-	if acc == nil {
+	if acc == nil || acc.Admin == false {
 		http.Error(w, "forbidden", http.StatusForbidden)
 		return
 	}
