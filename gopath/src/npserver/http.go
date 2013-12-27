@@ -90,6 +90,8 @@ func initHTTPServer() {
 	sessionRouter.Path("/get-profile").HandlerFunc(getProfileHandler)
 	sessionRouter.Path("/update-profile").HandlerFunc(updateProfileHandler)
 
+	sessionRouter.Path("/get-documents-by-tags").HandlerFunc(getDocumentsByTagsHandler)
+
 	// register /service/session/admin/* handlers
 	adminRouter := sessionRouter.PathPrefix("/admin/").Subrouter()
 	adminRouter.Path("/upload").HandlerFunc(adminUpload)

@@ -18,6 +18,7 @@ import (
 type DocumentParams struct {
 	DocID        bson.ObjectId
 	AnnotationID bson.ObjectId
+	Tags         []string
 	// CommentID bson.ObjectId
 }
 
@@ -168,6 +169,51 @@ func getDocumentsHandler(rw http.ResponseWriter, req *http.Request) {
 		// 	return
 		// }
 		// result["annotations"] = annotations
+
+		// marshal and write out.
+		j, err := json.Marshal(result)
+		if err != nil {
+			log.Printf("Error marshalling results: error %#v\n", err)
+			http.Error(rw, "Marshaling error", http.StatusInternalServerError) // 500
+			return
+		}
+		rw.WriteHeader(200)
+		rw.Write(j)
+		return
+
+	default: // request.Method
+		http.Error(rw, "error", http.StatusMethodNotAllowed) // 405
+	}
+}
+
+// Get the documents that have a Tag in the specified list.
+func getDocumentsByTagsHandler(rw http.ResponseWriter, req *http.Request) {
+	log.Printf("getDocumentsByTags-request: %v\n", req.URL)
+
+	switch req.Method {
+	case "POST": // Use POST as that's the easiest to encode json parameters
+		// get document, annotation and comment parameters
+		body, _ := ioutil.ReadAll(req.Body)
+		log.Printf("request body is %s\n", string(body))
+		params := &DocumentParams{}
+		err := json.Unmarshal(body, params)
+		log.Printf("Params is: %#v\n", params)
+		if err != nil {
+			log.Printf("JSON unmarshal error %#v\n", err)
+			http.Error(rw, "JSON unmarshal error", http.StatusBadRequest) // 400
+			return
+		}
+
+		// create the selector
+
+		docs, err := getDocuments(bson.M{"tags": bson.M{"$in": params.Tags}})
+		if err != nil {
+			log.Printf("GetDocuments error %#v\n", err)
+			http.Error(rw, "GetDocuments error", http.StatusNotFound) // 404
+			return
+		}
+		result := make(map[string]interface{})
+		result["documents"] = docs
 
 		// marshal and write out.
 		j, err := json.Marshal(result)

@@ -9,7 +9,7 @@ import (
 
 func adminGetTags(rw http.ResponseWriter, req *http.Request) {
 	// Ignore req.method. We only return data, who cares about the Method.
-	log.Printf("tag-request: %v\n", req)
+	log.Printf("tag-request: %v\n", req.URL)
 
 	// // get session
 	// cs, err := getClientSession(req.Header.Get(headerKeySessionKey))
