@@ -105,9 +105,9 @@ nulpunt.controller("NavbarCtrl", function($scope, $rootScope, $location, Account
 
 	$scope.getClass = function(path) {
 		if ($location.path().substr(0, path.length) == path) {
-		  return "active"
+		  return "active";
 		} else {
-		  return ""
+		  return "";
 		}
 	}
 });
@@ -157,7 +157,7 @@ nulpunt.controller("ShowDocCtrl", function($scope, $http, $routeParams) {
 		}
 
 		loadPage();
-	}, false);
+	});
 
 	function loadPage() {
 		$http({method: 'POST', url: "/service/getPage", data: {documentID: $routeParams.docID, pageNumber: $scope.currentPage.number}}).
