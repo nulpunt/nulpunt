@@ -70,7 +70,7 @@
 	<h3>Page {{ currentPage.number }}</h3>
 	<div class="pageView">
 		<div class="imageBox" >
-			<img ng-src="/docfiles/pages/{{document.ID}}/{{currentPage.number}}.png" />
+			<img ng-src="/docfiles/pages/{{document.ID}}/{{currentPage.number}}.png" class="img-responsive" />
 		</div>
 		<div id="lines" class="selectable" >
 			<div class="line" ng-repeat="line in currentPage.data.Lines">
