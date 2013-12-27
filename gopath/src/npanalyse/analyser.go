@@ -27,6 +27,8 @@ import (
 	"time"
 )
 
+const resizeWidth = 780
+
 var (
 	pollInterval   = 2 * time.Second
 	instanceUnique = "" // filled by init()
@@ -415,7 +417,7 @@ func readResizeWrite(imageBuf io.Reader, to io.Writer) (error, *image.Rectangle)
 	if err != nil {
 		return err, nil
 	}
-	imgResized := resize.Resize(1000, 0, img, resize.MitchellNetravali)
+	imgResized := resize.Resize(resizeWidth, 0, img, resize.MitchellNetravali)
 	err = png.Encode(to, imgResized)
 	if err != nil {
 		return err, nil
