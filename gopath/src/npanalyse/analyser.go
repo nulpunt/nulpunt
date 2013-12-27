@@ -340,6 +340,7 @@ func (an *analyser) analyseFile(documentID bson.ObjectId, tess *tesseract.Tess, 
 
 	// resize for thumbnail
 	if pageNumber == 1 {
+		imageBufReader := bytes.NewReader(imageBuf.Bytes())
 		outputGridFileThumbnailName := fmt.Sprintf("document-thumbnails/%s.png", documentID.Hex())
 		outputGridFileThumbnail, err := gridFS.Create(outputGridFileThumbnailName)
 		if err != nil {
@@ -347,7 +348,7 @@ func (an *analyser) analyseFile(documentID bson.ObjectId, tess *tesseract.Tess, 
 			return false
 		}
 		defer outputGridFileThumbnail.Close()
-		err, _ = readResizeWrite(imageBuf, outputGridFileThumbnail, thumbnailWidth)
+		err, _ = readResizeWrite(imageBufReader, outputGridFileThumbnail, thumbnailWidth)
 		if err != nil {
 			log.Printf("error performing readResizeWrite for gridFile(%s): %s\n", outputGridFileThumbnailName, err)
 			return false
@@ -357,6 +358,7 @@ func (an *analyser) analyseFile(documentID bson.ObjectId, tess *tesseract.Tess, 
 	}
 
 	// resize for docviewer
+	imageBufReader := bytes.NewReader(imageBuf.Bytes())
 	outputGridFileDocviewerName := fmt.Sprintf("docviewer-pages/%s-%s.png", documentID.Hex(), pageNumberString)
 	outputGridFileDocviewer, err := gridFS.Create(outputGridFileDocviewerName)
 	if err != nil {
@@ -364,7 +366,7 @@ func (an *analyser) analyseFile(documentID bson.ObjectId, tess *tesseract.Tess, 
 		return false
 	}
 	defer outputGridFileDocviewer.Close()
-	err, sizes := readResizeWrite(imageBuf, outputGridFileDocviewer, docviewerWidth)
+	err, sizes := readResizeWrite(imageBufReader, outputGridFileDocviewer, docviewerWidth)
 	if err != nil {
 		log.Printf("error performing readResizeWrite for gridFile(%s): %s\n", outputGridFileDocviewerName, err)
 		return false

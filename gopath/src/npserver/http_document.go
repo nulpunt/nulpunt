@@ -449,3 +449,35 @@ func pageImageHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	}
 	// all done :)
 }
+
+func thumbnailImageHandlerFunc(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	urlVars := mux.Vars(r)
+	documentIDHex := urlVars["documentIDHex"]
+	if !bson.IsObjectIdHex(documentIDHex) {
+		http.NotFound(w, r)
+		return
+	}
+	documentID := bson.ObjectIdHex(documentIDHex)
+
+	fileName := fmt.Sprintf("document-thumbnails/%s.png", documentID.Hex())
+	file, err := gridFS.Open(fileName)
+	if err != nil {
+		if err == mgo.ErrNotFound {
+			http.NotFound(w, r)
+			return
+		}
+		log.Printf("error looking up files in gridFS (%s): %s\n", fileName, err)
+		http.Error(w, "error", http.StatusInternalServerError)
+		return
+	}
+	defer file.Close()
+
+	w.Header().Set("Content-Type", "image/png")
+	_, err = io.Copy(w, file)
+	if err != nil {
+		log.Printf("error writing png file (%s) to http client: %s\n", fileName, err)
+		return
+	}
+	// all done :)
+}
