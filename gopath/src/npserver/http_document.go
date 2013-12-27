@@ -2,10 +2,15 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/gorilla/mux"
+	"io"
 	"io/ioutil"
+	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 // type Document struct is defined in document.go
@@ -52,15 +57,6 @@ func getDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 			return
 		}
 		result["document"] = doc
-
-		// get Pages, expect at least 1.
-		pages, err := getPages(bson.M{"documentId": doc.ID})
-		if err != nil {
-			log.Printf("Pages with DocID not found: error %#v\n", err)
-			http.Error(rw, "DocID not found", http.StatusNotFound) // 404
-			return
-		}
-		result["pages"] = pages
 
 		// Be paranoid and limit annotation to the Document they belong to.
 		selector := bson.M{"documentId": params.DocID}
@@ -334,4 +330,42 @@ func deleteDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 	default:
 		http.Error(rw, "error", http.StatusMethodNotAllowed) // 405
 	}
+}
+
+func pageImageHandlerFunc(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	urlVars := mux.Vars(r)
+	documentIDHex := urlVars["documentIDHex"]
+	if !bson.IsObjectIdHex(documentIDHex) {
+		http.NotFound(w, r)
+		return
+	}
+	documentID := bson.ObjectIdHex(documentIDHex)
+	pageNumberString := urlVars["pageNumber"]
+	pageNumber, err := strconv.ParseUint(pageNumberString, 10, 32)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+
+	fileName := fmt.Sprintf("docviewer-pages/%s-%d.png", documentID.Hex(), pageNumber)
+	file, err := gridFS.Open(fileName)
+	if err != nil {
+		if err == mgo.ErrNotFound {
+			http.NotFound(w, r)
+			return
+		}
+		log.Printf("error looking up files in gridFS (%s): %s\n", fileName, err)
+		http.Error(w, "error", http.StatusInternalServerError)
+		return
+	}
+	defer file.Close()
+
+	w.Header().Set("Content-Type", "image/png")
+	_, err = io.Copy(w, file)
+	if err != nil {
+		log.Printf("error writing png file (%s) to http client: %s\n", fileName, err)
+		return
+	}
+	// all done :)
 }

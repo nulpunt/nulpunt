@@ -51,6 +51,10 @@ func initHTTPServer() {
 	rootRouter.PathPrefix("/js/").Handler(fileServer)
 	rootRouter.PathPrefix("/img/").Handler(fileServer)
 
+	// serve document files on /docfiles/
+	docfilesRouter := rootRouter.PathPrefix("/docfiles/").Subrouter()
+	docfilesRouter.Path("/pages/{documentIDHex}/{pageNumber}.png").HandlerFunc(pageImageHandlerFunc)
+
 	// create serviceRouter for /service/*
 	serviceRouter := rootRouter.PathPrefix("/service/").Subrouter()
 	serviceRouter.Path("/sessionInit").HandlerFunc(sessionInitHandlerFunc)
