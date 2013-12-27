@@ -58,15 +58,6 @@ func getDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 		}
 		result["document"] = doc
 
-		// get Pages, expect at least 1.
-		pages, err := getPages(bson.M{"documentId": doc.ID})
-		if err != nil {
-			log.Printf("Pages with DocID not found: error %#v\n", err)
-			http.Error(rw, "DocID not found", http.StatusNotFound) // 404
-			return
-		}
-		result["pages"] = pages
-
 		// Be paranoid and limit annotation to the Document they belong to.
 		selector := bson.M{"documentId": params.DocID}
 		if params.AnnotationID != "" {
