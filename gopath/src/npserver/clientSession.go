@@ -162,22 +162,23 @@ func (cs *ClientSession) done() {
 	cs.Unlock()
 }
 
-func (cs *ClientSession) authenticateAccount(username string, password string) (bool, error) {
+// Authenticate returns the account record if successful, nil otherwise
+// We need the Admin flag in the user interface.
+func (cs *ClientSession) authenticateAccount(username string, password string) (*Account, error) {
 	acc, err := getAccount(username)
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 	if acc == nil {
-		return false, nil
+		return nil, nil
 	}
 	valid, err := acc.verifyPassword(password)
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 	if valid {
 		cs.account = acc
-		return true, nil
+		return acc, nil
 	}
-	return false, nil
-
+	return nil, nil
 }

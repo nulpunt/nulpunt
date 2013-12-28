@@ -34,7 +34,7 @@
 						</ul>
 						<ul class="nav navbar-nav navbar-right" ng-show="account.username">
 							<li><a href="/#/messages"><span class="glyphicon glyphicon-comment" ></span> Messages (6)</a></li>
-							<li class="dropdown">
+							<li ng-show="account.admin" class="dropdown">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 									<span class="glyphicon glyphicon-cog"></span> Admin
 									<b class="caret"></b>

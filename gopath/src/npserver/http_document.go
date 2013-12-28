@@ -272,10 +272,25 @@ func insertDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 
 	switch req.Method {
 	case "POST":
+		// get session
+		cs, err := getClientSession(req.Header.Get(headerKeySessionKey))
+		if err != nil {
+			http.Error(rw, "error", http.StatusInternalServerError)
+			return
+		}
+		defer cs.done()
+
+		// get account
+		acc := cs.account
+		if acc == nil || acc.Admin == false {
+			http.Error(rw, "forbidden", http.StatusForbidden)
+			return
+		}
+
 		body, _ := ioutil.ReadAll(req.Body)
 		log.Printf("\n\nbody is %s\n", string(body))
 		doc := &Document{}
-		err := json.Unmarshal(body, doc)
+		err = json.Unmarshal(body, doc)
 		if err != nil {
 			log.Printf("\n\nJSON unmarshal error %#v\n", err)
 			http.Error(rw, "JSON unmarshal error", http.StatusBadRequest) // 400
@@ -319,6 +334,20 @@ func insertDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 
 func updateDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 	log.Printf("\n\nupdateDocument-request: %v\n", req)
+	// get session
+	cs, err := getClientSession(req.Header.Get(headerKeySessionKey))
+	if err != nil {
+		http.Error(rw, "error", http.StatusInternalServerError)
+		return
+	}
+	defer cs.done()
+
+	// get account
+	acc := cs.account
+	if acc == nil || acc.Admin == false {
+		http.Error(rw, "forbidden", http.StatusForbidden)
+		return
+	}
 
 	switch req.Method {
 	case "POST":
@@ -361,7 +390,7 @@ func deleteDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 
 	// get account
 	acc := cs.account
-	if acc == nil {
+	if acc == nil || acc.Admin == false {
 		http.Error(rw, "forbidden", http.StatusForbidden)
 		return
 	}

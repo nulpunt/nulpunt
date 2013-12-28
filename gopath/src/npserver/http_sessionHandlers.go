@@ -79,6 +79,7 @@ func sessionAuthenticateAccountHandlerFunc(w http.ResponseWriter, r *http.Reques
 	type outDataType struct {
 		Success bool   `json:"success"`
 		Error   string `json:"error"`
+		Admin   bool   `json:"admin"`
 		//++ add account details
 	}
 
@@ -107,14 +108,15 @@ func sessionAuthenticateAccountHandlerFunc(w http.ResponseWriter, r *http.Reques
 	}
 	defer cs.done()
 
-	authenticated, err := cs.authenticateAccount(inData.Username, inData.Password)
+	acc, err := cs.authenticateAccount(inData.Username, inData.Password)
 	if err != nil {
 		log.Printf("could not authenticate. %s\n", err)
 		outData.Error = "Could not authenticate your account. Something went wrong."
 	}
 
-	if authenticated {
+	if acc != nil {
 		outData.Success = true
+		outData.Admin = acc.Admin
 	}
 }
 
@@ -122,6 +124,7 @@ func sessionResumeHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	type outDataType struct {
 		Success  bool   `json:"success"`
 		Username string `json:"username,omitempty"`
+		Admin    bool   `json:"admin"`
 	}
 
 	outData := &outDataType{}
@@ -147,8 +150,8 @@ func sessionResumeHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	if acc == nil {
 		return
 	}
-
 	// all done
 	outData.Username = acc.Username
+	outData.Admin = acc.Admin
 	outData.Success = true
 }

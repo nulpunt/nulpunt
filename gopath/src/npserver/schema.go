@@ -16,6 +16,7 @@ import (
 type Account struct {
 	ID       bson.ObjectId `bson:"_id"`
 	Username string        `bson:"username"`
+	Admin    bool          `bson:"admin"`
 }
 
 // Account Details for password authentication.
