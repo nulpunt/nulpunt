@@ -16,6 +16,7 @@ type uploadedFileMetadata struct {
 	UploadDate       time.Time `bson:"uploadDate" json:"uploadDate"`
 	Language         *string   `bson:"language" json:"language"`
 	AnalyseState     string    `bson:"analyseState" json:"analyseState"`
+	Title            string    `bson:"title" json:"title"`
 }
 
 func adminUpload(w http.ResponseWriter, r *http.Request) {
@@ -68,6 +69,7 @@ func adminUpload(w http.ResponseWriter, r *http.Request) {
 				Language:         &language,
 				UploadDate:       time.Now(),
 				AnalyseState:     "uploaded",
+				Title:            file.Filename,
 			}
 
 			// save file

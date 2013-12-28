@@ -281,7 +281,10 @@ func (an *analyser) work() {
 			}
 			document.PageCount = len(fileNames)
 			document.AnalyseState = "completed"
-			document.Title = document.UploadFilename
+			// Hack: Don't overwrite the title but fill it in when empty.
+			if document.Title == "" {
+				document.Title = document.UploadFilename
+			}
 			err = colDocuments.UpdateId(documentID, bson.M{"$set": document})
 			if err != nil {
 				log.Printf("error inserting document: %s\n", err)
