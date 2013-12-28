@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"labix.org/v2/mgo"
 	"log"
 )
@@ -26,7 +27,7 @@ func initPersistency() {
 	}
 
 	// get "nulpunt" database
-	dbNulpunt := mgoConn.DB("nulpunt")
+	dbNulpunt := mgoConn.DB(fmt.Sprintf("nulpunt-%s", flags.Environment))
 
 	// get gridfs
 	gridFS = dbNulpunt.GridFS("fs")
