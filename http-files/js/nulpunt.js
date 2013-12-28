@@ -82,6 +82,10 @@ nulpunt.config(function($routeProvider) {
 		templateUrl: "/html/admin-tags.html",
 		controller: "AdminTagsCtrl"
 	})
+	.when('/about', {
+		templateUrl: "/html/about.html",
+		controller: "AboutCtrl"
+	})
 	.otherwise({
 		templateUrl: "/html/not-found.html",
 		controller: "NotFoundCtrl",
@@ -329,6 +333,9 @@ nulpunt.controller("ProfileCtrl", function($scope, $http) {
 });
 
 nulpunt.controller('NotFoundCtrl', function($scope, $location) {
+	$scope.path = $location.url()
+});
+nulpunt.controller('AboutCtrl', function($scope, $location) {
 	$scope.path = $location.url()
 });
 

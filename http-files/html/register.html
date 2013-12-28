@@ -11,8 +11,8 @@
 </div>
 
 <div ng-hide="done||error" >
-	<h3>Register a new account</h3>
 	<form ng-submit="submit()" role="form" >
+			<h3>Register a new account</h3>
 		<div class="row">
 			<div class="col-md-6">
 				<div class="form-group">
@@ -37,7 +37,21 @@
 			</div>
 
 			<div class="col-md-6">
-				<div style="width:80%;height:300px;background-color:#aaa;">Colorpicker</div>
+					<div class="form-group">
+					<label for="highlighterColor" class="col-lg-2 control-label" >Colorz</label>
+							<script type="text/javascript">
+
+								$.minicolors.defaults = $.extend($.minicolors.defaults, {
+									changeDelay: 200,
+									theme: 'bootstrap',
+									control: 'brightness',
+									});
+
+								$('#colorSelector').minicolors();
+
+							</script>
+					<input type="text" id="colorSelector" class="form-control demo" data-inline="true" value="#4fc8db">
+				</div>
 			</div>
 		</div>
 	</form>
