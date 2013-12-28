@@ -14,13 +14,6 @@
 	
 	<body ng-controller="MainCtrl" >
 	  <div ng-show="account.admin">
-	    <!-- admin menu stuff. Give it some place -->
-		 <a ng-href="/#/admin/upload"><span class="glyphicon glyphicon-file" ></span> Upload documents</a>
-		 <a ng-href="/#/admin/analyse"><span class="glyphicon glyphicon-search" ></span> Ugly hack</a> <!-- remove this when OCR works -->
-		 <a href="/#/admin/process"><span class="glyphicon glyphicon-asterisk" ></span> Process documents</a>
-		 <a href="/#/admin/tags"><span class="glyphicon glyphicon-asterisk" ></span> Add/Remove tags</a>
-		 <hr>
-	  </div
 		<div ng-controller="NavbarCtrl">
 		
 			<div class="navbar navbar-static-top">
@@ -108,6 +101,13 @@
 		  <div class="col-lg-4 col-lg-offset-1">
 			  	New to Nulpunt? <a ng-class="getClass('/register')"><a href="/#/register">Register here</a>
 		</div>
+	    <!-- admin menu stuff. Give it some place -->
+		 <a ng-href="/#/admin/upload"><span class="glyphicon glyphicon-file" ></span> Upload documents</a>
+		 <a ng-href="/#/admin/analyse"><span class="glyphicon glyphicon-search" ></span> Ugly hack</a> <!-- remove this when OCR works -->
+		 <a href="/#/admin/process"><span class="glyphicon glyphicon-asterisk" ></span> Process documents</a>
+		 <a href="/#/admin/tags"><span class="glyphicon glyphicon-asterisk" ></span> Add/Remove tags</a>
+
+	  </div
 	</div>
 
 </div>
