@@ -118,15 +118,12 @@ func initHTTPServer() {
 
 	// run http server in goroutine
 	go func() {
-		//++ TODO: make configurable
-		port := "8000"
-
 		// inform user of startup
-		log.Printf("starting http server on http://localhost:%s\n", port)
+		log.Printf("starting http server on http://localhost:%s\n", flags.HTTPPort)
 
 		// listen and serve on given port
 		// error is fatal
-		err := http.ListenAndServe(":"+port, alphaRouter)
+		err := http.ListenAndServe(":"+flags.HTTPPort, alphaRouter)
 		if err != nil {
 			log.Fatalf("fatal error listening/serving http on tcp: %s\n", err)
 		}
