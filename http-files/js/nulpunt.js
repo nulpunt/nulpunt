@@ -3,7 +3,7 @@ var nulpunt = angular.module('nulpunt', [
 	// please keep this list sorted
 	'ngRoute',
 	'ngStorage',
-	'ui.bootstrap.collapse', 
+	'ui.bootstrap.collapse',
 	'ui.bootstrap.dropdownToggle',
 	'angularFileUpload',
 	'checklist-model'
@@ -12,13 +12,18 @@ var nulpunt = angular.module('nulpunt', [
 nulpunt.config(function($routeProvider) {
 	$routeProvider
 	.when('/', {
-		templateUrl: "/html/overview.html",
-		controller: "OverviewCtrl"
+		templateUrl: "/html/trending.html",
+		controller: "TrendingCtrl"
 	})
 	.when('/inbox', {
 		templateUrl: "/html/inbox.html",
 		controller: "InboxCtrl"
 	})
+	.when('/dashboard', {
+		templateUrl: "/html/inbox.html",
+		controller: "InboxCtrl"
+	})
+
 	.when('/document/:docID', {
 		templateUrl: "/html/show-document.html",
 		controller: "ShowDocCtrl"
@@ -79,17 +84,35 @@ nulpunt.config(function($routeProvider) {
 		templateUrl: "/html/admin-tags.html",
 		controller: "AdminTagsCtrl"
 	})
+	.when('/about', {
+		templateUrl: "/html/about.html",
+		controller: "AboutCtrl"
+	})
+	.when('/contact', {
+		templateUrl: "/html/contact.html",
+		controller: "ContactCtrl"
+	})
+	.when('/colophon', {
+		templateUrl: "/html/colophon.html",
+		controller: "ColophonCtrl"
+	})
 	.otherwise({
 		templateUrl: "/html/not-found.html",
 		controller: "NotFoundCtrl",
 	});
 });
 
-nulpunt.controller("MainCtrl", function($scope) {
-	//++
+nulpunt.controller("MainCtrl", function($scope, $rootScope, AccountAuthService) {
+
+	$rootScope.$on("auth_changed", function() {
+		$scope.account = AccountAuthService.account;
+		$scope.gravatarHash = CryptoJS.MD5(AccountAuthService.account.email).toString(CryptoJS.enc.Hex);
+	});
+
 });
 
 nulpunt.controller("NavbarCtrl", function($scope, $rootScope, $location, AccountAuthService) {
+
 	$rootScope.$on("auth_changed", function() {
 		$scope.account = AccountAuthService.account;
 		$scope.gravatarHash = CryptoJS.MD5(AccountAuthService.account.email).toString(CryptoJS.enc.Hex);
@@ -237,10 +260,71 @@ nulpunt.controller("TrendingCtrl", function($scope) {
 	};
 
 	$scope.documents.items = [
-		{title: "Title of the document", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 6, nrOfDrafts: 2, nrOfComments: 8, nrOfBookmarks: 4, tags: [{title: "Iraq"}, {title:"Conspiracy"}, {title:"Another tag"}] },
-		{title: "Title of the document", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 32, nrOfDrafts: 7, nrOfComments: 18, nrOfBookmarks: 12, tags: [{title: "Random tag"}] },
-		{title: "Title of the document", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 2, nrOfDrafts: 14, nrOfComments: 25, nrOfBookmarks: 4, tags: [{title: "Iraq"}] },
-		{title: "Title of the document", description: "A short 1 or 2 sentence description of the document. Include or not?", source: "The Government", sourceDate: "01/01/2004", uploadDate: "01/11/2013", uploader: "Nulpunt", nrOfAnnotations: 10, nrOfDrafts: 55, nrOfComments: 3, nrOfBookmarks: 15, tags: [] },
+		{
+			title: "Intentieverklaring met betrekking tot het aanvullen van de Overeenkomst betreffende de reconstructie van Rijksweg 2 en de aanleg van gemeentelijke wegen in het plangebied Hooggelegen (UTI-7801) ten behoeve van realisatie, beheer en onderhoud van nummerplaat registratieapparatuur voor het meten van verkeersgegevens.", 
+			description: "A short 1 or 2 sentence description of the document. Include or not?", 
+			source: "Commisie van Toezicht betreffende de Inlichtingen en Veiligheidsdiensten", 
+			sourceDate: "01/01/2004", 
+			uploadDate: "01/11/2013", 
+			uploader: "Nulpunt",
+			uploaderColor: "#4effa4",
+			requester: "Renée in de Maur",
+			type: "report",			
+			nrOfPages: 300,
+			nrOfAnnotations: 6,
+			nrOfDrafts: 2,
+			nrOfComments: 8,
+			nrOfBookmarks: 4,
+			tags: [
+				{title: "Iraq"}, 
+				{title:"Conspiracy"}, 
+				{title:"Another tag"}
+			],
+			annotations: [
+				{annotationDate: "2013-11-24", annotator: "rick", annotation: "Quas illaboritati ius de plit prae vid maxim que dendae re ne plaborio. Facideb itatur ressiment apiendae. Itatemo luptaestius am essimi, te rem volorum sed maximintiis si remporp oremperatia dit incitati dolorposse provitas ad ut fuga. Hillore nobitemquis et ma si con commol"}
+			]
+		},
+		{
+			title: "Intentieverklaring met betrekking tot het aanvullen van de Overeenkomst betreffende de reconstructie van Rijksweg 2 en de aanleg van gemeentelijke wegen in het plangebied Hooggelegen", 
+			description: "A short 1 or 2 sentence description of the document. Include or not?", 
+			source: "The Government", 
+			sourceDate: "01/01/2004", 
+			uploadDate: "01/11/2013",
+			uploader: "Nulpunt",
+			uploaderColor: "#ffb060",
+			requester: "Michele Colombrino",
+			type: "congressional report",
+			nrOfPages: 20,
+			nrOfAnnotations: 32, 
+			nrOfDrafts: 7, 
+			nrOfComments: 18, 
+			nrOfBookmarks: 12, 
+			tags: [
+				{title: "Random tag"},
+				{title: "Transportation"},
+				{title: "Tag"}								
+			],
+			annotations: [
+				{annotationDate: "2013-08-20", annotator: "rick", annotation: "Quas illaboritati ius de plit prae vid maxim que dendae re ne plaborio. Facideb itatur ressiment apiendae. Itatemo luptaestius am essimi, te rem volorum sed maximintiis si remporp oremperatia dit incitati dolorposse provitas ad ut fuga. Hillore nobitemquis et ma si con commol"}
+			] },
+		{
+			title: "ten behoeve van realisatie, beheer en onderhoud van nummerplaat registratieapparatuur voor het meten van verkeersgegevens", 
+			description: "A short 1 or 2 sentence description of the document. Include or not?", 
+			source: "The Government", 
+			sourceDate: "01/01/2004", 
+			uploadDate: "01/11/2013", 
+			uploader: "Nulpunt",
+			type: "congressioal report",
+			nrOfPages: 12,
+			uploaderColor: "#00b7ff",
+			nrOfAnnotations: 2, 
+			nrOfDrafts: 14, 
+			nrOfComments: 25, 
+			nrOfBookmarks: 4, 
+			tags: [{title: "Iraq"}],
+			annotations: [
+				{annotationDate: "some day", annotator: "rick", annotation: "Quas illaboritati ius de plit prae vid maxim que dendae re ne plaborio. Facideb itatur ressiment apiendae. Itatemo luptaestius am essimi, te rem volorum sed maximintiis si remporp oremperatia dit incitati dolorposse provitas ad ut fuga. Hillore nobitemquis et ma si con commol"}
+			] },
 	];
 });
 
@@ -304,6 +388,16 @@ nulpunt.controller("ProfileCtrl", function($scope, $http) {
 });
 
 nulpunt.controller('NotFoundCtrl', function($scope, $location) {
+	$scope.path = $location.url()
+});
+
+nulpunt.controller('AboutCtrl', function($scope, $location) {
+	$scope.path = $location.url()
+});
+nulpunt.controller('ContactCtrl', function($scope, $location) {
+	$scope.path = $location.url()
+});
+nulpunt.controller('ColophonCtrl', function($scope, $location) {
 	$scope.path = $location.url()
 });
 
@@ -371,6 +465,8 @@ nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService
 
 		prom.then(function() {
 				$scope.success = true;
+				window.location.href = "/#/dashboard";
+				window.location.reload();
 			}, function(error) {
 				if(error == "") {
 					// no success, but also no error: credentials are wrong.
@@ -381,6 +477,7 @@ nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService
 				//++ need to do some "digest" on $scope ?? or $scope.$apply()?
 				//++ find out what good convention is
 			}
+			
 		);
 	};
 	
