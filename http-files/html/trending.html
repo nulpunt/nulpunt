@@ -1,24 +1,36 @@
-<h1>Trending documents</h1>
-<p>Based on the amount of .... in the last .... hours/days</p>
-
-<div ng-repeat="item in documents.items" class="row np-row np-document" ng-class-even="'np-row-even'">
-	<div class="col-sm-1">
-	<h5>Stats</h5>
-		<p><span class="glyphicon glyphicon-align-justify"></span> {{item.nrOfAnnotations}}</p> <!-- annotations -->
-		<p><span class="glyphicon glyphicon-pencil"></span> {{item.nrOfDrafts}}</p> <!-- drafts -->
-		<p><span class="glyphicon glyphicon-list-alt"></span> {{item.nrOfComments}}</p> <!-- comments -->
-		<p><span class="glyphicon glyphicon-star-empty"></span> {{item.nrOfBookmarks}}</p> <!-- bookmarks -->
+<div class="trending" ng-hide="account.username">
+	<!-- trending template -->
+	  <div class="row">
+		  <div class="col-lg-12">
+			  <h2>Trending on 0.</h2>
+		  </div>
+	  </div>
+	  <div class="row trending-columns">
+	  <!-- first trending document -->
+	  <div ng-repeat="item in documents.items" class="col-lg-4" ng-class-even="'np-row-even'">	  
+		  <div class="document">
+		  	<h3>{{item.title}}</h3> (p. {{item.nrOfPages}})  {{item.type}}
+		  	<div class="document-metadata">
+				<span class="source">Source: {{item.source}} (NL) on <strong>{{item.sourceDate}}</strong></span>
+				<span class="upload">Uploaded on <strong>{{item.uploadDate}}</strong> by <span class="uploader" style="background-color: {{item.uploaderColor}}">{{item.uploader}}</span></span>
+				<span class="request" ng-show="item.requester">Request by: {{item.requester}}</span>
+			 </div>
+			  <div class="annotation" ng-repeat="annotation in item.annotations">
+				  <span class="annotator" style="background-color:#00b7ff;">{{annotation.annotator}}</span> {{annotation.annotation}}
+				  <div class="row utilities" >
+					  <div class="lg-col-12">
+						  <span class="comment-date">{{annotation.annotationDate | date:'dd MMMM yyyy, hh:mm'}}</span>
+						  <ul class="list-unstyled list-inline pull-right">
+						  	<li> <span class="glyphicon glyphicon-flash"></span></li>
+						  	<!-- <li><span class="glyphicon glyphicon-star"></span></li> -->
+						  	<li><span class="glyphicon glyphicon-comment"></span></li>
+						  </ul>
+					</div>					  
+			  </div>
+		</div>
+		<div class="tags">
+			<span ng-repeat="tag in item.tags" class="label label-default">{{tag.title}}</span>
+		</div>
 	</div>
-	<div class="col-sm-8">
-		<h2>{{item.title}}</h2>
-		<p class="np-document-description">{{item.description}}</p>
-		<p><strong>Source:</strong> {{item.source}}</p>
-		<p><strong>Source date:</strong> {{item.sourceDate}}</p>
-		<p><strong>Upload data:</strong> {{item.uploadDate}}</p>
-		<p><strong>Uploader:</strong> {{item.uploader}}</p>
-		<span ng-repeat="tag in item.tags" class="np-document-tag">{{tag.title}}</span>
-	</div>
-	<div class="col-sm-3">
-		<button type="button" class="btn btn-black np-open-document">Open document...</button>
-	</div>
+	<!-- end first trending document -->
 </div>
