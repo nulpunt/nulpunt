@@ -15,7 +15,7 @@ var flags struct {
 	HTTPFiles        string `long:"http-files" description:"location for the http files" default:"./http-files/"`
 	HTTPPort         string `long:"http-port" description:"port for HTTP server to listen on" default:"8000"`
 	DisableAlphaAuth bool   `long:"disable-alpha-auth" description:"disable the alpha authentication check"`
-	Environment      string `long:"environment" description:"environment (db/sock) this instance should use" default:"nightly"`
+	Environment      string `long:"environment" description:"environment (db/sock) this instance should use"`
 }
 
 // initFlags parses the given flags.
