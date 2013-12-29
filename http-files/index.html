@@ -1,93 +1,67 @@
 <!doctype html>
 <html ng-app="nulpunt" >
-	<head>
-		<title>Nulpunt - towards a democracy without secrects</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		
-		<!-- Bootstrap -->
-		<link href="css/bootstrap.min.css" rel="stylesheet" >
-		<link href="css/bootstrap-theme.css" rel="stylesheet" >
-		<link href="css/datepicker.css" rel="stylesheet" >
-		<link href="css/nulpunt.css" rel="stylesheet" >
-
-	</head>
+  <head>
+    <title>Nulpunt - towards a democracy without secrects</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" >
+    <link href="css/bootstrap-theme.css" rel="stylesheet" >
+    <link href="css/datepicker.css" rel="stylesheet" >
+    <link href="css/nulpunt.css" rel="stylesheet" >
+    
+  </head>
+  
+  <body ng-controller="MainCtrl" >
+    <div ng-controller="NavbarCtrl">
+      
+      <div class="navbar navbar-static-top">
 	
-	<body ng-controller="MainCtrl" >
-		<div ng-controller="NavbarCtrl">
-		
-			<div class="navbar navbar-static-top">
-
 	
-			<!-- brand and toggle get grouped for better mobile display -->
-			<div class="navbar-header">
-			
-				<button type="button" class="navbar-toggle" ng-init="navCollapsed = true" ng-click="navCollapsed = !navCollapsed">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-			
-				<a class="navbar-brand" href="/#/"><img src="img/np-logo.png" /></a>				
-		
-
-			</div>
-			
-			<div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
-			
-			<div ng-show="wrong" class="alert alert-warning" >
-				<strong>Wrong credentials</strong><br/>
-				Please try again.
-			</div>
-
-					
-					<div class="ng-scope" ng-hide="account.username" ng-Controller="SignInCtrl">
-						<form class="navbar-form ng-pristine ng-invalid ng-invalid-required pull-right" ng-submit="submit()" role="form">
-							<div class="form-group">
-								<label for="signinUsername" class="sr-only">Username</label>
-								<input class="form-control ng-pristine ng-invalid ng-invalid-required" id="signinUsername" placeholder="Username" required="" ng-model="username" type="text">
-							</div>
-							<div class="form-group">
-								<label for="signinPassword" class="sr-only">Password</label>
-								<input class="form-control ng-pristine ng-invalid ng-invalid-required" id="signinPassword" placeholder="Password" required="" ng-model="password" type="password">
-							</div>
-							<div class="form-group">
-									<button type="submit" class="btn btn-default">Sign in</button>
-							</div>
-						</form>
-					</div>
-
-					<ul class="nav navbar-nav navbar-right" ng-show="account.username">
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-								<span class="glyphicon glyphicon-cog"></span> Admin
-								<b class="caret"></b>
-							</a>
-							<ul class="dropdown-menu">
-								<li><a ng-href="/#/admin/upload"><span class="glyphicon glyphicon-file" ></span> Upload documents</a></li>
-								<li><a ng-href="/#/admin/analyse"><span class="glyphicon glyphicon-search" ></span> Ugly hack</a></li> <!-- remove this when OCR works -->
-								<li><a href="/#/admin/process"><span class="glyphicon glyphicon-asterisk" ></span> Process documents</a></li>
-								<li><a href="/#/admin/tags"><span class="glyphicon glyphicon-asterisk" ></span> Add/Remove tags</a></li>
-							</ul>
-						</li>
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle np-nav-account-logo" data-toggle="dropdown">
-								<img ng-src="https://secure.gravatar.com/avatar/{{gravatarHash}}?s=40" width="40px" height="40px" />
-								<b class="caret"></b>
-							</a>
-							<ul class="dropdown-menu">
-								<li><a ng-href="/#/profile"><span class="glyphicon glyphicon-user" ></span> Profile</a></li>
-								<li><a href="/#/sign-out"><span class="glyphicon glyphicon-off"></span> Sign out</a></li>
-							</ul>
-						</li>
-					</ul>
-				</div>
-			
-			</div>
-			</div>
-
-		</div>
-  </div>
+	<!-- brand and toggle get grouped for better mobile display -->
+	<div class="navbar-header">
+	  
+	  <button type="button" class="navbar-toggle" ng-init="navCollapsed = true" ng-click="navCollapsed = !navCollapsed">
+	    <span class="sr-only">Toggle navigation</span>
+	    <span class="icon-bar"></span>
+	    <span class="icon-bar"></span>
+	    <span class="icon-bar"></span>
+	  </button>
+	  
+	  <a class="navbar-brand" href="/#/"><img src="img/np-logo.png" /></a>				
+	  
+	  
+	</div>
+	
+	<div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
+	  
+	  <div ng-show="wrong" class="alert alert-warning" >
+	    <strong>Wrong credentials</strong><br/>
+	    Please try again.
+	  </div>
+	  
+	  
+	  <div class="ng-scope" ng-hide="account.username" ng-Controller="SignInCtrl">
+	    <form class="navbar-form ng-pristine ng-invalid ng-invalid-required pull-right" ng-submit="submit()" role="form">
+	      <div class="form-group">
+		<label for="signinUsername" class="sr-only">Username</label>
+		<input class="form-control ng-pristine ng-invalid ng-invalid-required" id="signinUsername" placeholder="Username" required="" ng-model="username" type="text">
+	      </div>
+	      <div class="form-group">
+		<label for="signinPassword" class="sr-only">Password</label>
+		<input class="form-control ng-pristine ng-invalid ng-invalid-required" id="signinPassword" placeholder="Password" required="" ng-model="password" type="password">
+	      </div>
+	      <div class="form-group">
+		<button type="submit" class="btn btn-default">Sign in</button>
+	      </div>
+	    </form>
+	  </div>
+	  
+	</div>
+	
+      </div>
+    </div>
+    
 
   <div class="masthead-container" ng-hide="account.username">
 
@@ -98,17 +72,10 @@
 			  <p class="intro">At Nulpunt, we understand that the average anonymous visitor will most likely not immediately understand the service. That’s why we include this header: to make sure that by the end of the paragraph, the visitor understands what the deal is. Include some handy links, or other links to features.</p>
 		  </div>
 		  <div class="col-lg-4 col-lg-offset-1">
-			  	New to Nulpunt? <a ng-class="getClass('/register')"><a href="/#/register">Register here</a>
+				New to Nulpunt? <a ng-class="getClass('/register')"><a href="/#/register">Register here</a>
 		</div>
-	    <!-- admin menu stuff. Give it some place -->
-	    <p>
-	      <div ng-show="account.admin">
-		 <a ng-href="/#/admin/upload"><span class="glyphicon glyphicon-file" ></span> Upload documents</a>
-		 <a ng-href="/#/admin/analyse"><span class="glyphicon glyphicon-search" ></span> Ugly hack</a> <!-- remove this when OCR works -->
-		 <a href="/#/admin/process"><span class="glyphicon glyphicon-asterisk" ></span> Process documents</a>
-		 <a href="/#/admin/tags"><span class="glyphicon glyphicon-asterisk" ></span> Add/Remove tags</a>
-	    </p>
-	  </div
+
+
 	</div>
 
 </div>
@@ -122,9 +89,9 @@
 			<div class="row">
 				<div class="col-lg-12">
 					<ul class="list-unstyled list-inline">
-						<li><a  ng-class="getClass('/about')" href="/#/about">about</a></li>
-						<li><a  ng-class="getClass('/contact')" href="/#/contact">contact</a></li>					
-						<li><a  ng-class="getClass('/colophon')" href="/#/colophon">colophon</a></li>
+						<li><a	ng-class="getClass('/about')" href="/#/about">about</a></li>
+						<li><a	ng-class="getClass('/contact')" href="/#/contact">contact</a></li>					
+						<li><a	ng-class="getClass('/colophon')" href="/#/colophon">colophon</a></li>
 					</ul>					
 					</div>
 					<div class="np-tagline">
@@ -134,6 +101,12 @@
 	    </div>			
 		</footer>
 		
+	      <div ng-show="account.admin">
+		 <a ng-href="/#/admin/upload"><span class="glyphicon glyphicon-file" ></span> Upload documents</a>
+		 <a ng-href="/#/admin/analyse"><span class="glyphicon glyphicon-search" ></span> Ugly hack</a> <!-- remove this when OCR works -->
+		 <a href="/#/admin/process"><span class="glyphicon glyphicon-asterisk" ></span> Process documents</a>
+		 <a href="/#/admin/tags"><span class="glyphicon glyphicon-asterisk" ></span> Add/Remove tags</a>
+	  </div
 
 		
 		<!-- jQuery -->

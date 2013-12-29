@@ -398,7 +398,7 @@ nulpunt.controller("ProfileCtrl", function($scope, $http) {
 	}).
 	error(function(error) {	
 		console.log('error retrieving profile ', error);
-		$scope.error = data
+	    $scope.error = error;
 	})
 
 	// save the updated document
