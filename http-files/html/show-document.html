@@ -1,6 +1,13 @@
-<h1>Document: {{ document.Title }}</h1>
-
 <style>
+
+	.navbar {
+		background-color:#000;
+	}
+
+	#np-logo path {
+		fill:white;
+	}
+
 	html {
 		-webkit-touch-callout: none;
 		-webkit-user-select: none;
@@ -41,22 +48,28 @@
 	}
 </style>
 
-<div>
-	<h2>{{ document.Title }}</h2>
-	<p class="np-document-description">{{ document.Summary }}</p>
-	<p><strong>Source:</strong> {{ document.Source }}</p>
-	<p><strong>Source date:</strong> {{ document.OriginalDate }}</p>
-	<p><strong>Upload data:</strong> {{ document.UploadDate }}</p>
-	<p><strong>Uploader:</strong> {{ document.UploaderUsername }}</p>
-	<span ng-repeat="tag in document.Tags" class="np-document-tag">{{ tag }}</span>
-	<hr/>
-	<a class="btn" ng-click="prevPage()">Previous page</a>
-	<input ng-model="currentPage.number" type="number" /> / {{document.PageCount}}
-	<a class="btn" ng-click="nextPage()">Next page</a>
+<div class="masthead-container" ng-hide="account.username">
+	<div class="row masthead">
+		<div class="container">
+		  	<div class="col-lg-6">
+		  		<h1>{{ document.Title }}</h1>
+		  		<div class="document-metadata">
+				<span class="source">Source: {{document.Source}} on <strong>{{document.OriginalDate}}</strong></span>
+				<span class="upload">Uploaded on <strong>{{document.UploadDate}}</strong> by <span class="uploader">{{document.UploaderUsername}}</span></span>
+				<span ng-repeat="tag in document.Tags" class="np-document-tag">{{ tag }}</span>
+			 </div>
+		  	</div>
+			<div class="col-lg-6">
 
+			</div>
+		</div>
+	</div>
+
+<div class="container document-viewer">
 	<!-- <div ng-repeat="page in pages" > -->
-	<h3>Page {{ currentPage.number }}</h3>
-	<div class="pageView">
+	<div class="row">
+	<div class="pageView col-lg-8">
+		<h4>Page {{ currentPage.number }}</h4>
 		<div class="imageBox" >
 			<img ng-src="/docfiles/pages/{{document.ID}}/{{currentPage.number}}.png" class="img-responsive" />
 		</div>
@@ -67,6 +80,7 @@
 						>{{character.C}}</div>
 			</div>
 		</div>
+	</div>
 	</div>
 	
 	<div ng-repeat="annotation in annotations">
@@ -127,3 +141,7 @@
 		</div>
 	</div>
 </div>
+
+	<a class="btn" ng-click="prevPage()">Previous page</a>
+	<input ng-model="currentPage.number" type="number" /> / {{document.PageCount}}
+	<a class="btn" ng-click="nextPage()">Next page</a>
