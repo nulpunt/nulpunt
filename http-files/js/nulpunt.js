@@ -15,13 +15,9 @@ nulpunt.config(function($routeProvider) {
 		templateUrl: "/html/trending.html",
 		controller: "TrendingCtrl"
 	})
-	.when('/inbox', {
-		templateUrl: "/html/inbox.html",
-		controller: "InboxCtrl"
-	})
 	.when('/dashboard', {
-		templateUrl: "/html/inbox.html",
-		controller: "InboxCtrl"
+		templateUrl: "/html/dashboard.html",
+		controller: "DashboardCtrl"
 	})
 
 	.when('/document/:docID', {
@@ -141,6 +137,18 @@ nulpunt.controller("NavbarCtrl", function($scope, $rootScope, $location, Account
 nulpunt.controller("OverviewCtrl", function($scope){
 	//++
 });
+
+
+nulpunt.controller("DashboardCtrl", function($scope, $http) {
+    $scope.documents = [];
+    $http({method: "POST", url: "/service/getDocuments", data: {} }).
+	success(function(data) {
+	    console.log(data);
+	    $scope.documents = data.documents;
+	}).
+	error(function(error) {
+		console.log('error retrieving raw documents: ', error);
+	});
 
 
 nulpunt.controller("InboxCtrl", function() {
