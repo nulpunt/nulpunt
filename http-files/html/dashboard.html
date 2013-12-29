@@ -24,7 +24,7 @@
 		<!--<p><span class="glyphicon glyphicon-star-empty"></span> {{ document.nrOfBookmarks }}</p>--> <!-- bookmarks -->
 	</div>
 	<div class="col-sm-8">
-		<h2>{{ document.Title }}</h2>
+		<h2><a href="/#/document/{{ document.ID }}">{{ document.Title }}</a></h2>
 		<p class="np-document-description">{{ document.Summary }}</p>
 		<p><strong>Source:</strong> {{ document.Source }}</p>
 		<p><strong>Source date:</strong> {{ document.OriginalDate }}</p>

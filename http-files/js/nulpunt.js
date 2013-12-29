@@ -350,6 +350,7 @@ nulpunt.controller("TrendingCtrl", function($scope) {
 		{
 			title: "Intentieverklaring met betrekking tot het aanvullen van de Overeenkomst betreffende de reconstructie van Rijksweg 2 en de aanleg van gemeentelijke wegen in het plangebied Hooggelegen (UTI-7801) ten behoeve van realisatie, beheer en onderhoud van nummerplaat registratieapparatuur voor het meten van verkeersgegevens.", 
 			description: "A short 1 or 2 sentence description of the document. Include or not?", 
+			docID: "752235",
 			source: "Commisie van Toezicht betreffende de Inlichtingen en Veiligheidsdiensten", 
 			sourceDate: "01/01/2004", 
 			uploadDate: "01/11/2013", 
@@ -374,6 +375,7 @@ nulpunt.controller("TrendingCtrl", function($scope) {
 		{
 			title: "Intentieverklaring met betrekking tot het aanvullen van de Overeenkomst betreffende de reconstructie van Rijksweg 2 en de aanleg van gemeentelijke wegen in het plangebied Hooggelegen", 
 			description: "A short 1 or 2 sentence description of the document. Include or not?", 
+			docID: "752235",
 			source: "The Government", 
 			sourceDate: "01/01/2004", 
 			uploadDate: "01/11/2013",
@@ -397,6 +399,7 @@ nulpunt.controller("TrendingCtrl", function($scope) {
 		{
 			title: "ten behoeve van realisatie, beheer en onderhoud van nummerplaat registratieapparatuur voor het meten van verkeersgegevens", 
 			description: "A short 1 or 2 sentence description of the document. Include or not?", 
+			docID: "752235",
 			source: "The Government", 
 			sourceDate: "01/01/2004", 
 			uploadDate: "01/11/2013", 
