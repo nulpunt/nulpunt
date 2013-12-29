@@ -139,16 +139,54 @@ nulpunt.controller("OverviewCtrl", function($scope){
 });
 
 
-nulpunt.controller("DashboardCtrl", function($scope, $http) {
+nulpunt.controller("DashboardCtrl", function($scope, $http, SearchDocumentService) {
 	$scope.documents = [];
-	$http({method: "POST", url: "/service/getDocuments", data: {} }).
-	success(function(data) {
-		console.log(data);
-		$scope.documents = data.documents;
-	}).
-	error(function(error) {
-	    console.log('error retrieving raw documents: ', error);
-	});
+	$scope.searchTags = [];
+       // Don't show anything at page load
+       // Leave it in for when we will default on the users' profile.
+	// $http({method: "POST", url: "/service/getDocuments", data: {} }).
+	// success(function(data) {
+	// 	console.log(data);
+	// 	$scope.documents = data.documents;
+	// }).
+	// error(function(error) {
+	//     console.log('error retrieving raw documents: ', error);
+	// });
+
+ 	// Tagsearch gets the tag to add or remove.
+	$scope.TagSearch = function(tags, tag) {
+	    console.log("TagSearch has: ", tags, tag)
+		//var tags = profile_tags.filter(function(x) {return true}); // copy into new array to make it idempotent.
+		var index = tags.indexOf(tag)
+		if (index > -1) { // found it, remove from tags list
+			tags.splice(index, 1);
+		} else { // not in there, add it
+			tags.push(tag);
+		};
+		console.log("TagSearch has: ", tag, " -> ", tags)
+		SearchDocumentService.searchDocuments(tags).then(
+			function(data) {
+				//console.log("TagSearch got from SearchDoc promise: ", data);
+				$scope.documents = data.documents;
+			},
+				function(error) {
+					console.log('error retrieving raw documents: ', error);
+					deferred.reject('error');
+			});
+	};
+	
+	// To assist in show/hide
+	$scope.isElement = function(tags, tag) {
+		if(tags == undefined) {
+			return false;
+		}
+		var index = tags.indexOf(tag);
+	    if (index == -1) {
+		return "np-notselected"
+	    } else {
+		return "np-selected"
+	    }
+	};
 });
 
 
@@ -516,7 +554,7 @@ nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService
 					// no success, but also no error: credentials are wrong.
 					$scope.wrong = true;
 				} else {
-					$scope.error = result;
+					$scope.error = error;
 				}
 				//++ need to do some "digest" on $scope ?? or $scope.$apply()?
 				//++ find out what good convention is
