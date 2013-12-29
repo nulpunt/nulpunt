@@ -147,8 +147,9 @@ nulpunt.controller("DashboardCtrl", function($scope, $http) {
 	    $scope.documents = data.documents;
 	}).
 	error(function(error) {
-		console.log('error retrieving raw documents: ', error);
+	    console.log('error retrieving raw documents: ', error);
 	});
+});
 
 
 nulpunt.controller("InboxCtrl", function() {
