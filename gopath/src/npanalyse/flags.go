@@ -12,7 +12,7 @@ import (
 var flags struct {
 	Verbose     bool   `short:"v" long:"verbose" description:"Show verbose debug information"`
 	NumWorkers  uint   `long:"num-workers" description:"Number of workers that should be running concurrently" default:"1"`
-	Environment string `long:"environment" description:"environment (db/sock) this instance should use" default:"nightly"`
+	Environment string `long:"environment" description:"environment (db/sock) this instance should use"`
 }
 
 // initFlags parses the given flags.
