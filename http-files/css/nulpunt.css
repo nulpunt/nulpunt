@@ -23,9 +23,7 @@ h1 {
 		padding: 14px 14px 0 14px;
 		font-size: 12px; 
 }
-.trending-columns {
-		border-top: 1px solid #dedede;
-}
+
 .utilities ul li {
 		color: #bfbfbf;font-size: 13px;
 }
@@ -79,9 +77,6 @@ p.intro {
 .utilities {
 	padding: 0 14px;
 }
-footer {
-	text-align: center;
-}
       
 /* old to delete */
 .np-nav-account-logo {
@@ -90,10 +85,7 @@ footer {
 }
 
 .np-main-content {
-	border-left: 1px solid #dadadc;
-	border-right: 1px solid #dadadc;
-	border-bottom: 1px solid #dadadc;
-	margin-bottom: 15px;
+	margin-bottom: 120px;
 	padding: 10px 15px;
 }
 
