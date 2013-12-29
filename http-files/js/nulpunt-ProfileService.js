@@ -22,7 +22,8 @@ nulpunt.factory('TagService', function($http, $q) {
     	var deferred = $q.defer();
  	$http({
  	    method: 'POST', 
- 	    url: '/service/session/admin/add-tag',
+ 	    //url: '/service/session/admin/add-tag',
+ 	    url: '/service/add-tag',
  	    data: { tag: tag }
       	}).success(function(data) {
      	    deferred.resolve(data);
