@@ -15,7 +15,7 @@ nulpunt.config(function($routeProvider) {
 		templateUrl: "/html/trending.html",
 		controller: "TrendingCtrl"
 	})
-	.when('/dashboard', {
+	.when('/documents', {
 		templateUrl: "/html/dashboard.html",
 		controller: "DashboardCtrl"
 	})
@@ -543,7 +543,7 @@ nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService
 
 		prom.then(function() {
 				$scope.success = true;
-				window.location.href = "/#/dashboard";
+				window.location.href = "/#/documents";
 				window.location.reload();
 			}, function(error) {
 				if(error == "") {
