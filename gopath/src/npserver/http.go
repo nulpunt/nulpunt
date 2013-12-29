@@ -63,7 +63,7 @@ func initHTTPServer() {
 
 	// These are temporary, take them out Soon.
 	serviceRouter.Path("/get-tags").HandlerFunc(adminGetTags) //  /service/get-tags, ie for all
-	serviceRouter.Path("/add-tag").HandlerFunc(adminAddTag)     //  /service/add-tags, ie only for admins
+	serviceRouter.Path("/add-tag").HandlerFunc(adminAddTag)   //  /service/add-tags, ie only for admins
 	serviceRouter.Path("/delete-tag").HandlerFunc(adminDeleteTag)
 
 	// Document handlers
