@@ -1,4 +1,19 @@
-<h1>Dashboard</h1>
+<h1>Documents</h1>
+  	 <!-- show tag-cloud -->
+	<div ng-controller="AdminTagsCtrl">
+
+	  <div class="clearfix">
+	    <ul>
+	      <li class="np-document-tag" ng-repeat="tag in tags">
+		<div class="TagSearchButton"  ng-class="isElement(searchTags, tag.Tag)"  ng-click="TagSearch(searchTags, tag.Tag)">{{tag.Tag}}</div>
+	      </li>
+	    </ul>
+	  </div>
+
+	</div> <!-- ng-controller="AdminTagsCtrl" -->
+
+<div ng-hide="documents"><p>This pages shows the files that match any of the tags you select above.</p></div>
+
 
 <div ng-repeat="document in documents" class="row np-row np-document" ng-class-even="'np-row-even'">
 	<div class="col-sm-1">
