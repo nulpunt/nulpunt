@@ -191,8 +191,11 @@ nulpunt.controller("DocumentsByTagsCtrl", function ($scope, $http, ProfileServic
     
     // To assist in ng-show/hide
     $scope.isElement = function(tags, tag) {
-	var index = tags.indexOf(tag);
-	return index != -1;
+    	if(tags == undefined) {
+    		return false;
+    	}
+		var index = tags.indexOf(tag);
+		return index != -1;
     };
 });
 
