@@ -9,24 +9,24 @@
 	  <!-- first trending document -->
 	  <div ng-repeat="item in documents.items" class="col-lg-4" ng-class-even="'np-row-even'">	  
 		  <div class="document">
-		  	<h3>{{item.title}}</h3> (p. {{item.nrOfPages}})  {{item.type}}
+		  	<a href="/#/document/{{item.docID}}"><h3>{{item.title}}</h3></a><span class="label">{{item.nrOfPages}}pp, {{item.type}}</span>
 		  	<div class="document-metadata">
 				<span class="source">Source: {{item.source}} (NL) on <strong>{{item.sourceDate}}</strong></span>
-				<span class="upload">Uploaded on <strong>{{item.uploadDate}}</strong> by <span class="uploader" style="background-color: {{item.uploaderColor}}">{{item.uploader}}</span></span>
+				<span class="upload">Uploaded on <strong>{{item.uploadDate}}</strong> by <span class="uploader">{{item.uploader}}</span></span>
 				<span class="request" ng-show="item.requester">Request by: {{item.requester}}</span>
 			 </div>
-			  <div class="annotation" ng-repeat="annotation in item.annotations">
+<!-- 			  <div class="annotation" ng-repeat="annotation in item.annotations">
 				  <span class="annotator" style="background-color:#00b7ff;">{{annotation.annotator}}</span> {{annotation.annotation}}
 				  <div class="row utilities" >
 					  <div class="lg-col-12">
 						  <span class="comment-date">{{annotation.annotationDate | date:'dd MMMM yyyy, hh:mm'}}</span>
 						  <ul class="list-unstyled list-inline pull-right">
 						  	<li> <span class="glyphicon glyphicon-flash"></span></li>
-						  	<!-- <li><span class="glyphicon glyphicon-star"></span></li> -->
+						  	<li><span class="glyphicon glyphicon-star"></span></li>
 						  	<li><span class="glyphicon glyphicon-comment"></span></li>
 						  </ul>
 					</div>					  
-			  </div>
+			  </div> -->
 		</div>
 		<div class="tags">
 			<span ng-repeat="tag in item.tags" class="label label-default">{{tag.title}}</span>
