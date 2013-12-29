@@ -48,19 +48,19 @@ func adminAddTag(rw http.ResponseWriter, req *http.Request) {
 	log.Printf("tag-request: %v\n", req)
 
 	// get session
-	cs, err := getClientSession(req.Header.Get(headerKeySessionKey))
-	if err != nil {
-		http.Error(rw, "error", http.StatusInternalServerError)
-		return
-	}
-	defer cs.done()
+	// cs, err := getClientSession(req.Header.Get(headerKeySessionKey))
+	// if err != nil {
+	// 	http.Error(rw, "error", http.StatusInternalServerError)
+	// 	return
+	// }
+	// defer cs.done()
 
-	// get account
-	acc := cs.account
-	if acc == nil || acc.Admin == false {
-		http.Error(rw, "forbidden", http.StatusForbidden)
-		return
-	}
+	// // get account
+	// acc := cs.account
+	// if acc == nil || acc.Admin == false {
+	// 	http.Error(rw, "forbidden", http.StatusForbidden)
+	// 	return
+	// }
 
 	switch req.Method {
 	case "POST":
