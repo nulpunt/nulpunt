@@ -9,11 +9,18 @@ a:link, a:visited, a:active {
 }
 a:hover {
 	   color: #000;
-	   text-decoration: underline;
 }
+
 h1 {
-		font-size: 28px;
+	font-size:28px;
 }
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+	line-height: 1;
+	text-shadow: 0px 1px 0px rgba(255, 255, 255, 1);
+	letter-spacing: -0.03em;
+}
+
 .container { 
 		padding-left: 0;
 		padding-right: 0;
@@ -30,17 +37,23 @@ h1 {
 .utilities .glyphicon {
 		font-size: 1.35em;line-height: 1;
 }
+
 .source, .upload, .request {
 		display: block;
 		font-size: 11px;
+		line-height:13px;
 }
-.annotation, .tags {
-		margin-top: 10px;
-}
+
 .label {
 		margin-right: 4px;
 		background-color: #000;
 }
+
+.document-type {
+	background:#EEE;
+	color:#222;
+}
+
 .annotator {
 		font-weight: bold;
 }
@@ -135,9 +148,8 @@ div.np-tagline p {
 	float: left;
 	padding: 3px 5px;
 	background-color: #d9d9d9;
-	margin-top: 5px;
-	margin-right: 10px;
-	border: 1px solid #a09ea2;
+	margin-right: 6px;
+	margin-bottom:3px;
 	border-radius: 4px;
 }
 .np-open-document {
@@ -210,4 +222,25 @@ div.np-tagline p {
   background-color:#eee;
   border:0;
   border-radius:0px;
+}
+
+.np-selected {
+	background-color:#FFF;
+	color:#000;
+	-webkit-box-shadow: inset 0px 2px 2px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: inset 0px 2px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0px 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.np-notselected {
+	background-color:#000;
+	color:#FFF;
+	-webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+ul.features {
+    font-size: 24px;
+    line-height: 1;
 }
