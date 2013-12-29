@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"labix.org/v2/mgo"
 	"log"
 )
@@ -8,7 +9,6 @@ import (
 // package-wide shared variables pointing to collections in mongodb
 var (
 	colAccounts    *mgo.Collection
-	colUploads     *mgo.Collection
 	colTags        *mgo.Collection
 	colDocuments   *mgo.Collection
 	colPages       *mgo.Collection
@@ -21,13 +21,13 @@ var (
 // it also ensures indexes are existing and will give a fatal error when that fails.
 func initPersistency() {
 	// dial to localhost mongoDB instance
-	mgoConn, err := mgo.Dial("localhost")
+	mgoConn, err := mgo.Dial(flags.MongoHost)
 	if err != nil {
 		log.Fatalf("fatal error while dialing mgo connection: %s\n", err)
 	}
 
 	// get "nulpunt" database
-	dbNulpunt := mgoConn.DB("nulpunt")
+	dbNulpunt := mgoConn.DB(fmt.Sprintf("nulpunt-%s", flags.Environment))
 
 	// get gridfs
 	gridFS = dbNulpunt.GridFS("fs")
@@ -43,9 +43,6 @@ func initPersistency() {
 	if err != nil {
 		log.Fatalf("fatal error when ensuring index on accounts.username: %s\n", err)
 	}
-
-	// get "uploads" collection
-	colUploads = dbNulpunt.C("uploads")
 
 	// get "tags" collection
 	colTags = dbNulpunt.C("tags")

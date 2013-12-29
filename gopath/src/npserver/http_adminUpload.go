@@ -10,11 +10,13 @@ import (
 )
 
 type uploadedFileMetadata struct {
-	UploaderUsername string  `json:"uploaderUsername" bson:"uploaderUsername"`
-	Filename         string  `json:"filename" bson:"filename"`
-	GridFilename     string  `json:"gridFilename" bson:"gridFilename"` // Consists of: timestamp + randomstring + filename. See database.md GridFS section
-	Size             int64   `json:"size" bson:"size"`                 //++ TODO: drop this and use size from gridFS instead?
-	Language         *string `json:"language" bson:"language"`
+	UploaderUsername string    `bson:"uploaderUsername" json:"uploaderUsername"`
+	Filename         string    `bson:"uploadFilename" json:"filename"`
+	GridFilename     string    `bson:"uploadGridFilename" json:"gridFilename"` // Consists of: timestamp + randomstring + filename. See database.md GridFS section
+	UploadDate       time.Time `bson:"uploadDate" json:"uploadDate"`
+	Language         *string   `bson:"language" json:"language"`
+	AnalyseState     string    `bson:"analyseState" json:"analyseState"`
+	Title            string    `bson:"title" json:"title"`
 }
 
 func adminUpload(w http.ResponseWriter, r *http.Request) {
@@ -29,7 +31,7 @@ func adminUpload(w http.ResponseWriter, r *http.Request) {
 
 	// get account
 	acc := cs.account
-	if acc == nil {
+	if acc == nil || acc.Admin == false {
 		http.Error(w, "forbidden", http.StatusForbidden)
 		return
 	}
@@ -65,6 +67,9 @@ func adminUpload(w http.ResponseWriter, r *http.Request) {
 				Filename:         file.Filename,
 				GridFilename:     gridFilename,
 				Language:         &language,
+				UploadDate:       time.Now(),
+				AnalyseState:     "uploaded",
+				Title:            file.Filename,
 			}
 
 			// save file
@@ -82,18 +87,17 @@ func adminUpload(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			defer gridFile.Close()
-			size, err := io.Copy(gridFile, multipartFile)
+			_, err = io.Copy(gridFile, multipartFile)
 			if err != nil {
 				log.Printf("error copying multipartFile to gridFile for file %s: %s\n", file.Filename, err)
 				http.Error(w, "error", http.StatusInternalServerError)
 				return
 			}
-			uploadedFile.Size = size
 
 			// save metadata
-			err = colUploads.Insert(uploadedFile)
+			err = colDocuments.Insert(uploadedFile)
 			if err != nil {
-				log.Printf("error saving uploadedFile data in colUploads: %s\n", err)
+				log.Printf("error saving uploadedFile data in colDocuments: %s\n", err)
 				http.Error(w, "error", http.StatusInternalServerError)
 				return
 			}

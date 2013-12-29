@@ -8,14 +8,6 @@ import (
 
 var errTagNotUnique = errors.New("We already have that tag.")
 
-// type Tag hold the document classification tags
-// ID: mongo ID, not used so far. Can be used for updating a tag.
-// Tag: The tag as seen on the site.
-type Tag struct {
-	ID  bson.ObjectId `bson:"_id"`
-	Tag string
-}
-
 // newTag returns a new Tag struct ready to be inserted into the DB.
 func newTag(tag string) *Tag {
 	return &Tag{

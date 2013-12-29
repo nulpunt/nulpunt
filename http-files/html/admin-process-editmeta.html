@@ -14,13 +14,13 @@
 		<div class="form-group">
 			<label class="col-md-2 control-label">Uploaded by</label>
 			<div class="col-md-10">
-				<p class="form-control-static">{{document.Uploader}}</p>
+				<p class="form-control-static">{{document.UploaderUsername}}</p>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-md-2 control-label">Upload date</label>
 			<div class="col-md-10">
-				<p class="form-control-static">{{document.UploadedDate | date:'longDate'}}</p>
+				<p class="form-control-static">{{document.UploadDate | date:'longDate'}}</p>
 			</div>
 		</div>
 		<div class="form-group">
@@ -52,14 +52,14 @@
 		<div class="form-group">
 			<label for="source" class="col-md-2 control-label">Wobber (Freedom of Information Act Requester) (Person)</label>
 			<div class="col-md-10">
-				<input type="text" class="form-control" id="source" placeholder="Source" required ng-model="document.FOIRequester">
+				<input type="text" class="form-control" id="source" placeholder="Source" ng-model="document.FOIRequester">
 			</div>
 		</div>
 
 		<div class="form-group">
 			<label for="source" class="col-md-2 control-label">Wob-verzoek (Freedom of Information Act Request)</label>
 			<div class="col-md-10">
-				<input type="text" class="form-control" id="source" placeholder="Source" required ng-model="document.FOIARequest">
+				<input type="text" class="form-control" id="source" placeholder="Source" ng-model="document.FOIARequest">
 			</div>
 		</div>
 
@@ -102,7 +102,7 @@
 		<div class="form-group">
 			<label for="publish" class="col-md-2 control-label">Publish</label>
 			<div class="col-md-10">
-				<input type="checkbox" class="form-control" id="publish" ng-model="document.Published">
+				<input type="checkbox" ng-disabled="isDisabled(document.AnalyseState)" class="form-control" id="publish" ng-model="document.Published">
 			</div>
 		</div>
 

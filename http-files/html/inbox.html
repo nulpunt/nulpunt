@@ -1,31 +1,66 @@
 <h1>Inbox</h1>
 
-<div ng-repeat="document in documents" class="row np-row np-document" ng-class-even="'np-row-even'">
-	<div class="col-sm-1">
-	<h5>Stats</h5>
-		<p><span class="glyphicon glyphicon-align-justify"></span> {{ document.nrOfAnnotations }}</p> <!-- annotations -->
-		<!--<p><span class="glyphicon glyphicon-pencil"></span> {{ document.nrOfDrafts }}</p> --><!-- drafts --> 
-		<p><span class="glyphicon glyphicon-list-alt"></span> {{ document.nrOfComments }}</p> <!-- comments -->
-		<!--<p><span class="glyphicon glyphicon-star-empty"></span> {{ document.nrOfBookmarks }}</p>--> <!-- bookmarks -->
-	</div>
-	<div class="col-sm-8">
-		<h2>{{ document.Title }}</h2>
-		<p class="np-document-description">{{ document.Summary }}</p>
-		<p><strong>Source:</strong> {{ document.Source }}</p>
-		<p><strong>Source date:</strong> {{ document.OriginalDate }}</p>
-		<p><strong>Upload date:</strong> {{ document.UploadDate }}</p>
-		<p><strong>Uploader:</strong> {{ document.Uploader }}</p>
-		<p><strong>Source:</strong> {{ document.Source }}</p>
-		<p><strong>Country:</strong> {{ document.Country }}</p>
-		<p><strong>Wobber:</strong> {{ document.FOIRequester }}</p>
-		<p><strong>Wobverzoek:</strong> {{ document.FOIARequest }}</p>
-		<p><strong>Languange:</strong> {{ document.Language }}</p>
-		<p><strong>Category:</strong> {{ document.Category }}</p>
+<p>This pages shows the files that match any of the tags in your <a href="/#/profile">Profile</a>.<br>
+  Not what you expect? Change it there...</p>
+<p>Selected:
+   <div ng-controller="ProfileCtrl">
+     <!-- UGLY  HACK. 
+	  ProfileCntr returns a list with a single profile.
+	  We use the ng-repeat "profile in profiles" to make it clear to angular that
+	  DocumentsByTagsCntr below needs the Tags from ProfileCtrl!!!
+       -->
+     <div ng-repeat="profile in profiles">
+       
+       <div ng-controller="DocumentsByTagsCtrl">
+  	 <!-- show tag-cloud -->
+	<div ng-controller="AdminTagsCtrl">
 
-		<span ng-repeat="tag in document.Tags" class="np-document-tag">{{ tag }}</span>
-	</div>
-	<div class="col-sm-3">
-	  <a href="/#/document/{{ document.ID }}">Open document</a>
-	  <!-- <button type="button" class="btn btn-black np-open-document">Open document...</button> -->
-	</div>
-</div>
+	  <div class="clearfix">
+	    <ul>
+	      <li class="np-document-tag" ng-repeat="tag in tags">{{tag.Tag}} 
+		<span ng-show="isElement(profile.Tags, tag.Tag)" class="glyphicon glyphicon-star glyphicon-delete-button" ng-click="TagSearch(profile.Tags, tag.Tag)"></span>
+		<span ng-hide="isElement(profile.Tags, tag.Tag)" class="glyphicon glyphicon-remove glyphicon-delete-button" ng-click="TagSearch(profile.Tags, tag.Tag)"></span>
+	      </li>
+	    </ul>
+	  </div>
+
+	</div> <!-- ng-controller="AdminTagsCtrl" -->
+ 	  
+	<div ng-repeat="document in documents" class="row np-row np-document" ng-class-even="'np-row-even'">
+	    <div class="col-sm-1">
+	    <h5>Stats</h5>
+	    <p><span class="glyphicon glyphicon-align-justify"></span> {{ document.nrOfAnnotations }}</p> <!-- annotations -->
+	      <!--<p><span class="glyphicon glyphicon-pencil"></span> {{ document.nrOfDrafts }}</p> --><!-- drafts --> 
+	    <p><span class="glyphicon glyphicon-list-alt"></span> {{ document.nrOfComments }}</p> <!-- comments -->
+	    <!--<p><span class="glyphicon glyphicon-star-empty"></span> {{ document.nrOfBookmarks }}</p>--> <!-- bookmarks -->
+	  </div>
+	  
+	  <div class="col-sm-8">
+	    <h2>{{ document.Title }}</h2>
+	    <p class="np-document-description">{{ document.Summary }}</p>
+	    <p><strong>Source:</strong> {{ document.Source }}</p>
+	    <p><strong>Source date:</strong> {{ document.OriginalDate }}</p>
+	    <p><strong>Upload date:</strong> {{ document.UploadDate }}</p>
+	    <p><strong>Uploader:</strong> {{ document.UploaderUsername }}</p>
+	    <p><strong>Source:</strong> {{ document.Source }}</p>
+	    <p><strong>Country:</strong> {{ document.Country }}</p>
+	    <p><strong>Wobber:</strong> {{ document.FOIRequester }}</p>
+	    <p><strong>Wobverzoek:</strong> {{ document.FOIARequest }}</p>
+	    <p><strong>Languange:</strong> {{ document.Language }}</p>
+	    <p><strong>Category:</strong> {{ document.Category }}</p>
+	    <p><strong>Pages:</strong> {{ document.PageCount }}</p>
+	    <p><strong>AnalyzeState:</strong> {{ document.AnalyzeState }}</p>
+
+	    <span ng-repeat="tag in document.Tags" class="np-document-tag">{{ tag }}</span>
+	  </div>
+	  
+	  <div class="col-sm-3">
+	    <a href="/#/document/{{ document.ID }}">Open document</a>
+	    <!-- <button type="button" class="btn btn-black np-open-document">Open document...</button> -->
+	  </div>
+	  
+	</div> <!-- ng-repeat="document in documents" -->
+      </div> <!-- ng-controller="DocumentsByTagsCtrl" -->
+    </div> <!-- ng-repeat="profile in profiles" -->
+  </div> <!-- ng-controller="ProfileCtrl" -->
+</p>

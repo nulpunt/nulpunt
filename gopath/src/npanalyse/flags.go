@@ -10,8 +10,10 @@ import (
 // never write to this struct from outside this file
 // flags is filled with defaults from the tags and the initFlags function
 var flags struct {
-	Verbose    bool `short:"v" long:"verbose" description:"Show verbose debug information"`
-	NumWorkers uint `long:"num-workers" description:"Number of workers that should be running concurrently" default:"1"`
+	Verbose     bool   `short:"v" long:"verbose" description:"Show verbose debug information"`
+	NumWorkers  uint   `long:"num-workers" description:"Number of workers that should be running concurrently" default:"1"`
+	Environment string `long:"environment" description:"environment (db/sock) this instance should use"`
+	MongoHost   string `long:"mongodb-host" description:"ip:port or domain:port for the mongodb instance to use" default:"localhost"`
 }
 
 // initFlags parses the given flags.

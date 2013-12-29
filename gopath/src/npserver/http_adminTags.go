@@ -9,7 +9,7 @@ import (
 
 func adminGetTags(rw http.ResponseWriter, req *http.Request) {
 	// Ignore req.method. We only return data, who cares about the Method.
-	log.Printf("tag-request: %v\n", req)
+	log.Printf("tag-request: %v\n", req.URL)
 
 	// // get session
 	// cs, err := getClientSession(req.Header.Get(headerKeySessionKey))
@@ -55,10 +55,9 @@ func adminAddTag(rw http.ResponseWriter, req *http.Request) {
 	}
 	defer cs.done()
 
-	// get accuont
+	// get account
 	acc := cs.account
-	if acc == nil {
-		//TODO: // id acc.Admin == false
+	if acc == nil || acc.Admin == false {
 		http.Error(rw, "forbidden", http.StatusForbidden)
 		return
 	}
@@ -109,9 +108,9 @@ func adminDeleteTag(rw http.ResponseWriter, req *http.Request) {
 	}
 	defer cs.done()
 
-	// get accuont
+	// get account
 	acc := cs.account
-	if acc == nil {
+	if acc == nil || acc.Admin == false {
 		http.Error(rw, "forbidden", http.StatusForbidden)
 		return
 	}

@@ -5,37 +5,9 @@ import (
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
 	"sort"
-	"time"
 )
 
 var errAnnotationNotUnique = errors.New("We already have an annotation with that ID.")
-
-// type Annotation hold the document annotations
-type Annotation struct {
-	ID         bson.ObjectId `bson:"_id"`
-	DocumentID bson.ObjectId // to which document belong these annotations.
-	Annotator  string
-	CreateDate time.Time
-	Annotation string
-	Location   []Location
-	Comments   []Comment
-}
-
-type Location struct {
-	Page int
-	X1   int
-	Y1   int
-	X2   int
-	Y2   int
-}
-
-type Comment struct {
-	ID         bson.ObjectId `bson:"_id"`
-	Commenter  string
-	CreateDate time.Time
-	Comment    string
-	Comments   []Comment
-}
 
 // newAnnotation returns a new Annotation struct ready to be inserted into the DB.
 func newAnnotation() *Annotation {

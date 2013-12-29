@@ -51,6 +51,11 @@ func initHTTPServer() {
 	rootRouter.PathPrefix("/js/").Handler(fileServer)
 	rootRouter.PathPrefix("/img/").Handler(fileServer)
 
+	// serve document files on /docfiles/
+	docfilesRouter := rootRouter.PathPrefix("/docfiles/").Subrouter()
+	docfilesRouter.Path("/pages/{documentIDHex}/{pageNumber}.png").HandlerFunc(pageImageHandlerFunc)
+	docfilesRouter.Path("/thumbnails/{documentIDHex}.png").HandlerFunc(thumbnailImageHandlerFunc)
+
 	// create serviceRouter for /service/*
 	serviceRouter := rootRouter.PathPrefix("/service/").Subrouter()
 	serviceRouter.Path("/sessionInit").HandlerFunc(sessionInitHandlerFunc)
@@ -58,6 +63,7 @@ func initHTTPServer() {
 
 	// Document handlers
 	serviceRouter.Path("/getDocument").HandlerFunc(getDocumentHandler)
+	serviceRouter.Path("/getPage").HandlerFunc(getPageHandlerFunc)
 	serviceRouter.Path("/getDocuments").HandlerFunc(getDocumentsHandler)
 	serviceRouter.Path("/getDocumentList").HandlerFunc(getDocumentListHandler)
 
@@ -85,6 +91,8 @@ func initHTTPServer() {
 	sessionRouter.Path("/get-profile").HandlerFunc(getProfileHandler)
 	sessionRouter.Path("/update-profile").HandlerFunc(updateProfileHandler)
 
+	sessionRouter.Path("/get-documents-by-tags").HandlerFunc(getDocumentsByTagsHandler)
+
 	// register /service/session/admin/* handlers
 	adminRouter := sessionRouter.PathPrefix("/admin/").Subrouter()
 	adminRouter.Path("/upload").HandlerFunc(adminUpload)
@@ -110,15 +118,12 @@ func initHTTPServer() {
 
 	// run http server in goroutine
 	go func() {
-		//++ TODO: make configurable
-		port := "8000"
-
 		// inform user of startup
-		log.Printf("starting http server on http://localhost:%s\n", port)
+		log.Printf("starting http server on http://localhost:%s\n", flags.HTTPPort)
 
 		// listen and serve on given port
 		// error is fatal
-		err := http.ListenAndServe(":"+port, alphaRouter)
+		err := http.ListenAndServe(":"+flags.HTTPPort, alphaRouter)
 		if err != nil {
 			log.Fatalf("fatal error listening/serving http on tcp: %s\n", err)
 		}

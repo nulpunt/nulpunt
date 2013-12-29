@@ -2,10 +2,15 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/gorilla/mux"
+	"io"
 	"io/ioutil"
+	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 // type Document struct is defined in document.go
@@ -13,7 +18,42 @@ import (
 type DocumentParams struct {
 	DocID        bson.ObjectId
 	AnnotationID bson.ObjectId
+	Tags         []string
 	// CommentID bson.ObjectId
+}
+
+func getPageHandlerFunc(w http.ResponseWriter, r *http.Request) {
+	type inDataType struct {
+		DocumentIDString string `json:"documentID"`
+		PageNumber       uint   `json:"pageNumber"`
+	}
+
+	inData := &inDataType{}
+	err := json.NewDecoder(r.Body).Decode(inData)
+	defer r.Body.Close()
+	if err != nil {
+		log.Printf("error decoding json body for getPage request: %s\n", err)
+		http.Error(w, "error", http.StatusInternalServerError)
+		return
+	}
+
+	documentID := bson.ObjectIdHex(inData.DocumentIDString)
+
+	page, err := getPage(bson.M{"documentId": documentID, "pageNumber": inData.PageNumber})
+	if err != nil {
+		log.Printf("error getting page for document %s page %d: %s\n", documentID, inData.PageNumber, err)
+		http.Error(w, "error", http.StatusInternalServerError)
+		return
+	}
+
+	err = json.NewEncoder(w).Encode(page)
+	if err != nil {
+		log.Printf("error writing page data to client: %s\n", err)
+		http.Error(w, "error", http.StatusInternalServerError)
+		return
+	}
+
+	// all done :)
 }
 
 // Get a single document, specified by DocID,
@@ -53,17 +93,8 @@ func getDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 		}
 		result["document"] = doc
 
-		// get Pages, expect at least 1.
-		pages, err := getPages(bson.M{"documentid": doc.ID})
-		if err != nil {
-			log.Printf("Pages with DocID not found: error %#v\n", err)
-			http.Error(rw, "DocID not found", http.StatusNotFound) // 404
-			return
-		}
-		result["pages"] = pages
-
 		// Be paranoid and limit annotation to the Document they belong to.
-		selector := bson.M{"documentid": params.DocID}
+		selector := bson.M{"documentId": params.DocID}
 		if params.AnnotationID != "" {
 			selector["_id"] = params.AnnotationID
 		} // or leave it undefined for all annotations of DocID
@@ -155,6 +186,51 @@ func getDocumentsHandler(rw http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// Get the documents that have a Tag in the specified list.
+func getDocumentsByTagsHandler(rw http.ResponseWriter, req *http.Request) {
+	log.Printf("getDocumentsByTags-request: %v\n", req.URL)
+
+	switch req.Method {
+	case "POST": // Use POST as that's the easiest to encode json parameters
+		// get document, annotation and comment parameters
+		body, _ := ioutil.ReadAll(req.Body)
+		log.Printf("request body is %s\n", string(body))
+		params := &DocumentParams{}
+		err := json.Unmarshal(body, params)
+		log.Printf("Params is: %#v\n", params)
+		if err != nil {
+			log.Printf("JSON unmarshal error %#v\n", err)
+			http.Error(rw, "JSON unmarshal error", http.StatusBadRequest) // 400
+			return
+		}
+
+		// create the selector
+
+		docs, err := getDocuments(bson.M{"tags": bson.M{"$in": params.Tags}})
+		if err != nil {
+			log.Printf("GetDocuments error %#v\n", err)
+			http.Error(rw, "GetDocuments error", http.StatusNotFound) // 404
+			return
+		}
+		result := make(map[string]interface{})
+		result["documents"] = docs
+
+		// marshal and write out.
+		j, err := json.Marshal(result)
+		if err != nil {
+			log.Printf("Error marshalling results: error %#v\n", err)
+			http.Error(rw, "Marshaling error", http.StatusInternalServerError) // 500
+			return
+		}
+		rw.WriteHeader(200)
+		rw.Write(j)
+		return
+
+	default: // request.Method
+		http.Error(rw, "error", http.StatusMethodNotAllowed) // 405
+	}
+}
+
 func getDocumentListHandler(rw http.ResponseWriter, req *http.Request) {
 	log.Printf("getDocument-request: %v\n", req)
 
@@ -196,10 +272,25 @@ func insertDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 
 	switch req.Method {
 	case "POST":
+		// get session
+		cs, err := getClientSession(req.Header.Get(headerKeySessionKey))
+		if err != nil {
+			http.Error(rw, "error", http.StatusInternalServerError)
+			return
+		}
+		defer cs.done()
+
+		// get account
+		acc := cs.account
+		if acc == nil || acc.Admin == false {
+			http.Error(rw, "forbidden", http.StatusForbidden)
+			return
+		}
+
 		body, _ := ioutil.ReadAll(req.Body)
 		log.Printf("\n\nbody is %s\n", string(body))
 		doc := &Document{}
-		err := json.Unmarshal(body, doc)
+		err = json.Unmarshal(body, doc)
 		if err != nil {
 			log.Printf("\n\nJSON unmarshal error %#v\n", err)
 			http.Error(rw, "JSON unmarshal error", http.StatusBadRequest) // 400
@@ -223,7 +314,7 @@ func insertDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 		// Add page-record
 		page := newPage()
 		page.DocumentID = doc.ID
-		page.PageNr = 1
+		page.PageNumber = 1
 		page.Text = "Hallo"
 		// page.Lines = [][]CharObject{ [ { ...
 		err = insertPage(page)
@@ -243,6 +334,20 @@ func insertDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 
 func updateDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 	log.Printf("\n\nupdateDocument-request: %v\n", req)
+	// get session
+	cs, err := getClientSession(req.Header.Get(headerKeySessionKey))
+	if err != nil {
+		http.Error(rw, "error", http.StatusInternalServerError)
+		return
+	}
+	defer cs.done()
+
+	// get account
+	acc := cs.account
+	if acc == nil || acc.Admin == false {
+		http.Error(rw, "forbidden", http.StatusForbidden)
+		return
+	}
 
 	switch req.Method {
 	case "POST":
@@ -285,7 +390,7 @@ func deleteDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 
 	// get account
 	acc := cs.account
-	if acc == nil {
+	if acc == nil || acc.Admin == false {
 		http.Error(rw, "forbidden", http.StatusForbidden)
 		return
 	}
@@ -304,7 +409,7 @@ func deleteDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 		}
 
 		// Delete Annotation-records with DocID
-		err = removeAnnotations(bson.M{"documentid": params.DocID})
+		err = removeAnnotations(bson.M{"documentId": params.DocID})
 		if err != nil {
 			log.Printf("Error deleting annotation on document: error %#v\n", err)
 			http.Error(rw, "error deleting annotation on document", http.StatusInternalServerError) // 500
@@ -312,7 +417,7 @@ func deleteDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 		}
 
 		// Delete Page-records with DocID
-		err = removePages(bson.M{"documentid": params.DocID})
+		err = removePages(bson.M{"documentId": params.DocID})
 		if err != nil {
 			log.Printf("Error deleting pages of document: error %#v\n", err)
 			http.Error(rw, "error deleting pages of document", http.StatusInternalServerError) // 500
@@ -334,4 +439,74 @@ func deleteDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 	default:
 		http.Error(rw, "error", http.StatusMethodNotAllowed) // 405
 	}
+}
+
+func pageImageHandlerFunc(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	urlVars := mux.Vars(r)
+	documentIDHex := urlVars["documentIDHex"]
+	if !bson.IsObjectIdHex(documentIDHex) {
+		http.NotFound(w, r)
+		return
+	}
+	documentID := bson.ObjectIdHex(documentIDHex)
+	pageNumberString := urlVars["pageNumber"]
+	pageNumber, err := strconv.ParseUint(pageNumberString, 10, 32)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+
+	fileName := fmt.Sprintf("docviewer-pages/%s-%d.png", documentID.Hex(), pageNumber)
+	file, err := gridFS.Open(fileName)
+	if err != nil {
+		if err == mgo.ErrNotFound {
+			http.NotFound(w, r)
+			return
+		}
+		log.Printf("error looking up files in gridFS (%s): %s\n", fileName, err)
+		http.Error(w, "error", http.StatusInternalServerError)
+		return
+	}
+	defer file.Close()
+
+	w.Header().Set("Content-Type", "image/png")
+	_, err = io.Copy(w, file)
+	if err != nil {
+		log.Printf("error writing png file (%s) to http client: %s\n", fileName, err)
+		return
+	}
+	// all done :)
+}
+
+func thumbnailImageHandlerFunc(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	urlVars := mux.Vars(r)
+	documentIDHex := urlVars["documentIDHex"]
+	if !bson.IsObjectIdHex(documentIDHex) {
+		http.NotFound(w, r)
+		return
+	}
+	documentID := bson.ObjectIdHex(documentIDHex)
+
+	fileName := fmt.Sprintf("document-thumbnails/%s.png", documentID.Hex())
+	file, err := gridFS.Open(fileName)
+	if err != nil {
+		if err == mgo.ErrNotFound {
+			http.NotFound(w, r)
+			return
+		}
+		log.Printf("error looking up files in gridFS (%s): %s\n", fileName, err)
+		http.Error(w, "error", http.StatusInternalServerError)
+		return
+	}
+	defer file.Close()
+
+	w.Header().Set("Content-Type", "image/png")
+	_, err = io.Copy(w, file)
+	if err != nil {
+		log.Printf("error writing png file (%s) to http client: %s\n", fileName, err)
+		return
+	}
+	// all done :)
 }

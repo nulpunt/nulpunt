@@ -7,9 +7,9 @@ import (
 
 // package-wide shared variables pointing to collections in mongodb
 var (
-	colAccounts    *mgo.Collection
-	colProfiles    *mgo.Collection
-	colUploads     *mgo.Collection
+	colAccounts *mgo.Collection
+	colProfiles *mgo.Collection
+	// colUploads     *mgo.Collection
 	colTags        *mgo.Collection
 	colDocuments   *mgo.Collection
 	colPages       *mgo.Collection
@@ -28,7 +28,16 @@ func initPersistency() {
 	}
 
 	// get "nulpunt" database
-	dbNulpunt := mgoConn.DB("nulpunt")
+	// For testing accounts use --environment=  (leave it empty to connect to 'nulpunt').
+	database := "nulpunt"
+	log.Printf("Environment is: %#v\n", flags.Environment)
+	if flags.Environment != "" {
+		database += "-" + flags.Environment
+	}
+	if flags.Verbose == true {
+		log.Printf("Connecting to database: %s\n", database)
+	}
+	dbNulpunt := mgoConn.DB(database)
 
 	// get gridfs
 	gridFS = dbNulpunt.GridFS("fs")
@@ -57,9 +66,6 @@ func initPersistency() {
 		log.Fatalf("fatal error when ensuring index on profiles.username: %s\n", err)
 	}
 
-	// get "uploads" collection
-	colUploads = dbNulpunt.C("uploads")
-
 	// get "tags" collection
 	colTags = dbNulpunt.C("tags")
 
@@ -81,6 +87,4 @@ func initPersistency() {
 	// get "Annotations" collection
 	colAnnotations = dbNulpunt.C("annotations")
 
-	// get "Comments" collection
-	// colComments = dbNulpunt.C("comments")
 }

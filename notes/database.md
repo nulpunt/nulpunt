@@ -15,21 +15,30 @@
 ### document
 technical parameters (for system)
  - `_id` (bson.ObjectId)
- - `originalGridFilename` (string, refers to location of the orginal document in GridFS)
- - `published` boolean; true: document is visible for users; false: new or not yet processed document
- - `upload_date` (time.Time); date of *publication* on Nulpunt.
-content parameters (for people)
+
  - `uploaderUsername` (string, refers to `accounts.username`)
+ - `uploadFilename` (string) // Filename of the original upload
+ - `uploadGridFilename` (string, refers to location of the orginal document in GridFS)
+ - `uploadDate` (time.Time); date of *publication* on Nulpunt.
+content parameters (for people)
+ - `language` (string) // language of the document to help the OCR (default 'nl_NL')
+ - `pageCount` (int) // number of pages
+ - `analyseState` (string) options("uploaded", "started", "completed", "error")
+
  - `title` (string)
  - `summary` (string)
- - `source` (string)
- - `country` (string)
+ - `category (string) // "Kamerbrief", "Rapport", ...
+ - `tags` ([]string)  // These come from the Tags-table
+ 
  - `FOIRequester` (string) // Wobber
  - `FOIARequest` (string) // Wob-verzoek
- - `category (string) // "Kamerbrief", "Rapport", ...
- - `language` (string) // same value as in upload-table.
- - `tags` ([]string)  // These come from the Tags-table
  - `originalDate` (time.Time)  // Time of publishing by the gov-ment agency or date of FOI-response.
+ - `source` (string) // "NL - Binnenlandse zaken", "EN - Foreign affairs", "US - Foreign affairs"
+ - `country` (string) // "NL", "EN"
+ 
+ - `published` boolean; true: document is visible for users; false: new or not yet processed document
+ 
+ - `hits` (int)
 
 ### tags
  - `_id` (bson.ObjectId)
@@ -44,12 +53,14 @@ Just insert the tag-string into other collections where needed.
  - `pageNumber` (int, page number)
  - `lines` ([][]char-object)
  - `text` (string); the text in the same order as the lines-attribute, use for search/sharing. Contains ocr-errors
+ - `highresWidth` (int) The width (in pixels) for the highres(900dpi) render.
+ - `highresHeight` (int) The height (in pixels) for the highres(900dpi) render.
 
 #### char-object
- - `x1` (int, left) in pixels
- - `y1` (int, top) in pixels
- - `x2` (int, bottom) in pixels
- - `y2` (int, right) in pixels
+ - `x1` (float32, left) in percentage relative to the image
+ - `y1` (float32, top) in percentage relative to the image
+ - `x2` (float32, bottom) in percentage relative to the image
+ - `y2` (float32, right) in percentage relative to the image
  - `c` (string, character)
 
 ### annotations
@@ -57,29 +68,21 @@ Just insert the tag-string into other collections where needed.
  - `documentId` (bson.ObjectId, refers to Documents)
  - `annotator` (string)
  - `createDate` (time.Time)
- - `annotation` (string)
- - `comments` (comment)
- - `location` ([]object) // In future, there could be multiple sections in a single annotation.
-    - `page` (int)
-    - `x1` (int))
-    - `y1` (int)
-    - `x2` (int)
-    - `y2` (int)
+ - `annotationText` (string)
+ - `comments` ([]comment)
+ - `locations` ([]object) // In future, there could be multiple sections in a single annotation.
+    - `pageNumber` (int) index
+    - `y1` (float32, left) in percentage relative to the image
+    - `x1` (float32, top) in percentage relative to the image
+    - `x2` (float32, bottom) in percentage relative to the image
+    - `y2` (float32, right) in percentage relative to the image
 
 #### comment
  - `_id` (bson.ObjectId) // needed to do treewalking to get new comments in the right place
- - `commenter` (string, refers to `accounts.username`)
+ - `commenterUsername` (string, refers to `accounts.username`)
  - `createDate` (time.Time)
- - `comment` (string)
- - `comments` ([]comment) *recursion, disabled for first version??*
-
-### uploads
- - `_id` (bson.ObjectId)
- - `uploaderUsername` (string, refers to `accounts.username`)
- - `filename` (string); reference to the original pdf file name.
- - `gridFilename` (string)
- - `uploadDate` (time.Time)
- - `language` (string); language of the document to help the OCR (default 'nl_NL')
+ - `commentText` (string)
+ - `comments` ([]comment) *recursion, disabled for first version??* (JANUARI/FEBRUARI)
 
 ## GridFS
 We're using GridFS to store files.
@@ -89,9 +92,9 @@ Filename must be formatted as: `uploads/<uploader-username>-<unix-timestamp>-<ra
 Holds original uploaded file.
 
 ### highres
-Filename must be formatted as: `highres/<docId>-<pageNr>.png`
+Filename must be formatted as: `highres/<docIdHex>-<pageNumber>.png`
 Holds png for each page for given document rendered at 600dpi from pdf file
 
 ### docviewer-pages
-Filename must be formated as: `docviewer-pages/<docId>-<pageNr>.png`
+Filename must be formated as: `docviewer-pages/<docIdHex>-<pageNumber>.png`
 Holds png for each page for any given document resized to a width of 1000 px

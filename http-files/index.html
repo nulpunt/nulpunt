@@ -11,9 +11,8 @@
 		<link href="css/nulpunt.css" rel="stylesheet" >
 
 	</head>
-	<body ng-controller="MainCtrl" >
 	
-
+	<body ng-controller="MainCtrl" >
 		<div ng-controller="NavbarCtrl">
 		
 			<div class="navbar navbar-static-top">
@@ -30,7 +29,8 @@
 				</button>
 			
 				<a class="navbar-brand" href="/#/"><img src="img/np-logo.png" /></a>				
-				
+		
+
 			</div>
 			
 			<div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
@@ -95,6 +95,15 @@
 		  <div class="col-lg-4 col-lg-offset-1">
 			  	New to Nulpunt? <a ng-class="getClass('/register')"><a href="/#/register">Register here</a>
 		</div>
+	    <!-- admin menu stuff. Give it some place -->
+	    <p>
+	      <div ng-show="account.admin">
+		 <a ng-href="/#/admin/upload"><span class="glyphicon glyphicon-file" ></span> Upload documents</a>
+		 <a ng-href="/#/admin/analyse"><span class="glyphicon glyphicon-search" ></span> Ugly hack</a> <!-- remove this when OCR works -->
+		 <a href="/#/admin/process"><span class="glyphicon glyphicon-asterisk" ></span> Process documents</a>
+		 <a href="/#/admin/tags"><span class="glyphicon glyphicon-asterisk" ></span> Add/Remove tags</a>
+	    </p>
+	  </div
 	</div>
 
 </div>
@@ -148,6 +157,7 @@
 		<script src="js/nulpunt-ClientSessionService.js" ></script>
 		<script src="js/nulpunt-AccountAuthService.js" ></script>
 		<script src="js/nulpunt-AccountDataService.js" ></script>
+		<script src="js/nulpunt-ProfileService.js" ></script>
 
 		<script src="js/bootstrap-datepicker.js"></script>
 	</body>

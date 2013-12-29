@@ -78,7 +78,8 @@ To get `npanalyse` up and running, perform the following:
 3. Install and run `nsqlookupd` and `nsqd` with their defaults (localhost): [follow this quick start](http://bitly.github.io/nsq/overview/quick_start.html).
 4. Change dir into the root of your nulpunt repository clone
 5. Build npanalyse: `GOPATH=$(pwd)/gopath go build npanalyse`
-6. Run npanalyse: `./npanalyse`
+6. Install xpdf-utils, on Debian: apt-get install xpdf-utils, we need pdftoppm in it.
+7. Run npanalyse: `./npanalyse`
 
 #### Copyright
 Nulpunt is licensed under the AGPL version 3 license, except for third-party works as listed in the [attribution](notes/attribution.md) file.
