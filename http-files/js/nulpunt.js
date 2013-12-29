@@ -15,13 +15,9 @@ nulpunt.config(function($routeProvider) {
 		templateUrl: "/html/trending.html",
 		controller: "TrendingCtrl"
 	})
-	.when('/inbox', {
-		templateUrl: "/html/inbox.html",
-		controller: "InboxCtrl"
-	})
 	.when('/dashboard', {
-		templateUrl: "/html/inbox.html",
-		controller: "InboxCtrl"
+		templateUrl: "/html/dashboard.html",
+		controller: "DashboardCtrl"
 	})
 
 	.when('/document/:docID', {
@@ -136,7 +132,7 @@ nulpunt.controller("OverviewCtrl", function($scope){
 	//++
 });
 
-nulpunt.controller("InboxCtrl", function($scope, $http) {
+nulpunt.controller("DashboardCtrl", function($scope, $http) {
     $scope.documents = [];
     $http({method: "POST", url: "/service/getDocuments", data: {} }).
 	success(function(data) {
