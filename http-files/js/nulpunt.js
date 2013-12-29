@@ -72,7 +72,7 @@ nulpunt.config(function($routeProvider) {
 		controller: "AdminAnalyseCtrl"
 	})
 	.when('/admin/process', {
-			templateUrl: "/html/admin-process.html",
+		templateUrl: "/html/admin-process.html",
 		controller: "AdminProcessCtrl"
 	})
 	.when('/admin/process-editmeta/:docID', {
@@ -102,7 +102,7 @@ nulpunt.config(function($routeProvider) {
 });
 
 nulpunt.controller("EmptyCtrl", function() {
-    // Empty controller can be used to when a template specifies the controllers in-line.
+	// Empty controller can be used to when a template specifies the controllers in-line.
 });
 
 nulpunt.controller("MainCtrl", function($scope, $rootScope, AccountAuthService) {
@@ -140,11 +140,11 @@ nulpunt.controller("OverviewCtrl", function($scope){
 
 
 nulpunt.controller("DashboardCtrl", function($scope, $http) {
-    $scope.documents = [];
-    $http({method: "POST", url: "/service/getDocuments", data: {} }).
+	$scope.documents = [];
+	$http({method: "POST", url: "/service/getDocuments", data: {} }).
 	success(function(data) {
-	    console.log(data);
-	    $scope.documents = data.documents;
+		console.log(data);
+		$scope.documents = data.documents;
 	}).
 	error(function(error) {
 		console.log('error retrieving raw documents: ', error);
@@ -156,55 +156,55 @@ nulpunt.controller("InboxCtrl", function() {
 
 // This controllers is used on inbox-page to query on users' selected Tags
 nulpunt.controller("DocumentsByTagsCtrl", function ($scope, $http, ProfileService, SearchDocumentService) {
-    console.log("DocumentsByTagsCtrl has found profile: ", $scope.profiles);
-    ProfileService.getProfile().then(
+	console.log("DocumentsByTagsCtrl has found profile: ", $scope.profiles);
+	ProfileService.getProfile().then(
 	function(profile) {
-	    
-	    console.log("DocumentsByTagCtrl got from Profile promise: ", profile)
-     	    SearchDocumentService.searchDocuments(profile.Tags).then(
+		
+		console.log("DocumentsByTagCtrl got from Profile promise: ", profile)
+			SearchDocumentService.searchDocuments(profile.Tags).then(
 		function(data) {
-		    console.log("DocumentsByTagCtrl got from SearchDoc promise: ", data);
-		    $scope.documents = data.documents;
+			console.log("DocumentsByTagCtrl got from SearchDoc promise: ", data);
+			$scope.documents = data.documents;
 		},
-     		function(error) {
-     		    console.log('error retrieving raw documents: ', error);
-     		    deferred.reject('error');
+			function(error) {
+				console.log('error retrieving raw documents: ', error);
+				deferred.reject('error');
 		}),
-     	function(error) {
-     	    console.log('error retrieving raw documents: ', error);
-     	    deferred.reject('error');
-     	}});
+		function(error) {
+			console.log('error retrieving raw documents: ', error);
+			deferred.reject('error');
+		}});
 	
-    // Tagsearch gets the tag to add or remove.
-    $scope.TagSearch = function(tags, tag) {
-	//console.log("TagSearch has: ", profile_tags, tag)
-	//var tags = profile_tags.filter(function(x) {return true}); // copy into new array to make it idempotent.
-	var index = tags.indexOf(tag)
-	if (index > -1) { // found it, remove from tags list
-	    tags.splice(index, 1);
-	} else { // not in there, add it
-	    tags.push(tag);
+	// Tagsearch gets the tag to add or remove.
+	$scope.TagSearch = function(tags, tag) {
+		//console.log("TagSearch has: ", profile_tags, tag)
+		//var tags = profile_tags.filter(function(x) {return true}); // copy into new array to make it idempotent.
+		var index = tags.indexOf(tag)
+		if (index > -1) { // found it, remove from tags list
+			tags.splice(index, 1);
+		} else { // not in there, add it
+			tags.push(tag);
+		};
+		//console.log("TagSearch has: ", profile_tags, tag, " -> ", tags)
+		SearchDocumentService.searchDocuments(tags).then(
+			function(data) {
+				console.log("TagSearch got from SearchDoc promise: ", data);
+				$scope.documents = data.documents;
+			},
+				function(error) {
+					console.log('error retrieving raw documents: ', error);
+					deferred.reject('error');
+			});
 	};
-	//console.log("TagSearch has: ", profile_tags, tag, " -> ", tags)
-	SearchDocumentService.searchDocuments(tags).then(
-		function(data) {
-		    console.log("TagSearch got from SearchDoc promise: ", data);
-		    $scope.documents = data.documents;
-		},
-     		function(error) {
-     		    console.log('error retrieving raw documents: ', error);
-     		    deferred.reject('error');
-		});
-    };
-    
-    // To assist in ng-show/hide
-    $scope.isElement = function(tags, tag) {
-    	if(tags == undefined) {
-    		return false;
-    	}
+	
+	// To assist in ng-show/hide
+	$scope.isElement = function(tags, tag) {
+		if(tags == undefined) {
+			return false;
+		}
 		var index = tags.indexOf(tag);
 		return index != -1;
-    };
+	};
 });
 
 nulpunt.controller("ShowDocCtrl", function($scope, $http, $routeParams) {
@@ -301,7 +301,7 @@ nulpunt.controller("CommentSubmitCtrl", function($scope, $http) {
 });
 
 nulpunt.controller("HistoryCtrl", function($scope, $routeParams) {
-    $scope.documents = [];
+	$scope.documents = [];
 });
 
 nulpunt.controller("TrendingCtrl", function($scope) {
@@ -379,7 +379,7 @@ nulpunt.controller("TrendingCtrl", function($scope) {
 });
 
 nulpunt.controller("NotificationsCtrl", function($scope) {
-    $scope.notifications = [];
+	$scope.notifications = [];
 });
 
 nulpunt.controller("SearchCtrl", function($scope, $routeParams) {
@@ -397,16 +397,16 @@ nulpunt.controller("ProfileCtrl", function($scope, $http) {
 	}).
 	success(function(data) {
 		console.log(data);
-    	     // UGLY HACK: 
-    	    // Each user has only one profile, yet  we create an array.
-    	    // This is so that the inbox.html template can use a ng-repeat
-    	    // That makes the dependencies between that and this controller clear to Angular.
+			 // UGLY HACK: 
+			// Each user has only one profile, yet  we create an array.
+			// This is so that the inbox.html template can use a ng-repeat
+			// That makes the dependencies between that and this controller clear to Angular.
 		$scope.profile = data.profile;
 		$scope.profiles = [ data.profile ];
 	}).
 	error(function(error) {	
 		console.log('error retrieving profile ', error);
-	    $scope.error = error;
+		$scope.error = error;
 	})
 
 	// save the updated document
@@ -431,17 +431,17 @@ nulpunt.controller("ProfileCtrl", function($scope, $http) {
 });
 
 nulpunt.controller('NotFoundCtrl', function($scope, $location) {
-	$scope.path = $location.url()
+	$scope.path = $location.url();
 });
 
 nulpunt.controller('AboutCtrl', function($scope, $location) {
-	$scope.path = $location.url()
+	$scope.path = $location.url();
 });
 nulpunt.controller('ContactCtrl', function($scope, $location) {
-	$scope.path = $location.url()
+	$scope.path = $location.url();
 });
 nulpunt.controller('ColophonCtrl', function($scope, $location) {
-	$scope.path = $location.url()
+	$scope.path = $location.url();
 });
 
 nulpunt.controller("RegisterCtrl", function($scope, $rootScope, $http) {
@@ -520,7 +520,6 @@ nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService
 				//++ need to do some "digest" on $scope ?? or $scope.$apply()?
 				//++ find out what good convention is
 			}
-			
 		);
 	};
 	
@@ -530,45 +529,45 @@ nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService
 });
 
 nulpunt.controller("AdminTagsCtrl", function($scope, $rootScope, $http, TagService) {
-    TagService.getTags().then(
+	TagService.getTags().then(
 	function(data) {
-	    console.log("AdminTagsCtrl received data: ", data);
-	    $scope.tags = data.tags;
+		console.log("AdminTagsCtrl received data: ", data);
+		$scope.tags = data.tags;
 	},
 	function(error) {
-	    console.log(error);
+		console.log(error);
 	}
-    );
-    
-    $scope.add_tag = function() {
+	);
+	
+	$scope.add_tag = function() {
 	console.log('adding tag: ', $scope.tag);
 	TagService.addTag($scope.tag).then(
-	    function(data) {
+		function(data) {
 		console.log(data);
 		$scope.tags = data.tags;
 		$scope.done = true;
-	    },
-	    function(error) {
+		},
+		function(error) {
 		console.log(error);
-	    }
+		}
 	)};
-    
-    $scope.delete_tag = function(tagname) {
+	
+	$scope.delete_tag = function(tagname) {
 	console.log('deleting tag: '+tagname);
 	TagService.deleteTag(tagname).then(
-	    function(data) {
-		console.log(data);
-		//var index = $scope.tags.indexOf($scope.tag)
-		//$scope.tags.splice(index, 1);
-		$scope.tags = data.tags;
-		$scope.done = true;
-	    },
-	    function(error) {
-		console.log(error);
-	    }
+		function(data) {
+			console.log(data);
+			//var index = $scope.tags.indexOf($scope.tag)
+			//$scope.tags.splice(index, 1);
+			$scope.tags = data.tags;
+			$scope.done = true;
+		},
+		function(error) {
+			console.log(error);
+		}
 	)};
 });
-    
+	
 
 nulpunt.controller("AdminUploadCtrl", function($scope, $upload) {
 	$scope.uploading = false;
