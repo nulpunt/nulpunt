@@ -2,10 +2,13 @@ package main
 
 import (
 	"log"
+	"runtime"
 )
 
 func main() {
 	log.Println("starting nulpunt analyse application")
+
+	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	// parse the command-line flags
 	initFlags()
