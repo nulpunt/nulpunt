@@ -32,10 +32,6 @@ nulpunt.config(function($routeProvider) {
 		templateUrl: "/html/history.html",
 		controller: "HistoryCtrl"
 	})
-	.when('/trending', {
-		templateUrl: "/html/trending.html",
-		controller: "TrendingCtrl"
-	})
 	.when('/notifications', {
 		templateUrl: "/html/notifications.html",
 		controller: "NotificationsCtrl"
