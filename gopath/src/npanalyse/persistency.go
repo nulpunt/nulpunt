@@ -21,7 +21,7 @@ var (
 // it also ensures indexes are existing and will give a fatal error when that fails.
 func initPersistency() {
 	// dial to localhost mongoDB instance
-	mgoConn, err := mgo.Dial("localhost")
+	mgoConn, err := mgo.Dial(flags.MongoHost)
 	if err != nil {
 		log.Fatalf("fatal error while dialing mgo connection: %s\n", err)
 	}

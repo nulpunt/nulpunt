@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"labix.org/v2/mgo"
 	"log"
 )
@@ -29,7 +28,16 @@ func initPersistency() {
 	}
 
 	// get "nulpunt" database
-	dbNulpunt := mgoConn.DB(fmt.Sprintf("nulpunt-%s", flags.Environment))
+	// For testing accounts use --environment=  (leave it empty to connect to 'nulpunt').
+	database := "nulpunt"
+	log.Printf("Environment is: %#v\n", flags.Environment)
+	if flags.Environment != "" {
+		database += "-" + flags.Environment
+	}
+	if flags.Verbose == true {
+		log.Printf("Connecting to database: %s\n", database)
+	}
+	dbNulpunt := mgoConn.DB(database)
 
 	// get gridfs
 	gridFS = dbNulpunt.GridFS("fs")

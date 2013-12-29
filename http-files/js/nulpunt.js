@@ -3,7 +3,7 @@ var nulpunt = angular.module('nulpunt', [
 	// please keep this list sorted
 	'ngRoute',
 	'ngStorage',
-	'ui.bootstrap.collapse', 
+	'ui.bootstrap.collapse',
 	'ui.bootstrap.dropdownToggle',
 	'angularFileUpload',
 	'checklist-model'
@@ -12,13 +12,14 @@ var nulpunt = angular.module('nulpunt', [
 nulpunt.config(function($routeProvider) {
 	$routeProvider
 	.when('/', {
-		templateUrl: "/html/overview.html",
-		controller: "OverviewCtrl"
+		templateUrl: "/html/trending.html",
+		controller: "TrendingCtrl"
 	})
-	.when('/inbox', {
-		templateUrl: "/html/inbox.html",
-		controller: "InboxCtrl"
+	.when('/dashboard', {
+		templateUrl: "/html/dashboard.html",
+		controller: "DashboardCtrl"
 	})
+
 	.when('/document/:docID', {
 		templateUrl: "/html/show-document.html",
 		controller: "ShowDocCtrl"
@@ -71,7 +72,7 @@ nulpunt.config(function($routeProvider) {
 		controller: "AdminAnalyseCtrl"
 	})
 	.when('/admin/process', {
-			templateUrl: "/html/admin-process.html",
+		templateUrl: "/html/admin-process.html",
 		controller: "AdminProcessCtrl"
 	})
 	.when('/admin/process-editmeta/:docID', {
@@ -86,6 +87,16 @@ nulpunt.config(function($routeProvider) {
 		templateUrl: "/html/about.html",
 		controller: "AboutCtrl"
 	})
+
+	.when('/contact', {
+		templateUrl: "/html/contact.html",
+		controller: "ContactCtrl"
+	})
+	.when('/colophon', {
+		templateUrl: "/html/colophon.html",
+		controller: "ColophonCtrl"
+	})
+
 	.otherwise({
 		templateUrl: "/html/not-found.html",
 		controller: "NotFoundCtrl",
@@ -93,15 +104,19 @@ nulpunt.config(function($routeProvider) {
 });
 
 nulpunt.controller("EmptyCtrl", function() {
-    // Empty controller can be used to when a template specifies the controllers in-line.
+	// Empty controller can be used to when a template specifies the controllers in-line.
 });
 
+nulpunt.controller("MainCtrl", function($scope, $rootScope, AccountAuthService) {
 
-nulpunt.controller("MainCtrl", function($scope) {
-	//++
+	$rootScope.$on("auth_changed", function() {
+		$scope.account = AccountAuthService.account;
+		$scope.gravatarHash = CryptoJS.MD5(AccountAuthService.account.email).toString(CryptoJS.enc.Hex);
+	});
 });
 
 nulpunt.controller("NavbarCtrl", function($scope, $rootScope, $location, AccountAuthService) {
+
 	$rootScope.$on("auth_changed", function() {
 		$scope.account = AccountAuthService.account;
 		$scope.gravatarHash = CryptoJS.MD5(AccountAuthService.account.email).toString(CryptoJS.enc.Hex);
@@ -126,57 +141,73 @@ nulpunt.controller("OverviewCtrl", function($scope){
 });
 
 
+nulpunt.controller("DashboardCtrl", function($scope, $http) {
+	$scope.documents = [];
+	$http({method: "POST", url: "/service/getDocuments", data: {} }).
+	success(function(data) {
+		console.log(data);
+		$scope.documents = data.documents;
+	}).
+	error(function(error) {
+	    console.log('error retrieving raw documents: ', error);
+	});
+});
+
+
 nulpunt.controller("InboxCtrl", function() {
 });
 
 // This controllers is used on inbox-page to query on users' selected Tags
 nulpunt.controller("DocumentsByTagsCtrl", function ($scope, $http, ProfileService, SearchDocumentService) {
-    console.log("DocumentsByTagsCtrl has found profile: ", $scope.profiles);
-    ProfileService.getProfile().then(
+	console.log("DocumentsByTagsCtrl has found profile: ", $scope.profiles);
+	ProfileService.getProfile().then(
 	function(profile) {
-	    
-	    console.log("DocumentsByTagCtrl got from Profile promise: ", profile)
-     	    SearchDocumentService.searchDocuments(profile.Tags).then(
+		
+		console.log("DocumentsByTagCtrl got from Profile promise: ", profile)
+			SearchDocumentService.searchDocuments(profile.Tags).then(
 		function(data) {
-		    console.log("DocumentsByTagCtrl got from SearchDoc promise: ", data);
-		    $scope.documents = data.documents;
+			console.log("DocumentsByTagCtrl got from SearchDoc promise: ", data);
+			$scope.documents = data.documents;
 		},
-     		function(error) {
-     		    console.log('error retrieving raw documents: ', error);
-     		    deferred.reject('error');
+			function(error) {
+				console.log('error retrieving raw documents: ', error);
+				deferred.reject('error');
 		}),
-     	function(error) {
-     	    console.log('error retrieving raw documents: ', error);
-     	    deferred.reject('error');
-     	}});
+		function(error) {
+			console.log('error retrieving raw documents: ', error);
+			deferred.reject('error');
+		}});
 	
-    // Tagsearch gets the tag to add or remove.
-    $scope.TagSearch = function(tags, tag) {
-	//console.log("TagSearch has: ", profile_tags, tag)
-	//var tags = profile_tags.filter(function(x) {return true}); // copy into new array to make it idempotent.
-	var index = tags.indexOf(tag)
-	if (index > -1) { // found it, remove from tags list
-	    tags.splice(index, 1);
-	} else { // not in there, add it
-	    tags.push(tag);
+	// Tagsearch gets the tag to add or remove.
+	$scope.TagSearch = function(tags, tag) {
+		//console.log("TagSearch has: ", profile_tags, tag)
+		//var tags = profile_tags.filter(function(x) {return true}); // copy into new array to make it idempotent.
+		var index = tags.indexOf(tag)
+		if (index > -1) { // found it, remove from tags list
+			tags.splice(index, 1);
+		} else { // not in there, add it
+			tags.push(tag);
+		};
+		//console.log("TagSearch has: ", profile_tags, tag, " -> ", tags)
+		SearchDocumentService.searchDocuments(tags).then(
+			function(data) {
+				console.log("TagSearch got from SearchDoc promise: ", data);
+				$scope.documents = data.documents;
+			},
+				function(error) {
+					console.log('error retrieving raw documents: ', error);
+					deferred.reject('error');
+			});
 	};
-	//console.log("TagSearch has: ", profile_tags, tag, " -> ", tags)
-	SearchDocumentService.searchDocuments(tags).then(
-		function(data) {
-		    console.log("TagSearch got from SearchDoc promise: ", data);
-		    $scope.documents = data.documents;
-		},
-     		function(error) {
-     		    console.log('error retrieving raw documents: ', error);
-     		    deferred.reject('error');
-		});
-    };
-    
-    // To assist in ng-show/hide
-    $scope.isElement = function(tags, tag) {
-	var index = tags.indexOf(tag);
-	return index != -1;
-    };
+	
+	// To assist in ng-show/hide
+	$scope.isElement = function(tags, tag) {
+		if(tags == undefined) {
+			return false;
+		}
+		var index = tags.indexOf(tag);
+		return index != -1;
+	};
 });
 
 nulpunt.controller("ShowDocCtrl", function($scope, $http, $routeParams) {
@@ -273,15 +304,85 @@ nulpunt.controller("CommentSubmitCtrl", function($scope, $http) {
 });
 
 nulpunt.controller("HistoryCtrl", function($scope, $routeParams) {
-    $scope.documents = [];
-});
-
-nulpunt.controller("TrendingCtrl", function($scope) {
 	$scope.documents = [];
 });
 
+nulpunt.controller("TrendingCtrl", function($scope) {
+	$scope.documents = {
+		items: [],
+	};
+
+	$scope.documents.items = [
+		{
+			title: "Intentieverklaring met betrekking tot het aanvullen van de Overeenkomst betreffende de reconstructie van Rijksweg 2 en de aanleg van gemeentelijke wegen in het plangebied Hooggelegen (UTI-7801) ten behoeve van realisatie, beheer en onderhoud van nummerplaat registratieapparatuur voor het meten van verkeersgegevens.", 
+			description: "A short 1 or 2 sentence description of the document. Include or not?", 
+			source: "Commisie van Toezicht betreffende de Inlichtingen en Veiligheidsdiensten", 
+			sourceDate: "01/01/2004", 
+			uploadDate: "01/11/2013", 
+			uploader: "Nulpunt",
+			uploaderColor: "#4effa4",
+			requester: "Renée in de Maur",
+			type: "report",			
+			nrOfPages: 300,
+			nrOfAnnotations: 6,
+			nrOfDrafts: 2,
+			nrOfComments: 8,
+			nrOfBookmarks: 4,
+			tags: [
+				{title: "Iraq"}, 
+				{title:"Conspiracy"}, 
+				{title:"Another tag"}
+			],
+			annotations: [
+				{annotationDate: "2013-11-24", annotator: "rick", annotation: "Quas illaboritati ius de plit prae vid maxim que dendae re ne plaborio. Facideb itatur ressiment apiendae. Itatemo luptaestius am essimi, te rem volorum sed maximintiis si remporp oremperatia dit incitati dolorposse provitas ad ut fuga. Hillore nobitemquis et ma si con commol"}
+			]
+		},
+		{
+			title: "Intentieverklaring met betrekking tot het aanvullen van de Overeenkomst betreffende de reconstructie van Rijksweg 2 en de aanleg van gemeentelijke wegen in het plangebied Hooggelegen", 
+			description: "A short 1 or 2 sentence description of the document. Include or not?", 
+			source: "The Government", 
+			sourceDate: "01/01/2004", 
+			uploadDate: "01/11/2013",
+			uploader: "Nulpunt",
+			uploaderColor: "#ffb060",
+			requester: "Michele Colombrino",
+			type: "congressional report",
+			nrOfPages: 20,
+			nrOfAnnotations: 32, 
+			nrOfDrafts: 7, 
+			nrOfComments: 18, 
+			nrOfBookmarks: 12, 
+			tags: [
+				{title: "Random tag"},
+				{title: "Transportation"},
+				{title: "Tag"}								
+			],
+			annotations: [
+				{annotationDate: "2013-08-20", annotator: "rick", annotation: "Quas illaboritati ius de plit prae vid maxim que dendae re ne plaborio. Facideb itatur ressiment apiendae. Itatemo luptaestius am essimi, te rem volorum sed maximintiis si remporp oremperatia dit incitati dolorposse provitas ad ut fuga. Hillore nobitemquis et ma si con commol"}
+			] },
+		{
+			title: "ten behoeve van realisatie, beheer en onderhoud van nummerplaat registratieapparatuur voor het meten van verkeersgegevens", 
+			description: "A short 1 or 2 sentence description of the document. Include or not?", 
+			source: "The Government", 
+			sourceDate: "01/01/2004", 
+			uploadDate: "01/11/2013", 
+			uploader: "Nulpunt",
+			type: "congressioal report",
+			nrOfPages: 12,
+			uploaderColor: "#00b7ff",
+			nrOfAnnotations: 2, 
+			nrOfDrafts: 14, 
+			nrOfComments: 25, 
+			nrOfBookmarks: 4, 
+			tags: [{title: "Iraq"}],
+			annotations: [
+				{annotationDate: "some day", annotator: "rick", annotation: "Quas illaboritati ius de plit prae vid maxim que dendae re ne plaborio. Facideb itatur ressiment apiendae. Itatemo luptaestius am essimi, te rem volorum sed maximintiis si remporp oremperatia dit incitati dolorposse provitas ad ut fuga. Hillore nobitemquis et ma si con commol"}
+			] },
+	];
+});
+
 nulpunt.controller("NotificationsCtrl", function($scope) {
-    $scope.notifications = [];
+	$scope.notifications = [];
 });
 
 nulpunt.controller("SearchCtrl", function($scope, $routeParams) {
@@ -299,16 +400,16 @@ nulpunt.controller("ProfileCtrl", function($scope, $http) {
 	}).
 	success(function(data) {
 		console.log(data);
-    	     // UGLY HACK: 
-    	    // Each user has only one profile, yet  we create an array.
-    	    // This is so that the inbox.html template can use a ng-repeat
-    	    // That makes the dependencies between that and this controller clear to Angular.
+			 // UGLY HACK: 
+			// Each user has only one profile, yet  we create an array.
+			// This is so that the inbox.html template can use a ng-repeat
+			// That makes the dependencies between that and this controller clear to Angular.
 		$scope.profile = data.profile;
 		$scope.profiles = [ data.profile ];
 	}).
 	error(function(error) {	
 		console.log('error retrieving profile ', error);
-		$scope.error = data
+		$scope.error = error;
 	})
 
 	// save the updated document
@@ -333,7 +434,17 @@ nulpunt.controller("ProfileCtrl", function($scope, $http) {
 });
 
 nulpunt.controller('NotFoundCtrl', function($scope, $location) {
-	$scope.path = $location.url()
+	$scope.path = $location.url();
+});
+
+nulpunt.controller('AboutCtrl', function($scope, $location) {
+	$scope.path = $location.url();
+});
+nulpunt.controller('ContactCtrl', function($scope, $location) {
+	$scope.path = $location.url();
+});
+nulpunt.controller('ColophonCtrl', function($scope, $location) {
+	$scope.path = $location.url();
 });
 nulpunt.controller('AboutCtrl', function($scope, $location) {
 	$scope.path = $location.url()
@@ -403,6 +514,8 @@ nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService
 
 		prom.then(function() {
 				$scope.success = true;
+				window.location.href = "/#/dashboard";
+				window.location.reload();
 			}, function(error) {
 				if(error == "") {
 					// no success, but also no error: credentials are wrong.
@@ -422,45 +535,45 @@ nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService
 });
 
 nulpunt.controller("AdminTagsCtrl", function($scope, $rootScope, $http, TagService) {
-    TagService.getTags().then(
+	TagService.getTags().then(
 	function(data) {
-	    console.log("AdminTagsCtrl received data: ", data);
-	    $scope.tags = data.tags;
+		console.log("AdminTagsCtrl received data: ", data);
+		$scope.tags = data.tags;
 	},
 	function(error) {
-	    console.log(error);
+		console.log(error);
 	}
-    );
-    
-    $scope.add_tag = function() {
+	);
+	
+	$scope.add_tag = function() {
 	console.log('adding tag: ', $scope.tag);
 	TagService.addTag($scope.tag).then(
-	    function(data) {
+		function(data) {
 		console.log(data);
 		$scope.tags = data.tags;
 		$scope.done = true;
-	    },
-	    function(error) {
+		},
+		function(error) {
 		console.log(error);
-	    }
+		}
 	)};
-    
-    $scope.delete_tag = function(tagname) {
+	
+	$scope.delete_tag = function(tagname) {
 	console.log('deleting tag: '+tagname);
 	TagService.deleteTag(tagname).then(
-	    function(data) {
-		console.log(data);
-		//var index = $scope.tags.indexOf($scope.tag)
-		//$scope.tags.splice(index, 1);
-		$scope.tags = data.tags;
-		$scope.done = true;
-	    },
-	    function(error) {
-		console.log(error);
-	    }
+		function(data) {
+			console.log(data);
+			//var index = $scope.tags.indexOf($scope.tag)
+			//$scope.tags.splice(index, 1);
+			$scope.tags = data.tags;
+			$scope.done = true;
+		},
+		function(error) {
+			console.log(error);
+		}
 	)};
 });
-    
+	
 
 nulpunt.controller("AdminUploadCtrl", function($scope, $upload) {
 	$scope.uploading = false;
