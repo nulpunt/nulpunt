@@ -285,6 +285,10 @@ nulpunt.controller("ShowDocCtrl", function($scope, $http, $routeParams) {
 			console.log(data);
 			$scope.document = data.document;
 			$scope.annotations = data.annotations;
+			$scope.twitter = {
+				url: "https://alpha.nulpunt.nu/#/document/"+data.document.ID,
+				text: data.document.Title,
+			};
 		}).error(function(error) {
 			console.log('error retrieving raw documents: ', error);
 		});
