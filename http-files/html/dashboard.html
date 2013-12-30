@@ -2,12 +2,14 @@
   	 <!-- show tag-cloud -->
 	<div ng-controller="AdminTagsCtrl">
 
-	  <div class="clearfix">
-	    <ul>
-	      <li class="np-document-tag" ng-repeat="tag in tags">
-		<div class="TagSearchButton"  ng-class="isElement(searchTags, tag.Tag)"  ng-click="TagSearch(searchTags, tag.Tag)">{{tag.Tag}}</div>
+	  <div class="row">
+	  <div class="col-lg-6">
+	    <ul class="list-unstyled">
+	      <li class="np-document-tag" ng-class="isElement(searchTags, tag.Tag)" ng-repeat="tag in tags">
+		<div class="TagSearchButton"  ng-click="TagSearch(searchTags, tag.Tag)">{{tag.Tag}}</div>
 	      </li>
 	    </ul>
+	  </div>
 	  </div>
 
 	</div> <!-- ng-controller="AdminTagsCtrl" -->
@@ -24,7 +26,7 @@
 		<!--<p><span class="glyphicon glyphicon-star-empty"></span> {{ document.nrOfBookmarks }}</p>--> <!-- bookmarks -->
 	</div>
 	<div class="col-sm-8">
-		<h2>a href="/#/document/{{ document.ID }}">{{ document.Title }}</a></h2>
+		<h2><a href="/#/document/{{ document.ID }}">{{ document.Title }}</a></h2>
 		<p class="np-document-description">{{ document.Summary }}</p>
 		<p><strong>Source:</strong> {{ document.Source }}</p>
 		<p><strong>Source date:</strong> {{ document.OriginalDate }}</p>
