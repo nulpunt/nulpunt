@@ -42,10 +42,9 @@
 				<span class="source">Source: {{document.Source}} on {{document.OriginalDate}}</span>
 				<span class="upload">Uploaded on <strong>{{document.UploadDate}}</strong> by <span class="uploader">{{document.Uploader}}</span></span>
 				<span class="country">Country: {{ document.Country }}</span>
-				<span class="wobber">Wobber: {{ document.FOIRequester }}</span>
-				<span class="wobverzoek">Wobverzoek: {{ document.FOIARequest }}</span>
+				<span ng-show="document.FOIRequester" class="wobber">Wobber: {{ document.FOIRequester }}</span>
+				<span ng-show="document.FOIARequest" class="wobverzoek">Wobverzoek: {{ document.FOIARequest }}</span>
 				<span class="language">Language: {{ document.Language }}</span>
-				<span ng-repeat="tag in document.Tags" class="np-document-tag"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</span>
 			</div>
 
 		<span ng-repeat="tag in document.Tags" class="np-document-tag"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</span>
