@@ -14,7 +14,7 @@ var flags struct {
 	UnixSocket       string `long:"unix-socket" description:"Serve HTTP over unix socket"`
 	HTTPFiles        string `long:"http-files" description:"location for the http files" default:"./http-files/"`
 	HTTPPort         string `long:"http-port" description:"port for HTTP server to listen on" default:"8000"`
-	DisableAlphaAuth bool   `long:"disable-alpha-auth" description:"disable the alpha authentication check"`
+	DisableAlphaAuth bool   `long:"disable-alpha-auth" description:"DEPRECATED (was: disable the alpha authentication check)"`
 	Environment      string `long:"environment" description:"environment (db/sock) this instance should use"`
 }
 
@@ -46,5 +46,7 @@ func initFlags() {
 		os.Exit(1)
 	}
 
-	//++ do checks (cant set unix-socket-filename when unix-socket is not requested)
+	if flags.DisableAlphaAuth {
+		fmt.Printf("DEPRECATED flag --disable-alpha-auth: alpha auth has been stripped from the source code, therefore --disable-alpha-auth is of no use anymore. It will be removed in future release.")
+	}
 }
