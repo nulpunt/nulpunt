@@ -818,3 +818,7 @@ nulpunt.filter('bytes', function() {
 		return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) + ' ' + units[number];
 	}
 });
+
+nulpunt.filter('urlencode', function() {
+	return window.escape;
+});
