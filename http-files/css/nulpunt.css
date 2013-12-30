@@ -96,7 +96,11 @@ p.intro {
 .utilities {
 	padding: 0 14px;
 }
-      
+
+.tags-metadata  {
+	margin-top: 12px;
+}
+
 /* old to delete */
 .np-nav-account-logo {
 	padding-top: 5px !important;

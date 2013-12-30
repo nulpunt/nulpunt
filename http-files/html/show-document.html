@@ -66,13 +66,16 @@
 		  	<div class="col-lg-6">
 		  		<h1>{{ document.Title }}</h1>
 		  		<div class="document-metadata">
-				<span class="source">Source: {{document.Source}} on <strong>{{document.OriginalDate}}</strong></span>
-				<span class="upload">Uploaded on <strong>{{document.UploadDate}}</strong> by <span class="uploader">{{document.UploaderUsername}}</span></span>
-				<span ng-repeat="tag in document.Tags" class="np-document-tag"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</span>
+					<span class="source">Source: {{document.Source}}  ({{ document.Country }}) on <strong>{{document.OriginalDate | date:'dd MMMM yyyy, hh:mm'}</strong></span>
+					<span class="upload">Uploaded on <strong>{{document.UploadDate | date:'dd MMMM yyyy, hh:mm'}</strong> by <span class="uploader">{{document.UploaderUsername}}</span></span>
+					<span class="request" ng-show="item.requester">Requested by: {{document.FOIRequester }}</span>
+					<div class="tags-metadata">
+						<span ng-repeat="tag in document.Tags" class="np-document-tag"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</span>
+					</div>
 				</div>
 			</div>
 			<div class="col-lg-6">
-			<ul class="nav nav-pills pull-right">
+				<ul class="nav nav-pills pull-right">
 				<li><a ng-href="https://twitter.com/share?url={{twitter.url | urlencode}}&text={{twitter.text | urlencode}}&hashtags=nulpunt" class="btn btn-default" data-lang="en" target="_blank" >Tweet this document</a></li>
 				<li><a class="btn btn-default" href="/#/documents/">More documents</a></li>
 			</ul>
@@ -120,8 +123,7 @@
 			<div class="annotations-placeholder"></div>
 		</div>
 	</div>
-
-
+	
 	<div ng-repeat="annotation in annotations">
 		<h3>Annotation on this page</h3>
 		<p class="np-document-description">{{ annotation.Annotation }}</p>

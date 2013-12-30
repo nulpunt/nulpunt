@@ -353,6 +353,7 @@ nulpunt.controller("TrendingCtrl", function($scope) {
 			title: "Verzoek militaire bijstand inzet Raven UAV Culemborg", 
 			description: "Verzoek militaire bijstand in het kader van de handhaving van de openbare orde op grond van de Politiewet, art. 59, met de inzet van een Raven mini UAV op 18, 21 en 31 december 2012 in de gemeente Culemborg tijdens de opname van televisie programma 'Pauw in Culemborg' door de Burgemeester van de gemeente Culemborg.", 
 			source: "Ministerie van Binnenlandse Zaken en Koninkrijksrelaties", 
+			country: "NL",
 			sourceDate: "01/12/2011", 
 			uploadDate: "05/12/2013",
 			docID: "52bee9390b4aec49b4a50be2",
@@ -360,7 +361,7 @@ nulpunt.controller("TrendingCtrl", function($scope) {
 			uploaderColor: "#4effa4",
 			requester: "Rejo Zenger",
 			type: "Verzoek Externe Bijstand",
-			nrOfPages: 300,
+			nrOfPages: 2,
 			nrOfAnnotations: 6,
 			nrOfDrafts: 2,
 			nrOfComments: 8,
@@ -376,25 +377,26 @@ nulpunt.controller("TrendingCtrl", function($scope) {
 		},
 		{
 			title: "Verdict US Foreign Intelligence Surveillance Court NSA", 
-			description: "A short 1 or 2 sentence description of the document. Include or not?", 
-			source: "United States Foreign Intelligence Surveillance Court (USA)", 
+			description: "The Foreign Intelligence Surveillance Court verdict on the bulk acquisition of metadata by the National Security Agency (NSA). The matter discussed is the gathering of large amounts of data, which for years have exceeded the previously authorized acquisition.", 
+			source: "United States Foreign Intelligence Surveillance Court",
+		    country: "USA",
 			sourceDate: "unknown", 
 			uploadDate: "12/11/2013",
 			docID: "52c1ac7d0b4aec49b4a50eaf",			
 			uploader: "0.",
 			uploaderColor: "#ffb060",
-			requester: "xnone",
+/* 			requester: "xnone", */
 /* 			type: "congressional report", */
-			nrOfPages: 20,
+			nrOfPages: 11,
 			nrOfAnnotations: 32,
 			nrOfDrafts: 7,
 			nrOfComments: 18,
 			nrOfBookmarks: 12, 
 			tags: [
-				{title: "data retention"},
-				{title: "espionage"},
-				{title: "surveillance"},
-				{title: "privacy"}													
+				{title: "Data Retention"},
+				{title: "Espionage"},
+				{title: "Surveillance"},
+				{title: "Privacy"}													
 			],
 			annotations: [
 				{annotationDate: "2013-08-20", annotator: "rick", annotation: "Quas illaboritati ius de plit prae vid maxim que dendae re ne plaborio. Facideb itatur ressiment apiendae. Itatemo luptaestius am essimi, te rem volorum sed maximintiis si remporp oremperatia dit incitati dolorposse provitas ad ut fuga. Hillore nobitemquis et ma si con commol"}
@@ -402,7 +404,8 @@ nulpunt.controller("TrendingCtrl", function($scope) {
 		{
 			title: "Contract Koninklijke Landmacht en Blackwater", 
 /* 			description: "A short 1 or 2 sentence description of the document. Include or not?",  */
-			source: "Ministerie van Defensie (NL)", 
+			source: "Ministerie van Defensie",
+			country: "NL",
 			sourceDate: "12/01/2005", 
 			uploadDate: "03/12/2013",
 			docID: "52bf00290b4aec49b4a50bfc",
