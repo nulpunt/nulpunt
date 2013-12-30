@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"log"
 	"sync"
 	"time"
 )
@@ -165,10 +166,12 @@ func (cs *ClientSession) done() {
 // Authenticate returns the account record if successful, nil otherwise
 // We need the Admin flag in the user interface.
 func (cs *ClientSession) authenticateAccount(username string, password string) (*Account, error) {
+	log.Printf("authenticateAccount got: %#v, %#v\n", username, password)
 	acc, err := getAccount(username)
 	if err != nil {
 		return nil, err
 	}
+	log.Printf("authenticateAccount got account: %#v\n", acc)
 	if acc == nil {
 		return nil, nil
 	}
@@ -178,6 +181,7 @@ func (cs *ClientSession) authenticateAccount(username string, password string) (
 	}
 	if valid {
 		cs.account = acc
+		log.Printf("authenticateAccount returns %#v\n", acc)
 		return acc, nil
 	}
 	return nil, nil

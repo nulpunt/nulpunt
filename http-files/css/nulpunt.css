@@ -1,5 +1,5 @@
 body, html {
-
+	height:100%;
 }
 a:link, a:visited, a:active {
 	   color: #000;
@@ -260,6 +260,7 @@ ul.features {
     text-shadow:none;
 }
 
+.nav > li > a:hover,
 .btn:hover {
 	background:#222;
 	color:#FFF;
@@ -277,8 +278,24 @@ ul.features {
 	margin-bottom:20px;
 }
 
+
+.TagSearchButton {
+	cursor: pointer;
+}
+
 .imageBox {
 	-webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
 	-moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
 	box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
+}
+
+a.custom-tweet-button {
+	display: block;
+	padding: 2px 5px 2px 20px;
+	background: url('//img/twitter.ico') 1px center no-repeat;
+	border: 1px solid #ccc;
+}
+
+.masthead.document-viewer {
+	padding-top:15px;
 }

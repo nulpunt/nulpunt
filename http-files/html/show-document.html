@@ -60,7 +60,7 @@
 	}
 </style>
 
-<div class="masthead">
+<div class="masthead document-viewer">
 	<div class="container">
 	<div class="row">
 		  	<div class="col-lg-6">
@@ -71,9 +71,11 @@
 				<span ng-repeat="tag in document.Tags" class="np-document-tag"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</span>
 				</div>
 			</div>
-			<div class="col-lg-4">
-				<h1></h1>
-			</div>
+			<div class="col-lg-6">
+			<ul class="nav nav-pills pull-right">
+				<li><a ng-href="https://twitter.com/share?url={{twitter.url | urlencode}}&text={{twitter.text | urlencode}}&hashtags=nulpunt" class="btn btn-default" data-lang="en" target="_blank" >Tweet this document</a></li>
+				<li><a class="btn btn-default" href="/#/documents/">More documents</a></li>
+			</ul>
 			</div>
 	</div>
 	</div>
@@ -83,18 +85,19 @@
 	<!-- <div ng-repeat="page in pages" > -->
 	<div class="row">
 	<div class="pageView col-lg-8">
+
 		<div class="row">
-			<h4>Page {{ currentPage.number }}</h4>
-		
-			<div class="pull-right">
-				<a class="btn btn-sm" ng-click="prevPage()">Previous page</a>
-				<input ng-model="currentPage.number" type="number" width="4" /> of {{document.PageCount}}
-				<a class="btn btn-sm" ng-click="nextPage()">Next page</a>
+				<h4 class="pull-left">Page {{ currentPage.number }}</h4>
+			
+				<div class="pull-right">
+					<a class="btn btn-sm" ng-click="prevPage()">Previous page</a>
+					<input ng-model="currentPage.number" type="number" width="4" /> of {{document.PageCount}}
+					<a class="btn btn-sm" ng-click="nextPage()">Next page</a>
+				</div>
 			</div>
-		</div>
-		<div class="row">
-			<div class="imageBox" >
-				<img ng-src="/docfiles/pages/{{document.ID}}/{{currentPage.number}}.png" class="img-responsive" />
+			<div class="row">
+				<div class="imageBox" >
+					<img ng-src="/docfiles/pages/{{document.ID}}/{{currentPage.number}}.png" class="img-responsive" />
 			</div>
 			<div id="lines" class="selectable" >
 				<div class="line" ng-repeat="line in currentPage.data.Lines">
@@ -113,9 +116,12 @@
 	<div class="col-lg-4">
 		<div class="annotations-placeholder">
 		</div>
+		<div class="col-lg-4">
+			<div class="annotations-placeholder"></div>
+		</div>
 	</div>
-	</div>
-	
+
+
 	<div ng-repeat="annotation in annotations">
 		<h3>Annotation on this page</h3>
 		<p class="np-document-description">{{ annotation.Annotation }}</p>
