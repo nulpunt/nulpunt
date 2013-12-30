@@ -36,8 +36,8 @@
 		<h2><a href="/#/document/{{ document.ID }}">{{ document.Title }}</a> <small>{{ document.Category }}</small></h2>
 		<div class="document-description"><p>{{document.Summary}}</p></div>
 			<div class="document-metadata">
-				<span class="source">Source: {{document.Source}} on {{document.OriginalDate | date:'dd MMMM yyyy, hh:mm'} ({{ document.Country }})</span>
-				<span class="upload">Uploaded on <strong>{{document.UploadDate | date:'dd MMMM yyyy, hh:mm'}</strong> by <span class="uploader">{{document.Uploader}}</span></span>
+				<span class="source">Source: {{document.Source}} on {{document.OriginalDate | date:'dd MMMM yyyy, hh:mm'}} ({{ document.Country }})</span>
+				<span class="upload">Uploaded on <strong>{{document.UploadDate | date:'dd MMMM yyyy, hh:mm'}}</strong> by <span class="uploader">{{document.Uploader}}</span></span>
 				<span class="request" ng-show="item.requester">Request by: {{document.FOIRequester }}</span>
 				<!-- <span class="language">Language: {{ document.Language }}</span> -->
 			</div>
