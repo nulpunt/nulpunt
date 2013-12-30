@@ -1,15 +1,18 @@
 <div class="trending">
 	<!-- trending template -->
 	  <div class="row">
-		  <div class="col-lg-12">
+		  <div class="col-lg-10">
 			  <h2>Trending on 0.</h2>
+		  </div>
+		  <div class="col-lg-2">
+		  	<a href="/#/documents/" class="btn btn-default btn-block">More documents</a>
 		  </div>
 	  </div>
 	  <div class="row trending-columns">
 	  <!-- first trending document -->
 	  <div ng-repeat="item in documents.items" class="col-lg-4" ng-class-even="'np-row-even'">	  
 		  <div class="document">
-		  	<a href="/#/document/{{item.docID}}"><h3>{{item.title}}</h3></a><span class="label">{{item.nrOfPages}}pp, {{item.type}}</span>
+		  	<a href="/#/document/{{item.docID}}"><h3>{{item.title}} <span class="label document-type">{{item.nrOfPages}}pp, {{item.type}}</span></h3></a>
 		  	<div class="document-metadata">
 				<span class="source">Source: {{item.source}} (NL) on <strong>{{item.sourceDate}}</strong></span>
 				<span class="upload">Uploaded on <strong>{{item.uploadDate}}</strong> by <span class="uploader">{{item.uploader}}</span></span>
