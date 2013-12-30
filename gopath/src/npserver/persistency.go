@@ -84,6 +84,14 @@ func initPersistency() {
 	// get "Pages" collection
 	colPages = dbNulpunt.C("pages")
 
+	err = colPages.EnsureIndex(mgo.Index{
+		Key:    []string{"documentId", "pageNumber"},
+		Unique: true,
+	})
+	if err != nil {
+		log.Fatalf("fatal error when ensuring index on pages.(documentId, pageNumber): %s\n", err)
+	}
+
 	// get "Annotations" collection
 	colAnnotations = dbNulpunt.C("annotations")
 
