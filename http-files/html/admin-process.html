@@ -15,7 +15,7 @@
 					<th>ID</th>
 					<th>Title</th>
 					<th>Uploader</th>
-					<th>Options</td>
+					<th>Tags</td>
 				</tr>
 			</thead>
 			<tbody>
@@ -24,6 +24,7 @@
 					<td>{{ doc.Title }}</td>
 					<td>{{ doc.UploaderUsername }}</td>
 					<td><a ng-href="/#/admin/process-editmeta/{{ doc.ID }}">Edit Metadata</a></td>
+					<td>{{ doc.Tags }}</td>
 				</tr>
 			</tbody>
 		</table>
