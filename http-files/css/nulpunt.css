@@ -96,7 +96,11 @@ p.intro {
 .utilities {
 	padding: 0 14px;
 }
-      
+
+.tags-metadata  {
+	margin-top: 12px;
+}
+
 /* old to delete */
 .np-nav-account-logo {
 	padding-top: 5px !important;
@@ -287,8 +291,9 @@ ul.features {
 }
 
 a.custom-tweet-button {
-	display: block;
-	padding: 2px 5px 2px 20px;
-	background: url('//img/twitter.ico') 1px center no-repeat;
-	border: 1px solid #ccc;
+       display: block;
+       padding: 2px 5px 2px 20px;
+       background: url('//img/twitter.ico') 1px center no-repeat;
+       border: 1px solid #ccc;
 }
+

@@ -1,20 +1,18 @@
 <div class="masthead documents" ng-hide="account.username">
 		  <div class="container">
 			<div class="row">
-			  	<div class="col-lg-6">
+			  	<div class="col-lg-12">
 			  		<h1>Documents</h1>
 				  	<!-- show tag-cloud -->
 					<div ng-controller="AdminTagsCtrl">
 
-					  <div class="row">
-					  <div class="col-lg-8">
+
+
 					    <ul class="list-unstyled">
 					      <li class="np-document-tag" ng-class="isElement(searchTags, tag.Tag)" ng-repeat="tag in tags">
 						<div class="TagSearchButton"  ng-click="TagSearch(searchTags, tag.Tag)">{{tag.Tag}}</div>
 					      </li>
 					    </ul>
-					  </div>
-					  </div>
 
 				</div> <!-- ng-controller="AdminTagsCtrl" -->
 			  	</div>
@@ -36,20 +34,19 @@
 	<div class="col-lg-8">
 
 		<h2><a href="/#/document/{{ document.ID }}">{{ document.Title }}</a> <small>{{ document.Category }}</small></h2>
-		<p class="np-document-description">{{ document.Summary }}</p>
-
+		<div class="document-description"><p>{{document.Summary}}</p></div>
 			<div class="document-metadata">
-				<span class="source">Source: {{document.Source}} on {{document.OriginalDate}}</span>
-				<span class="upload">Uploaded on <strong>{{document.UploadDate}}</strong> by <span class="uploader">{{document.Uploader}}</span></span>
-				<span class="country">Country: {{ document.Country }}</span>
-				<span ng-show="document.FOIRequester" class="wobber">Wobber: {{ document.FOIRequester }}</span>
-				<span ng-show="document.FOIARequest" class="wobverzoek">Wobverzoek: {{ document.FOIARequest }}</span>
-				<span class="language">Language: {{ document.Language }}</span>
+				<span class="source">Source: {{document.Source}} on {{document.OriginalDate | date:'dd MMMM yyyy, hh:mm'} ({{ document.Country }})</span>
+				<span class="upload">Uploaded on <strong>{{document.UploadDate | date:'dd MMMM yyyy, hh:mm'}</strong> by <span class="uploader">{{document.Uploader}}</span></span>
+				<span class="request" ng-show="item.requester">Request by: {{document.FOIRequester }}</span>
+				<!-- <span class="language">Language: {{ document.Language }}</span> -->
 			</div>
-
-		<span ng-repeat="tag in document.Tags" class="np-document-tag"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</span>
+		<div class="tags-metadata">
+			<span ng-repeat="tag in document.Tags" class="np-document-tag"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</span>
+		</div>
 	</div>
-	<div class="col-lg-3">
+	<div class="col-lg-4">
 	  <!-- <button type="button" class="btn btn-black np-open-document">Open document...</button> -->
 	</div>
 </div></div>
+
