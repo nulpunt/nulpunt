@@ -25,6 +25,7 @@
 		<p><span class="glyphicon glyphicon-list-alt"></span> {{ document.nrOfComments }}</p> <!-- comments -->
 		<!--<p><span class="glyphicon glyphicon-star-empty"></span> {{ document.nrOfBookmarks }}</p>--> <!-- bookmarks -->
 	</div>
+	
 	<div class="col-sm-8">
 		<h2><a href="/#/document/{{ document.ID }}">{{ document.Title }}</a></h2>
 		<p class="np-document-description">{{ document.Summary }}</p>
@@ -38,11 +39,27 @@
 		<p><strong>Wobverzoek:</strong> {{ document.FOIARequest }}</p>
 		<p><strong>Languange:</strong> {{ document.Language }}</p>
 		<p><strong>Category:</strong> {{ document.Category }}</p>
-
+		
 		<span ng-repeat="tag in document.Tags" class="np-document-tag">{{ tag }}</span>
 	</div>
+
 	<div class="col-sm-3">
 	  <a href="/#/document/{{ document.ID }}">Open document</a>
 	  <!-- <button type="button" class="btn btn-black np-open-document">Open document...</button> -->
 	</div>
+
+	<div class="col-sm-1">
+	  <a href="https://twitter.com/share?url=/#/document/{{ document.ID }}&text={{ document.Title }}" 
+	     class="custom-tweet-button" data-lang="en" target="_blank">Tweet</a>
+	  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+	  <style type="text/css" media="screen">
+	    .custom-tweet-button a {
+	    display: block;
+	    padding: 2px 5px 2px 20px;
+	    background: url('https://twitter.com/favicons/favicon.ico') 1px center no-repeat;
+	    border: 1px solid #ccc;
+	    }
+	  </style>
+	</div>
+
 </div>
