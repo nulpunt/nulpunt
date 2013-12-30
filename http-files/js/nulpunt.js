@@ -379,7 +379,7 @@ nulpunt.controller("TrendingCtrl", function($scope) {
 			title: "Verdict US Foreign Intelligence Surveillance Court NSA", 
 			description: "The Foreign Intelligence Surveillance Court verdict on the bulk acquisition of metadata by the National Security Agency (NSA). The matter discussed is the gathering of large amounts of data, which for years have exceeded the previously authorized acquisition.", 
 			source: "United States Foreign Intelligence Surveillance Court",
-			country: "USA"
+		    country: "USA",
 			sourceDate: "unknown", 
 			uploadDate: "12/11/2013",
 			docID: "52c1ac7d0b4aec49b4a50eaf",			
