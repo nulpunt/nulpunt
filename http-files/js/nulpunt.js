@@ -83,7 +83,6 @@ nulpunt.config(function($routeProvider) {
 		templateUrl: "/html/about.html",
 		controller: "AboutCtrl"
 	})
-
 	.when('/contact', {
 		templateUrl: "/html/contact.html",
 		controller: "ContactCtrl"
@@ -92,7 +91,6 @@ nulpunt.config(function($routeProvider) {
 		templateUrl: "/html/colophon.html",
 		controller: "ColophonCtrl"
 	})
-
 	.otherwise({
 		templateUrl: "/html/not-found.html",
 		controller: "NotFoundCtrl",
@@ -348,70 +346,76 @@ nulpunt.controller("TrendingCtrl", function($scope) {
 
 	$scope.documents.items = [
 		{
-			title: "Intentieverklaring met betrekking tot het aanvullen van de Overeenkomst betreffende de reconstructie van Rijksweg 2 en de aanleg van gemeentelijke wegen in het plangebied Hooggelegen (UTI-7801) ten behoeve van realisatie, beheer en onderhoud van nummerplaat registratieapparatuur voor het meten van verkeersgegevens.", 
-			description: "A short 1 or 2 sentence description of the document. Include or not?", 
-			docID: "752235",
-			source: "Commisie van Toezicht betreffende de Inlichtingen en Veiligheidsdiensten", 
-			sourceDate: "01/01/2004", 
-			uploadDate: "01/11/2013", 
-			uploader: "Nulpunt",
+			title: "Verzoek militaire bijstand inzet Raven UAV Culemborg", 
+			description: "Verzoek militaire bijstand in het kader van de handhaving van de openbare orde op grond van de Politiewet, art. 59, met de inzet van een Raven mini UAV op 18, 21 en 31 december 2012 in de gemeente Culemborg tijdens de opname van televisie programma 'Pauw in Culemborg' door de Burgemeester van de gemeente Culemborg.", 
+			source: "Ministerie van Binnenlandse Zaken en Koninkrijksrelaties", 
+			sourceDate: "01/12/2011", 
+			uploadDate: "05/12/2013",
+			docID: "52bee9390b4aec49b4a50be2",
+			uploader: "0.",
 			uploaderColor: "#4effa4",
-			requester: "Renée in de Maur",
-			type: "report",			
+			requester: "Rejo Zenger",
+			type: "Verzoek Externe Bijstand",
 			nrOfPages: 300,
 			nrOfAnnotations: 6,
 			nrOfDrafts: 2,
 			nrOfComments: 8,
 			nrOfBookmarks: 4,
 			tags: [
-				{title: "Iraq"}, 
-				{title:"Conspiracy"}, 
-				{title:"Another tag"}
+				{title: "Drones"}, 
+				{title:"Police"}, 
+				{title:"Surveillance"}
 			],
 			annotations: [
 				{annotationDate: "2013-11-24", annotator: "rick", annotation: "Quas illaboritati ius de plit prae vid maxim que dendae re ne plaborio. Facideb itatur ressiment apiendae. Itatemo luptaestius am essimi, te rem volorum sed maximintiis si remporp oremperatia dit incitati dolorposse provitas ad ut fuga. Hillore nobitemquis et ma si con commol"}
 			]
 		},
 		{
-			title: "Intentieverklaring met betrekking tot het aanvullen van de Overeenkomst betreffende de reconstructie van Rijksweg 2 en de aanleg van gemeentelijke wegen in het plangebied Hooggelegen", 
+			title: "Verdict US Foreign Intelligence Surveillance Court NSA", 
 			description: "A short 1 or 2 sentence description of the document. Include or not?", 
-			docID: "752235",
-			source: "The Government", 
-			sourceDate: "01/01/2004", 
-			uploadDate: "01/11/2013",
-			uploader: "Nulpunt",
+			source: "United States Foreign Intelligence Surveillance Court (USA)", 
+			sourceDate: "unknown", 
+			uploadDate: "12/11/2013",
+			docID: "52c1ac7d0b4aec49b4a50eaf",			
+			uploader: "0.",
 			uploaderColor: "#ffb060",
-			requester: "Michele Colombrino",
-			type: "congressional report",
+			requester: "xnone",
+/* 			type: "congressional report", */
 			nrOfPages: 20,
-			nrOfAnnotations: 32, 
-			nrOfDrafts: 7, 
-			nrOfComments: 18, 
+			nrOfAnnotations: 32,
+			nrOfDrafts: 7,
+			nrOfComments: 18,
 			nrOfBookmarks: 12, 
 			tags: [
-				{title: "Random tag"},
-				{title: "Transportation"},
-				{title: "Tag"}								
+				{title: "data retention"},
+				{title: "espionage"},
+				{title: "surveillance"},
+				{title: "privacy"}													
 			],
 			annotations: [
 				{annotationDate: "2013-08-20", annotator: "rick", annotation: "Quas illaboritati ius de plit prae vid maxim que dendae re ne plaborio. Facideb itatur ressiment apiendae. Itatemo luptaestius am essimi, te rem volorum sed maximintiis si remporp oremperatia dit incitati dolorposse provitas ad ut fuga. Hillore nobitemquis et ma si con commol"}
 			] },
 		{
-			title: "ten behoeve van realisatie, beheer en onderhoud van nummerplaat registratieapparatuur voor het meten van verkeersgegevens", 
-			description: "A short 1 or 2 sentence description of the document. Include or not?", 
-			docID: "752235",
-			source: "The Government", 
-			sourceDate: "01/01/2004", 
-			uploadDate: "01/11/2013", 
-			uploader: "Nulpunt",
-			type: "congressioal report",
+			title: "Contract Koninklijke Landmacht en Blackwater", 
+/* 			description: "A short 1 or 2 sentence description of the document. Include or not?",  */
+			source: "Ministerie van Defensie (NL)", 
+			sourceDate: "12/01/2005", 
+			uploadDate: "03/12/2013",
+			docID: "52bf00290b4aec49b4a50bfc",
+			uploader: "0.",
+			type: "contract report",
 			nrOfPages: 12,
 			uploaderColor: "#00b7ff",
-			nrOfAnnotations: 2, 
-			nrOfDrafts: 14, 
-			nrOfComments: 25, 
-			nrOfBookmarks: 4, 
-			tags: [{title: "Iraq"}],
+			requester : "R.G.C. Bik, Bureau Jansen & Janssen",
+			nrOfAnnotations: 2,
+			nrOfDrafts: 14,
+			nrOfComments: 25,
+			nrOfBookmarks: 4,
+			tags: [
+				{title: "Corporate State"},
+				{title: "Military"},
+				{title: "State Terrorism"}								
+				],
 			annotations: [
 				{annotationDate: "some day", annotator: "rick", annotation: "Quas illaboritati ius de plit prae vid maxim que dendae re ne plaborio. Facideb itatur ressiment apiendae. Itatemo luptaestius am essimi, te rem volorum sed maximintiis si remporp oremperatia dit incitati dolorposse provitas ad ut fuga. Hillore nobitemquis et ma si con commol"}
 			] },
@@ -482,9 +486,6 @@ nulpunt.controller('ContactCtrl', function($scope, $location) {
 });
 nulpunt.controller('ColophonCtrl', function($scope, $location) {
 	$scope.path = $location.url();
-});
-nulpunt.controller('AboutCtrl', function($scope, $location) {
-	$scope.path = $location.url()
 });
 
 nulpunt.controller("RegisterCtrl", function($scope, $rootScope, $http) {
