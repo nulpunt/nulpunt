@@ -241,6 +241,32 @@ div.np-tagline p {
 }
 
 ul.features {
-    font-size: 24px;
-    line-height: 1;
+    font-size:21px;
+    line-height:24px;
+}
+
+.btn {
+	background:#000 !important;
+	color:#FFF !important;
+	-webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
+    border-radius:4px;
+    text-shadow:none;
+}
+
+.btn:hover {
+	background:#333;
+	color:#FFF;
+}
+
+.form-control {
+	border:0;
+	-webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
+	-moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
+	box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.form-group {
+	margin-bottom:20px;
 }
