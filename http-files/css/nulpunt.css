@@ -286,7 +286,7 @@ ul.features {
 	box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
 }
 
-.custom-tweet-button a {
+a.custom-tweet-button {
 	display: block;
 	padding: 2px 5px 2px 20px;
 	background: url('//img/twitter.ico') 1px center no-repeat;
