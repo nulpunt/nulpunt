@@ -62,58 +62,56 @@
 
 <div class="masthead">
 	<div class="container">
-	<div class="row">
+		<div class="row">
 		  	<div class="col-lg-6">
 		  		<h1>{{ document.Title }}</h1>
 		  		<div class="document-metadata">
-				<span class="source">Source: {{document.Source}} on <strong>{{document.OriginalDate}}</strong></span>
-				<span class="upload">Uploaded on <strong>{{document.UploadDate}}</strong> by <span class="uploader">{{document.UploaderUsername}}</span></span>
-				<span ng-repeat="tag in document.Tags" class="np-document-tag"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</span>
+					<span class="source">Source: {{document.Source}} on <strong>{{document.OriginalDate}}</strong></span>
+					<span class="upload">Uploaded on <strong>{{document.UploadDate}}</strong> by <span class="uploader">{{document.UploaderUsername}}</span></span>
+					<span ng-repeat="tag in document.Tags" class="np-document-tag"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</span>
 				</div>
 			</div>
 			<div class="col-lg-4">
 				<h1></h1>
 			</div>
-			</div>
-	</div>
+		</div>
 	</div>
 </div>
 
 <div class="container document-viewer">
 	<!-- <div ng-repeat="page in pages" > -->
 	<div class="row">
-	<div class="pageView col-lg-8">
-		<div class="row">
-			<h4>Page {{ currentPage.number }}</h4>
-		
-			<div class="pull-right">
-				<a class="btn btn-sm" ng-click="prevPage()">Previous page</a>
-				<input ng-model="currentPage.number" type="number" width="4" /> of {{document.PageCount}}
-				<a class="btn btn-sm" ng-click="nextPage()">Next page</a>
-			</div>
-		</div>
-		<div class="row">
-			<div class="imageBox" >
-				<img ng-src="/docfiles/pages/{{document.ID}}/{{currentPage.number}}.png" class="img-responsive" />
-			</div>
-			<div id="lines" class="selectable" >
-				<div class="line" ng-repeat="line in currentPage.data.Lines">
-					<div ng-repeat="character in line"
-							class="charpos charpos-{{character.C}}" style="bottom: {{character.Y1}}%; left: {{character.X1}}%;"
-							>{{character.C}}</div>
+		<div class="pageView col-lg-8">
+			<div class="row">
+				<h4>Page {{ currentPage.number }}</h4>
+			
+				<div class="pull-right">
+					<a class="btn btn-sm" ng-click="prevPage()">Previous page</a>
+					<input ng-model="currentPage.number" type="number" width="4" /> of {{document.PageCount}}
+					<a class="btn btn-sm" ng-click="nextPage()">Next page</a>
 				</div>
 			</div>
+			<div class="row">
+				<div class="imageBox" >
+					<img ng-src="/docfiles/pages/{{document.ID}}/{{currentPage.number}}.png" class="img-responsive" />
+				</div>
+				<div id="lines" class="selectable" >
+					<div class="line" ng-repeat="line in currentPage.data.Lines">
+						<div ng-repeat="character in line"
+								class="charpos charpos-{{character.C}}" style="bottom: {{character.Y1}}%; left: {{character.X1}}%;"
+								>{{character.C}}</div>
+					</div>
+				</div>
+			</div>
+			<div class="row pull-right">
+					<a class="btn btn-sm" ng-click="prevPage()">Previous page</a>
+					<input ng-model="currentPage.number" type="number" size="4" /> of {{document.PageCount}}
+					<a class="btn btn-sm" ng-click="nextPage()">Next page</a>
+			</div>
 		</div>
-		<div class="row pull-right">
-				<a class="btn btn-sm" ng-click="prevPage()">Previous page</a>
-				<input ng-model="currentPage.number" type="number" size="4" /> of {{document.PageCount}}
-				<a class="btn btn-sm" ng-click="nextPage()">Next page</a>
+		<div class="col-lg-4">
+			<div class="annotations-placeholder"></div>
 		</div>
-	</div>
-	<div class="col-lg-4">
-		<div class="annotations-placeholder">
-		</div>
-	</div>
 	</div>
 	
 	<div ng-repeat="annotation in annotations">
