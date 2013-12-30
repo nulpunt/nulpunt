@@ -732,7 +732,8 @@ nulpunt.controller("AdminProcessEditMetaCtrl", function($scope, $http, $routePar
 
 		$scope.OriginalDateString = String($filter('date')(data.document.OriginalDate, 'dd-MM-yyyy'));
 		$scope.document = data.document;
-		// cheat to test: $scope.document.Categories = ["irak", "test"];
+	    if($scope.document.Tags == undefined) { $scope.document.Tags = []; };
+		console.log(data);
 	}).
 	error(function(error) {
 		console.log('error retrieving document: ', error);
