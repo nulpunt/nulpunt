@@ -5,7 +5,6 @@ import (
 	"log"
 	"net"
 	"net/http"
-	"strings"
 )
 
 const headerKeySessionKey = `X-Nulpunt-SessionKey`
@@ -103,7 +102,7 @@ func initHTTPServer() {
 
 		// listen and serve on given port
 		// error is fatal
-		err := http.ListenAndServe(":"+flags.HTTPPort, alphaRouter)
+		err := http.ListenAndServe(":"+flags.HTTPPort, rootRouter)
 		if err != nil {
 			log.Fatalf("fatal error listening/serving http on tcp: %s\n", err)
 		}
@@ -134,7 +133,7 @@ func initHTTPServer() {
 
 			// serve on the opened unix socket
 			// an error (when not closing down) is fatal
-			err = http.Serve(socket, alphaRouter)
+			err = http.Serve(socket, rootRouter)
 			if !socketClosing && err != nil {
 				log.Fatalf("fatal error serving http on the unix socket: %s\n", err)
 			}

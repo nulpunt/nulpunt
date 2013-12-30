@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	goflags "github.com/jessevdk/go-flags" // rename import to `goflags` (file scope) so we can use `var flags` (package scope)
+	"log"
 	"os"
 )
 
@@ -47,6 +48,6 @@ func initFlags() {
 	}
 
 	if flags.DisableAlphaAuth {
-		fmt.Printf("DEPRECATED flag --disable-alpha-auth: alpha auth has been stripped from the source code, therefore --disable-alpha-auth is of no use anymore. It will be removed in future release.")
+		log.Printf("DEPRECATED flag --disable-alpha-auth: alpha auth has been stripped from the source code, therefore --disable-alpha-auth is of no use anymore. It will be removed in future release.")
 	}
 }
