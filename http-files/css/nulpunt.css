@@ -270,3 +270,7 @@ ul.features {
 .form-group {
 	margin-bottom:20px;
 }
+
+.TagSearchButton {
+	cursor: pointer;
+}
