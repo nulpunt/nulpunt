@@ -1,65 +1,56 @@
-<h1>Documents</h1>
-  	 <!-- show tag-cloud -->
-	<div ng-controller="AdminTagsCtrl">
+<div class="masthead documents" ng-hide="account.username">
+		  <div class="container">
+			<div class="row">
+			  	<div class="col-lg-6">
+			  		<h1>Documents</h1>
+				  	<!-- show tag-cloud -->
+					<div ng-controller="AdminTagsCtrl">
 
+					  <div class="row">
+					  <div class="col-lg-8">
+					    <ul class="list-unstyled">
+					      <li class="np-document-tag" ng-class="isElement(searchTags, tag.Tag)" ng-repeat="tag in tags">
+						<div class="TagSearchButton"  ng-click="TagSearch(searchTags, tag.Tag)">{{tag.Tag}}</div>
+					      </li>
+					    </ul>
+					  </div>
+					  </div>
+
+				</div> <!-- ng-controller="AdminTagsCtrl" -->
+			  	</div>
+			  	<div class="col-lg-4">
+				</div>
+			</div>
+		</div>
+</div>
+
+<div class="container">
 	  <div class="row">
-	  <div class="col-lg-6">
-	    <ul class="list-unstyled">
-	      <li class="np-document-tag" ng-class="isElement(searchTags, tag.Tag)" ng-repeat="tag in tags">
-		<div class="TagSearchButton"  ng-click="TagSearch(searchTags, tag.Tag)">{{tag.Tag}}</div>
-	      </li>
-	    </ul>
+		  <div class="col-lg-12">
+		  	 <h1></h1>
+		  </div>
 	  </div>
-	  </div>
-
-	</div> <!-- ng-controller="AdminTagsCtrl" -->
-
-<div ng-hide="documents"><p>This pages shows the files that match any of the tags you select above.</p></div>
-
 
 <div ng-repeat="document in documents" class="row np-row np-document" ng-class-even="'np-row-even'">
-	<div class="col-sm-1">
-	<h5>Stats</h5>
-		<p><span class="glyphicon glyphicon-align-justify"></span> {{ document.nrOfAnnotations }}</p> <!-- annotations -->
-		<!--<p><span class="glyphicon glyphicon-pencil"></span> {{ document.nrOfDrafts }}</p> --><!-- drafts --> 
-		<p><span class="glyphicon glyphicon-list-alt"></span> {{ document.nrOfComments }}</p> <!-- comments -->
-		<!--<p><span class="glyphicon glyphicon-star-empty"></span> {{ document.nrOfBookmarks }}</p>--> <!-- bookmarks -->
-	</div>
-	
-	<div class="col-sm-8">
-		<h2><a href="/#/document/{{ document.ID }}">{{ document.Title }}</a></h2>
-		<p class="np-document-description">{{ document.Summary }}</p>
-		<p><strong>Source:</strong> {{ document.Source }}</p>
-		<p><strong>Source date:</strong> {{ document.OriginalDate }}</p>
-		<p><strong>Upload date:</strong> {{ document.UploadDate }}</p>
-		<p><strong>Uploader:</strong> {{ document.Uploader }}</p>
-		<p><strong>Source:</strong> {{ document.Source }}</p>
-		<p><strong>Country:</strong> {{ document.Country }}</p>
-		<p><strong>Wobber:</strong> {{ document.FOIRequester }}</p>
-		<p><strong>Wobverzoek:</strong> {{ document.FOIARequest }}</p>
-		<p><strong>Languange:</strong> {{ document.Language }}</p>
-		<p><strong>Category:</strong> {{ document.Category }}</p>
-		
-		<span ng-repeat="tag in document.Tags" class="np-document-tag">{{ tag }}</span>
-	</div>
 
-	<div class="col-sm-3">
-	  <a href="/#/document/{{ document.ID }}">Open document</a>
+	<div class="col-lg-8">
+
+		<h2><a href="/#/document/{{ document.ID }}">{{ document.Title }}</a> <small>{{ document.Category }}</small></h2>
+		<p class="np-document-description">{{ document.Summary }}</p>
+
+			<div class="document-metadata">
+				<span class="source">Source: {{document.Source}} on {{document.OriginalDate}}</span>
+				<span class="upload">Uploaded on <strong>{{document.UploadDate}}</strong> by <span class="uploader">{{document.Uploader}}</span></span>
+				<span class="country">Country: {{ document.Country }}</span>
+				<span class="wobber">Wobber: {{ document.FOIRequester }}</span>
+				<span class="wobverzoek">Wobverzoek: {{ document.FOIARequest }}</span>
+				<span class="language">Language: {{ document.Language }}</span>
+				<span ng-repeat="tag in document.Tags" class="np-document-tag"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</span>
+			</div>
+
+		<span ng-repeat="tag in document.Tags" class="np-document-tag"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</span>
+	</div>
+	<div class="col-lg-3">
 	  <!-- <button type="button" class="btn btn-black np-open-document">Open document...</button> -->
 	</div>
-
-	<div class="col-sm-1">
-	  <a href="https://twitter.com/share?url=/#/document/{{ document.ID }}&text={{ document.Title }}" 
-	     class="custom-tweet-button" data-lang="en" target="_blank">Tweet</a>
-	  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-	  <style type="text/css" media="screen">
-	    .custom-tweet-button a {
-	    display: block;
-	    padding: 2px 5px 2px 20px;
-	    background: url('https://twitter.com/favicons/favicon.ico') 1px center no-repeat;
-	    border: 1px solid #ccc;
-	    }
-	  </style>
-	</div>
-
-</div>
+</div></div>
