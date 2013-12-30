@@ -113,6 +113,9 @@
 			<div class="annotations-placeholder"></div>
 		</div>
 	</div>
+
+	<a ng-href="https://twitter.com/share?url={{twitter.url | urlencode}}&text={{twitter.text | urlencode}}" 
+			class="custom-tweet-button" data-lang="en" target="_blank" >Tweet</a>
 	
 	<div ng-repeat="annotation in annotations">
 		<h3>Annotation on this page</h3>

@@ -285,6 +285,10 @@ nulpunt.controller("ShowDocCtrl", function($scope, $http, $routeParams) {
 			console.log(data);
 			$scope.document = data.document;
 			$scope.annotations = data.annotations;
+			$scope.twitter = {
+				url: "https://alpha.nulpunt.nu/#/document/"+data.document.ID,
+				text: data.document.Title,
+			};
 		}).error(function(error) {
 			console.log('error retrieving raw documents: ', error);
 		});
@@ -817,4 +821,8 @@ nulpunt.filter('bytes', function() {
 		number = Math.floor(Math.log(bytes) / Math.log(1024));
 		return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) + ' ' + units[number];
 	}
+});
+
+nulpunt.filter('urlencode', function() {
+	return window.escape;
 });
