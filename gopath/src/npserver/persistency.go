@@ -80,9 +80,22 @@ func initPersistency() {
 
 	// get "Documents" collection
 	colDocuments = dbNulpunt.C("documents")
+	err = colDocuments.EnsureIndex(mgo.Index{
+		Key: []string{"tags"}, //++ TODO: (published, tags) ?
+	})
+	if err != nil {
+		log.Fatalf("fatal error when ensuting index on documents.tags: %s\n", err)
+	}
 
 	// get "Pages" collection
 	colPages = dbNulpunt.C("pages")
+	err = colPages.EnsureIndex(mgo.Index{
+		Key:    []string{"documentId", "pageNumber"},
+		Unique: true,
+	})
+	if err != nil {
+		log.Fatalf("fatal error when ensuring index on pages.(documentId, pageNumber): %s\n", err)
+	}
 
 	// get "Annotations" collection
 	colAnnotations = dbNulpunt.C("annotations")
