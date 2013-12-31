@@ -56,8 +56,8 @@ func insertDocument(doc *Document) error {
 
 // upsertDocument inserts a new document in the DB. Or updates an existing one.
 // Document must have a valid ID, eg from newDocument
-func upsertDocument(doc *Document) error {
-	chinfo, err := colDocuments.UpsertId(doc.ID, doc)
+func upsertDocument(docID bson.ObjectId, doc interface{}) error {
+	chinfo, err := colDocuments.UpsertId(docID, doc)
 	log.Printf("Upsert:change info: %#v\n", chinfo)
 	if err != nil {
 		mgoErr := err.(*mgo.LastError)
