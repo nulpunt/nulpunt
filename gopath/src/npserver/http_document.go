@@ -45,6 +45,11 @@ func getPageHandlerFunc(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "error", http.StatusInternalServerError)
 		return
 	}
+	// Ugly Hack
+	// Delete the Lines and Text with OCR-data before we send it out.
+	// It's too much for the poor browsers.
+	page.Lines = [][]PageChar{}
+	page.Text = ""
 
 	err = json.NewEncoder(w).Encode(page)
 	if err != nil {
@@ -268,71 +273,95 @@ func getDocumentListHandler(rw http.ResponseWriter, req *http.Request) {
 }
 
 func insertDocumentHandler(rw http.ResponseWriter, req *http.Request) {
-	log.Printf("\n\ninsertDocument-request: %v\n", req)
+	// 	log.Printf("\n\ninsertDocument-request: %v\n", req)
 
-	switch req.Method {
-	case "POST":
-		// get session
-		cs, err := getClientSession(req.Header.Get(headerKeySessionKey))
-		if err != nil {
-			http.Error(rw, "error", http.StatusInternalServerError)
-			return
-		}
-		defer cs.done()
+	// 	switch req.Method {
+	// 	case "POST":
+	// 		// get session
+	// 		cs, err := getClientSession(req.Header.Get(headerKeySessionKey))
+	// 		if err != nil {
+	// 			http.Error(rw, "error", http.StatusInternalServerError)
+	// 			return
+	// 		}
+	// 		defer cs.done()
 
-		// get account
-		acc := cs.account
-		if acc == nil || acc.Admin == false {
-			http.Error(rw, "forbidden", http.StatusForbidden)
-			return
-		}
+	// 		// get account
+	// 		acc := cs.account
+	// 		if acc == nil || acc.Admin == false {
+	// 			http.Error(rw, "forbidden", http.StatusForbidden)
+	// 			return
+	// 		}
 
-		body, _ := ioutil.ReadAll(req.Body)
-		log.Printf("\n\nbody is %s\n", string(body))
-		doc := &Document{}
-		err = json.Unmarshal(body, doc)
-		if err != nil {
-			log.Printf("\n\nJSON unmarshal error %#v\n", err)
-			http.Error(rw, "JSON unmarshal error", http.StatusBadRequest) // 400
-			return
-		}
+	// 		body, _ := ioutil.ReadAll(req.Body)
+	// 		log.Printf("\n\nbody is %s\n", string(body))
+	// 		doc := &Document{}
+	// 		err = json.Unmarshal(body, doc)
+	// 		if err != nil {
+	// 			log.Printf("\n\nJSON unmarshal error %#v\n", err)
+	// 			http.Error(rw, "JSON unmarshal error", http.StatusBadRequest) // 400
+	// 			return
+	// 		}
 
-		log.Printf("\n\nDocument to insert is: %#v\n", *doc)
+	// 		log.Printf("\n\nDocument to insert is: %#v\n", *doc)
 
-		if doc.ID == "" {
-			doc.ID = bson.NewObjectId()
-			log.Printf("\n\nCreating new ObjectId: %v\n", doc.ID)
-		}
-		err = insertDocument(doc)
-		if err != nil {
-			log.Printf("Error inserting  document: error %#v\n", err)
-			http.Error(rw, "error inserting document", http.StatusInternalServerError) // 500
-			return
-		}
+	// 		if doc.ID == "" {
+	// 			doc.ID = bson.NewObjectId()
+	// 			log.Printf("\n\nCreating new ObjectId: %v\n", doc.ID)
+	// 		}
+	// 		err = insertDocument(doc)
+	// 		if err != nil {
+	// 			log.Printf("Error inserting  document: error %#v\n", err)
+	// 			http.Error(rw, "error inserting document", http.StatusInternalServerError) // 500
+	// 			return
+	// 		}
 
-		//This is a HACK
-		// Add page-record
-		page := newPage()
-		page.DocumentID = doc.ID
-		page.PageNumber = 1
-		page.Text = "Hallo"
-		// page.Lines = [][]CharObject{ [ { ...
-		err = insertPage(page)
-		if err != nil {
-			log.Printf("Error inserting page: error %#v\n", err)
-			http.Error(rw, "error inserting page", http.StatusInternalServerError) // 500
-			return
-		}
+	// 		//This is a HACK
+	// 		// Add page-record
+	// 		page := newPage()
+	// 		page.DocumentID = doc.ID
+	// 		page.PageNumber = 1
+	// 		page.Text = "Hallo"
+	// 		// page.Lines = [][]CharObject{ [ { ...
+	// 		err = insertPage(page)
+	// 		if err != nil {
+	// 			log.Printf("Error inserting page: error %#v\n", err)
+	// 			http.Error(rw, "error inserting page", http.StatusInternalServerError) // 500
+	// 			return
+	// 		}
 
-		rw.WriteHeader(200)
-		rw.Write([]byte(`OK, inserted`))
-		return
-	default:
-		http.Error(rw, "error", http.StatusMethodNotAllowed) // 405
-	}
+	// 		rw.WriteHeader(200)
+	// 		rw.Write([]byte(`OK, inserted`))
+	// 		return
+	// 	default:
+	http.Error(rw, "error", http.StatusMethodNotAllowed) // 405
+	//	}
 }
 
 func updateDocumentHandler(rw http.ResponseWriter, req *http.Request) {
+	// type updateRecord struct {
+	// 	ID                 bson.ObjectId `bson:"_id"`
+	// 	//UploaderUsername   string        `bson:"uploaderUsername"`
+	// 	//UploadFilename     string        `bson:"uploadFilename"`     // original PDF filename.
+	// 	//UploadGridFilename string        `bson:"uploadGridFilename"` //  Filename into GridFS
+	// 	//UploadDate         time.Time     `bson:"uploadDate"`
+
+	// 	Language           string        `bson:"language"`
+	// 	//PageCount          int           `bson:"pageCount"`
+	// 	//AnalyseState       string        `bson:"analyseState"`
+
+	// 	Title    string   `bson:"title"`
+	// 	Summary  string   `bson:"summary"`
+	// 	Category string   `bson:"category"`
+	// 	Tags     []string `bson:"tags"` // contains tag.Tag
+
+	// 	FOIRequester string    `bson:"foiRequester"`
+	// 	FOIARequest  string    `bson:"foiaRequest"`
+	// 	OriginalDate time.Time `bson:"orginalDate"`
+	// 	Source       string    `bson:"source"`
+	// 	Country      string    `bson:"country"`
+	// 	Published    bool      `bson:"published"`
+	// }
+
 	log.Printf("\n\nupdateDocument-request: %v\n", req)
 	// get session
 	cs, err := getClientSession(req.Header.Get(headerKeySessionKey))
@@ -354,6 +383,7 @@ func updateDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 		body, _ := ioutil.ReadAll(req.Body)
 		log.Printf("\n\nbody is %s\n", string(body))
 		doc := &Document{}
+		//		doc := &updateRecord{}
 		err := json.Unmarshal(body, doc)
 		if err != nil {
 			log.Printf("\n\nJSON unmarshal error %#v\n", err)
@@ -362,7 +392,7 @@ func updateDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 		}
 
 		log.Printf("\n\nDocument to update is: %#v\n", *doc)
-		err = upsertDocument(doc)
+		err = upsertDocument(doc.ID, doc)
 		if err != nil {
 			log.Printf("Error inserting/updating  document: error %#v\n", err)
 			http.Error(rw, "error inserting/updating document", http.StatusInternalServerError) // 500

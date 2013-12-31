@@ -1,6 +1,13 @@
 <div ng-show="account.username" class="alert alert-success" >
 	<strong>Welcome back!</strong><br/>
 	You're logged in as {{account.username}}.
+
+	      <div ng-show="account.admin">
+		 <a ng-href="/#/admin/upload"><span class="glyphicon glyphicon-file" ></span> Upload documents</a>
+		 <a ng-href="/#/admin/analyse"><span class="glyphicon glyphicon-search" ></span> Ugly hack</a> <!-- remove this when OCR works -->
+		 <a href="/#/admin/process"><span class="glyphicon glyphicon-asterisk" ></span> Process documents</a>
+		 <a href="/#/admin/tags"><span class="glyphicon glyphicon-asterisk" ></span> Add/Remove tags</a>
+	      </div>
 </div>
 
 <div ng-show="error" class="alert alert-error" >

@@ -303,3 +303,10 @@ a.custom-tweet-button {
 .masthead.document-viewer {
 	padding-top:15px;
 }
+
+/* Temporary: navbar menu height fix */
+@media (min-width: 768px)
+.navbar-nav>li>a {
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
