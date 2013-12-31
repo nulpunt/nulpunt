@@ -35,11 +35,6 @@ func initHTTPServer() {
 	serviceRouter.Path("/sessionInit").HandlerFunc(sessionInitHandlerFunc)
 	serviceRouter.Path("/sessionCheck").HandlerFunc(sessionCheckHandlerFunc)
 
-	// These are temporary, take them out Soon.
-	serviceRouter.Path("/get-tags").HandlerFunc(adminGetTags) //  /service/get-tags, ie for all
-	serviceRouter.Path("/add-tag").HandlerFunc(adminAddTag)   //  /service/add-tags, ie only for admins
-	serviceRouter.Path("/delete-tag").HandlerFunc(adminDeleteTag)
-
 	// Document handlers
 	serviceRouter.Path("/getDocument").HandlerFunc(getDocumentHandler)
 	serviceRouter.Path("/getPage").HandlerFunc(getPageHandlerFunc)
@@ -64,11 +59,13 @@ func initHTTPServer() {
 	sessionRouter.Path("/dataBlobSave").HandlerFunc(sessionDataBlobSave)
 	sessionRouter.Path("/dataBlobLoad").HandlerFunc(sessionDataBlobLoad)
 
-	sessionRouter.Path("/add-annotation").HandlerFunc(addAnnotationHandler)
-	sessionRouter.Path("/add-comment").HandlerFunc(addCommentHandler)
+	// We don't offer annotations yet. BLOCK em.
+	//sessionRouter.Path("/add-annotation").HandlerFunc(addAnnotationHandler)
+	//sessionRouter.Path("/add-comment").HandlerFunc(addCommentHandler)
 
-	sessionRouter.Path("/get-profile").HandlerFunc(getProfileHandler)
-	sessionRouter.Path("/update-profile").HandlerFunc(updateProfileHandler)
+	// Users can't make profiles yet. BLOCK em.
+	//sessionRouter.Path("/get-profile").HandlerFunc(getProfileHandler)
+	//sessionRouter.Path("/update-profile").HandlerFunc(updateProfileHandler)
 
 	sessionRouter.Path("/get-documents-by-tags").HandlerFunc(getDocumentsByTagsHandler)
 
