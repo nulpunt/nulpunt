@@ -286,7 +286,7 @@ nulpunt.controller("ShowDocCtrl", function($scope, $http, $routeParams) {
 			$scope.document = data.document;
 			$scope.annotations = data.annotations;
 			$scope.twitter = {
-				url: "https://alpha.nulpunt.nu/#/document/"+data.document.ID,
+				url: "https://nulpunt.nu/#/document/"+data.document.ID,
 				text: data.document.Title,
 			};
 		}).error(function(error) {
