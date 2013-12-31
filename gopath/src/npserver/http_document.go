@@ -11,7 +11,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"time"
+//	"time"
 )
 
 // type Document struct is defined in document.go
