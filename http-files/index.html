@@ -9,6 +9,7 @@
     <link href="css/bootstrap-theme.css" rel="stylesheet" >
     <link href="css/datepicker.css" rel="stylesheet" >
     <link href="css/nulpunt.css" rel="stylesheet" >
+    <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/jquery.minicolors.css">
 
     <script src="js/jquery.min.js" ></script>
@@ -42,16 +43,8 @@
 
             }, 'xml');
 
+        	});
         });
-        	// Random 0. Logo colour
-			    jQuery('np-logo').hover(function() {
-			        var hue = 'rgb('
-			            + (Math.floor(Math.random() * 256)) + ','
-			            + (Math.floor(Math.random() * 256)) + ','
-			            + (Math.floor(Math.random() * 256)) + ')';
-			       jQuery(this).stop().animate( { color: hue }, 500);
-			    });
-			});
         </script>
 
   </head>
@@ -71,7 +64,7 @@
 					<span class="icon-bar"></span>
 				</button>
 			
-				<a class="navbar-brand" href="/#/"><img id="np-logo" class="svg" src="img/np-logo.svg" /></a>				
+				<a class="navbar-brand" href="/#/"><img id="np-logo" class="svg" src="img/np-logo_alpha.svg" /></a>				
 		
 			</div> <!-- "navbar-header -->
 			
@@ -105,7 +98,9 @@
 						<li><a	ng-class="getClass('/colophon')" href="/#/colophon">Colophon</a></li>
 					</ul>	
 					<ul class="nav navbar-nav navbar-right">
-					<li><a href="http://twitter.com/0punt">0. on Twitter</a></li>
+					<li><a href="http://facebook.com/"><i class="fa fa-lg fa-facebook-square"></i></a></li>
+					<li><a href="http://twitter.com/0punt"><i class="fa fa-lg fa-twitter-square"></i></a></li>
+					<li><a href="http://github.com/nulpunt"><i class="fa fa-lg fa-github-square"></i></a></li>
 					</ul>				
 					<div class="np-tagline">
 					<p>Towards a democracy without secrets.</p>

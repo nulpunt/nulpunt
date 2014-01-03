@@ -288,6 +288,7 @@ ul.features {
 }
 
 .imageBox {
+	margin-bottom:15px;
 	-webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
 	-moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
 	box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
@@ -302,4 +303,22 @@ a.custom-tweet-button {
 
 .masthead.document-viewer {
 	padding-top:15px;
+}
+
+/* Temporary: navbar menu height fix */
+#np-footer .navbar-nav>li>a {
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+
+.np-document-viewer-pagination {
+	font-size:12px;
+	height:auto;
+	padding:1px 5px;
+	line-height:1.5;
+}
+
+.np-logo-text-background {
+	fill:#FF0;
 }
