@@ -105,7 +105,6 @@ nulpunt.controller("MainCtrl", function($scope, $rootScope, AccountAuthService) 
 
 	$rootScope.$on("auth_changed", function() {
 		$scope.account = AccountAuthService.account;
-		$scope.gravatarHash = CryptoJS.MD5(AccountAuthService.account.email).toString(CryptoJS.enc.Hex);
 	});
 });
 
@@ -113,7 +112,6 @@ nulpunt.controller("NavbarCtrl", function($scope, $rootScope, $location, Account
 
 	$rootScope.$on("auth_changed", function() {
 		$scope.account = AccountAuthService.account;
-		$scope.gravatarHash = CryptoJS.MD5(AccountAuthService.account.email).toString(CryptoJS.enc.Hex);
 	});
 
 	$scope.search = function() {
