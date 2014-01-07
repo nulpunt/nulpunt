@@ -64,7 +64,7 @@ func getPageHandlerFunc(w http.ResponseWriter, r *http.Request) {
 // Get a single document, specified by DocID,
 // Get the Annotation, if specified.
 func getDocumentHandler(rw http.ResponseWriter, req *http.Request) {
-	log.Printf("getDocument-request: %v\n", req)
+	log.Printf("getDocument-request: %v\n", req.URL)
 
 	// assemble results into a json-object
 	result := make(map[string]interface{})
@@ -130,7 +130,7 @@ func getDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 // get all documents with certain limits.
 // For lazy loading place a start-at at next call
 func getDocumentsHandler(rw http.ResponseWriter, req *http.Request) {
-	log.Printf("getDocument-request: %v\n", req)
+	log.Printf("getDocument-request: %v\n", req.URL)
 
 	// assemble results into a json-object
 	result := make(map[string]interface{})

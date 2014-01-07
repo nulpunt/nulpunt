@@ -12,7 +12,7 @@ import (
 // type Annotation struct is defined in annotation.go
 
 func addAnnotationHandler(rw http.ResponseWriter, req *http.Request) {
-	log.Printf("\n\naddAnnotation-request: %v\n", req)
+	log.Printf("\n\naddAnnotation-request: %v\n", req.URL)
 
 	// get session
 	cs, err := getClientSession(req.Header.Get(headerKeySessionKey))
