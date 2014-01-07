@@ -59,9 +59,8 @@ func initHTTPServer() {
 	sessionRouter.Path("/dataBlobSave").HandlerFunc(sessionDataBlobSave)
 	sessionRouter.Path("/dataBlobLoad").HandlerFunc(sessionDataBlobLoad)
 
-	// We don't offer annotations yet. BLOCK em.
-	//sessionRouter.Path("/add-annotation").HandlerFunc(addAnnotationHandler)
-	//sessionRouter.Path("/add-comment").HandlerFunc(addCommentHandler)
+	sessionRouter.Path("/add-annotation").HandlerFunc(addAnnotationHandler)
+	sessionRouter.Path("/add-comment").HandlerFunc(addCommentHandler)
 
 	// Users can't make profiles yet. BLOCK em.
 	//sessionRouter.Path("/get-profile").HandlerFunc(getProfileHandler)

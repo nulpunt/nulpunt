@@ -81,16 +81,16 @@
 						<span ng-repeat="tag in document.Tags" class="np-document-tag"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</span>
 					</div>
 				</div>
-			</div>
+			</div> <!-- col-lg-6 -->
 			<div class="col-lg-6">
 				<ul class="nav nav-pills pull-right">
 				<li><a ng-href="https://twitter.com/share?url={{twitter.url | urlencode}}&text={{twitter.text | urlencode}}&hashtags=nulpunt" class="btn btn-default" data-lang="en" target="_blank" ><i class="fa fa-twitter"></i> Tweet this document</a></li>
 				<li><a class="btn btn-default" href="/#/documents/">More documents</a></li>
-			</ul>
+			        </ul>
 			</div>
-	</div>
-	</div>
-</div>
+	</div> <!-- row -->
+	</div> <!-- container -->
+</div> <!-- masthead document-viewer -->
 
 <div class="container document-viewer">
 	<!-- <div ng-repeat="page in pages" > -->
@@ -126,26 +126,30 @@
 					<a class="btn btn-xs col-lg-2 col-lg-offset-2" ng-click="nextPage()">Next page <span class="glyphicon glyphicon-chevron-right"></span></a>
 		</div>
 
-	</div>
+	</div> <!-- pageView -->
 
+	<h3>Annotations</h3>
 	<div ng-repeat="annotation in annotations">
-		<h3>Annotation on this page</h3>
 		<p class="np-document-description">{{ annotation.Annotation }}</p>
-		<p><strong>By:</strong> {{ annotation.AnnotatorUsername }}</p>
-		<p><strong>Date:</strong> {{annotation.annotationDate | date:'dd MMMM yyyy, hh:mm'}</p>
-		<p><strong>Coordinates:</strong> {{ annotation.Locations }}</p>
+		<p>By: {{ annotation.AnnotatorUsername }}</p>
+		<p>Date: {{annotation.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
+		<p>Coordinates: {{ annotation.Locations }}</p>
+		<p>The wisdom: <strong>{{ annotation.AnnotationText }}</strong></p>
 
 		<div ng-repeat="comment in annotation.Comments">
 			<h4>Comment</h4>
-			<p class="np-document-description">{{ comment.CommentText }}</p>
-			<p><strong>By:</strong> {{ comment.CommenterUsername }}</p>
-			<p><strong>Date:</strong> {{ comment.CreateDate }}</p>
-			<p><strong>Threaded comments:</strong> {{ comment.Comments }}</p>
+			<p><strong>{{ comment.CommentText }}</strong></p>
+			<p>By: {{ comment.CommenterUsername }}</p>
+			<p>Date: {{ comment.CreateDate }}</p>
+			<!-- we don't do threaded comments yet
+			     <p>Threaded comments: {{ comment.Comments }}</p>
+			     -->
 		</div> <!-- repeat comments in annotation -->
 
 		<h5>Add a comment (non threaded)</h5>
-
-		<div ng-controller="CommentSubmitCtrl">
+		<div ng_hide="account.username">You need to log in before you can post comments. Click <a href="/#/sign-in">Here</a></div>
+		<div ng_show="account.username">
+		   <div ng-controller="CommentSubmitCtrl">
 			<form ng-submit="submit()" role="form" class="form-horizontal">
 				<div class="form-group">
 					<label class="col-md-2 control-label">Your comment on these visions please</label>
@@ -159,16 +163,24 @@
 					</div>
 				</div>
 			</form>
-		</div>
+		</div> <!-- CommentSubmitCtrl -->
+            </div> <!-- ng_show="account.username -->
+	</div> <!-- annotation in annotations -->
 		<br><hr>
 
-		<p>Here you can create an annotation... 
-		<br>This is the interface we need.
-		<br>Someone might want to rewrite it with a nice pointy-clicky user interface. It should give the coordinates:
-		<br> ng-model="locations" value: { [ { PageNumber, x1, y1, x2, y2 }, ... ] } . We allow for multiple coordinates. These should be used when a single rectancle won't fit. For example when the selection starts indented. Or when an quote spans page boundaries. (future version).
-		<br>The server will add Annotator (username) and date-created.</p>
-
-		<div ng-controller="AnnotationSubmitCtrl">
+		<!--
+		    Here you can create an annotation... 
+		    This is the interface we need.
+		    Someone might want to rewrite it with a nice pointy-clicky user interface. It should give the coordinates:
+		    ng-model="locations" value: { [ { PageNumber, x1, y1, x2, y2 }, ... ] } 
+		    We allow for multiple coordinates. These should be used when a single rectancle won't fit. 
+		    For example when the selection starts indented. Or when an quote spans page boundaries. (future version).
+		    The server will add Annotator-Username and date-created.
+		-->
+		<h5>Create your annotation</h5>
+		<div ng_hide="account.username">You need to log in before you can post comments. Click <a href="/#/sign-in">Here</a></div>
+		<div ng_show="account.username">
+		   <div ng-controller="AnnotationSubmitCtrl">
 			<form ng-submit="submit()" role="form" class="form-horizontal">
 				<input type="hidden" ng-model="locations" value="{ [{ 1, 10, 20, 100, 40 }] }">
 				<div class="form-group">
@@ -183,8 +195,8 @@
 					</div>
 				</div>
 			</form>
-		</div>
-	</div>
+		</div> <!-- AnnotationSubmitCtrl -->
+              </div> <!-- ng_show="account.username -->
 </div> <!-- container -->
 <script>
 	// Disable image dragging, interferes with selection etc
