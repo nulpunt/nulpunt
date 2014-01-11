@@ -24,6 +24,7 @@ func initHTTPServer() {
 	rootRouter.PathPrefix("/html/").Handler(fileServer)
 	rootRouter.PathPrefix("/js/").Handler(fileServer)
 	rootRouter.PathPrefix("/img/").Handler(fileServer)
+	rootRouter.Path("/download-original/{documentIDHex}/{filename:.*}").HandlerFunc(downloadOriginalHandlerFunc)
 
 	// serve document files on /docfiles/
 	docfilesRouter := rootRouter.PathPrefix("/docfiles/").Subrouter()
