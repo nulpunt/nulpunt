@@ -17,6 +17,7 @@ type Account struct {
 	ID       bson.ObjectId `bson:"_id"`
 	Username string        `bson:"username"`
 	Admin    bool          `bson:"admin"`
+	Color    string        `bson:"color"` // read out what was created in AccountDetail (at signup)
 }
 
 // Account Details for password authentication.
@@ -24,6 +25,7 @@ type AccountDetail struct {
 	ID       bson.ObjectId `bson:"_id"`
 	Username string        `bson:"username"`
 	Email    string        `bson:"email"`
+	Color    string        `bson:"color"` // Set up here, read out from the db in Account
 	Hash     []byte        `bson:"hash"`
 	Salt     []byte        `bson:"salt"`
 	N        int           `bson:"n"`       // Parameters for the PBKDF2 hashing.
@@ -95,6 +97,7 @@ type Annotation struct {
 	ID                bson.ObjectId `bson:"_id"`
 	DocumentID        bson.ObjectId `bson:"documentId"` // to which document belong these annotations.
 	AnnotatorUsername string        `bson:"annotatorUsername"`
+	Color             string        `bson:"color"`
 	CreateDate        time.Time     `bson:"createDate"`
 	AnnotationText    string        `bson:"annotationText"`
 	Locations         []Location    `bson:"locations"`
@@ -112,6 +115,7 @@ type Location struct {
 type Comment struct {
 	ID                bson.ObjectId `bson:"_id"`
 	CommenterUsername string        `bson:"commenterUsername"`
+	Color             string        `bson:"color"`
 	CreateDate        time.Time     `bson:"createDate"`
 	CommentText       string        `bson:"commentText"`
 	Comments          []Comment     `bson:"comments"`

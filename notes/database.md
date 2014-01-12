@@ -6,6 +6,7 @@
  - `email` (string, optional)
  - `avatar` (to be decided, link to GridFS file?)
  - `admin` (bool) whether user is administrator or ordinary user 
+ - `color` (string) highlighting color chosen by the user
 
 ### profile
  - `_id` (bson.ObjectId)

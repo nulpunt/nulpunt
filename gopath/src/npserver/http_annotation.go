@@ -44,6 +44,7 @@ func addAnnotationHandler(rw http.ResponseWriter, req *http.Request) {
 		// Set every other field to things we control.
 		annot.ID = bson.NewObjectId()
 		annot.AnnotatorUsername = acc.Username
+		annot.Color = acc.Color
 		annot.CreateDate = time.Now()
 		annot.Comments = []Comment{}
 
@@ -56,8 +57,15 @@ func addAnnotationHandler(rw http.ResponseWriter, req *http.Request) {
 			return
 		}
 
+		// marshal and write out.
+		j, err := json.Marshal(annot)
+		if err != nil {
+			log.Printf("Error marshalling results: error %#v\n", err)
+			http.Error(rw, "Marshaling error", http.StatusInternalServerError) // 500
+			return
+		}
 		rw.WriteHeader(200)
-		rw.Write([]byte(`OK, inserted`))
+		rw.Write(j)
 		return
 	default:
 		http.Error(rw, "error", http.StatusMethodNotAllowed) // 405
@@ -106,6 +114,7 @@ func addCommentHandler(rw http.ResponseWriter, req *http.Request) {
 		comment := Comment{
 			ID:                bson.NewObjectId(),
 			CommenterUsername: acc.Username,
+			Color:             acc.Color,
 			CreateDate:        time.Now(),
 			CommentText:       params.CommentText,
 			Comments:          []Comment{},
@@ -119,8 +128,15 @@ func addCommentHandler(rw http.ResponseWriter, req *http.Request) {
 			return
 		}
 
+		// marshal and write out.
+		j, err := json.Marshal(comment)
+		if err != nil {
+			log.Printf("Error marshalling results: error %#v\n", err)
+			http.Error(rw, "Marshaling error", http.StatusInternalServerError) // 500
+			return
+		}
 		rw.WriteHeader(200)
-		rw.Write([]byte(`OK, inserted`))
+		rw.Write(j)
 		return
 	default:
 		http.Error(rw, "error", http.StatusMethodNotAllowed) // 405

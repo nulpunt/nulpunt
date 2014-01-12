@@ -8,7 +8,8 @@ nulpunt.factory('AccountAuthService', function($rootScope, $http, $q) {
 	var emptyAuth = {
 		username: "",
 		email: "",
-	    admin: false
+	    admin: false,
+	    color: "white"
 	};
 
 	var service = {
@@ -30,9 +31,10 @@ nulpunt.factory('AccountAuthService', function($rootScope, $http, $q) {
 			if(data.success) {
 				//++ retrieve account details from server (also in .authenticate())
 				service.account = {
-					username: data.username,
+				    username: data.username,
 				    email: "gjr19912@gmail.com",
-				    admin: data.admin
+				    admin: data.admin,
+				    color: data.color
 				};
 				$rootScope.$broadcast("auth_changed");
 			}
@@ -52,7 +54,8 @@ nulpunt.factory('AccountAuthService', function($rootScope, $http, $q) {
 				service.account = {
 					username: username,
 				    email: "gjr19912@gmail.com",
-				    admin: data.admin
+				    admin: data.admin,
+				    color: data.color
 				};
 				$rootScope.$broadcast("auth_changed");
 

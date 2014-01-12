@@ -164,7 +164,7 @@ func (cs *ClientSession) done() {
 }
 
 // Authenticate returns the account record if successful, nil otherwise
-// We need the Admin flag in the user interface.
+// We need the Admin flag and the Color value in the user interface
 func (cs *ClientSession) authenticateAccount(username string, password string) (*Account, error) {
 	log.Printf("authenticateAccount got: %#v, %#v\n", username, password)
 	acc, err := getAccount(username)

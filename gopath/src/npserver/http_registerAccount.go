@@ -11,6 +11,7 @@ func registerAccountHandlerFunc(w http.ResponseWriter, r *http.Request) {
 		Username string `json:"username"`
 		Email    string `json:"email"`
 		Password string `json:"password"`
+		Color    string `json:"color"`
 	}
 
 	type outDataType struct {
@@ -35,7 +36,7 @@ func registerAccountHandlerFunc(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = registerNewAccount(inData.Username, inData.Email, inData.Password)
+	err = registerNewAccount(inData.Username, inData.Email, inData.Password, inData.Color)
 	if err != nil {
 		if err == errAccountUsernameNotUnique {
 			outData.Error = "Username is already taken."
