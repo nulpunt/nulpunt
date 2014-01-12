@@ -57,23 +57,24 @@
 						<div class="help-form">You cannot change your password once you created it. Nor can we retrieve the password in case you forget it. The reason for this is that 0. saves your password by encrypting it on the server. See <a href="/#/about">About</a> for more information.</div>					
 					</div>
 				</div>
-<!-- 				<div class="row">
+				<div class="col-lg-6">
+					<div class="help-form">Choose your nice color!</div>
+				</div>		
+ 				<div class="row">
 					<div class="col-lg-6">
 						<div class="form-group row">
 							<div class="col-lg-6">
 								<label for="color" class="control-label sr-only" >Choose a Color</label>
-								<input type="text" id="colorSelector" class="form-control demo" data-inline="true" value="#4fc8db" placeholder="Choose a Color">
+								<input type="text" id="colorSelector" class="form-control demo" data-inline="true" value="#4fc8db" placeholder="Choose a Color" ng-model="color">
 							</div>
 							<div class="col-lg-6">
-								<div class="color-preview" style="display:block; height:150px; width:100%; background-color:red">
+								<div class="color-preview" style="display:block; background-color:{{ color }}">Use this selector to choose your highlighting color. This is how your text selection will look. Choose wisely.
 								</div>
 							</div>
 						</div>					
 					</div>
-					<div class="col-lg-6">
-						<div class="help-form">Choose your nice color!</div>
-					</div>		
-				</div> -->
+
+				</div>
 				<div class="form-group">
 					<div class="row">
 					<div class="col-lg-6">

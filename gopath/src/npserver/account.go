@@ -40,8 +40,8 @@ func getAccount(username string) (*Account, error) {
 	return acc, nil
 }
 
-func registerNewAccount(username string, email string, password string) error {
-	acc := NewAccountDetail(username, password, email)
+func registerNewAccount(username, email, password, color string) error {
+	acc := NewAccountDetail(username, password, email, color)
 	// insert into collection
 	err := colAccounts.Insert(acc)
 	if err != nil {
@@ -57,12 +57,13 @@ func registerNewAccount(username string, email string, password string) error {
 
 // Cryptographically strong hash generator.
 // Create a new account, salt and hash the password. return it
-func NewAccountDetail(username, password, email string) *AccountDetail {
+func NewAccountDetail(username, password, email, color string) *AccountDetail {
 	salt := randBytes(32)
 	acct := &AccountDetail{
 		ID:       bson.NewObjectId(),
 		Username: username,
 		Email:    email,
+		Color:    color,
 		Salt:     salt,
 		N:        16384,
 		R:        8,
