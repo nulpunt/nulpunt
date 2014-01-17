@@ -13,7 +13,7 @@ import (
 var flags struct {
 	Verbose          bool   `short:"v" long:"verbose" description:"Show verbose debug information"`
 	UnixSocket       string `long:"unix-socket" description:"Serve HTTP over unix socket"`
-	HTTPFiles        string `long:"http-files" description:"location for the http files" default:"./http-files/"`
+	HTTPFiles        string `long:"http-files" description:"DEPRECATED (was: location for the http files)" default:"./http-files/"`
 	HTTPPort         string `long:"http-port" description:"port for HTTP server to listen on" default:"8000"`
 	DisableAlphaAuth bool   `long:"disable-alpha-auth" description:"DEPRECATED (was: disable the alpha authentication check)"`
 	Environment      string `long:"environment" description:"environment (db/sock) this instance should use"`
@@ -49,5 +49,9 @@ func initFlags() {
 
 	if flags.DisableAlphaAuth {
 		log.Printf("DEPRECATED flag --disable-alpha-auth: alpha auth has been stripped from the source code, therefore --disable-alpha-auth is of no use anymore. It will be removed in future release.")
+	}
+
+	if flags.HTTPFiles != "./http-files/" {
+		log.Printf("DEPRECATED flag --http-files: loading of the http files is now done with go.rice. This flag be removed in future release.")
 	}
 }
