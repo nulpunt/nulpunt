@@ -1,0 +1,202 @@
+package rice
+
+import (
+	"errors"
+	"fmt"
+	"github.com/GeertJohan/go.rice/embedded"
+	"io/ioutil"
+	"os"
+	"path/filepath"
+	"runtime"
+	"strings"
+	"time"
+)
+
+// Box abstracts a directory for resources/files.
+// It can either load files from disk, or from embedded code (when `rice --embed` was ran).
+type Box struct {
+	name         string
+	absolutePath string
+	embed        *embedded.EmbeddedBox
+}
+
+// FindBox returns a Box instance for given name.
+// When the given name is a relative path, it's base path will be the calling pkg/cmd's source root.
+// When the given name is absolute, it's absolute. derp.
+// Make sure the path doesn't contain any sensitive information as it might be placed into generated go source (embedded).
+func FindBox(name string) (*Box, error) {
+	b := &Box{
+		name: name,
+	}
+
+	// find if box is embedded
+	if embed := embedded.EmbeddedBoxes[name]; embed != nil {
+		b.embed = embed
+		return b, nil
+	}
+	// box was not embedded
+
+	// when given name is an absolute path, set it as absolute path.
+	// otherwise calculate absolute path from caller source location
+	if filepath.IsAbs(name) {
+		return nil, errors.New("given name/path is aboslute")
+	}
+
+	// resolve absolute directory path
+	err := b.resolveAbsolutePathFromCaller()
+	if err != nil {
+		return nil, err
+	}
+
+	// check if absolutePath exists on filesystem
+	info, err := os.Stat(b.absolutePath)
+	if err != nil {
+		return nil, err
+	}
+	// check if absolutePath is actually a directory
+	if !info.IsDir() {
+		return nil, errors.New("given name/path is not a directory")
+	}
+
+	// all done
+	return b, nil
+}
+
+// MustFindBox returns a Box instance for given name, like FindBox does.
+// It does not return an error, instead it panics when an error occurs.
+func MustFindBox(name string) *Box {
+	box, err := FindBox(name)
+	if err != nil {
+		panic(err)
+	}
+	return box
+}
+
+func (b *Box) resolveAbsolutePathFromCaller() error {
+	_, callingGoFile, _, ok := runtime.Caller(2)
+	if !ok {
+		return errors.New("couldn't find caller on stack")
+	}
+
+	// resolve to proper path
+	pkgDir := filepath.Dir(callingGoFile)
+	b.absolutePath = filepath.Join(pkgDir, b.name)
+	return nil
+}
+
+// IsEmbedded indicates wether this box was embedded into the application
+func (b *Box) IsEmbedded() bool {
+	return b.embed != nil
+}
+
+// Time returns how actual the box is.
+// When the box is embedded, it's value is saved in the embedding code.
+// When the box is live, this methods returns time.Now()
+func (b *Box) Time() time.Time {
+	if b.IsEmbedded() {
+		return b.embed.Time
+	}
+
+	return time.Now()
+}
+
+// Open opens a File from the box
+// If there is an error, it will be of type *os.PathError.
+func (b *Box) Open(name string) (*File, error) {
+	if b.IsEmbedded() {
+		fmt.Printf("opening %s\n", name)
+
+		// // fast return for root
+		// if name == "/" {
+		// 	return &File{virtualD: newVirtualDir(b.embed.RootDir)}, nil
+		// }
+
+		// trim prefix (paths are relative to box)
+		name = strings.TrimPrefix(name, "/")
+
+		// search for file
+		ef := b.embed.Files[name]
+		if ef == nil {
+			// file not found, try dir
+			ed := b.embed.Dirs[name]
+			if ed == nil {
+				// dir not found, error out
+				return nil, &os.PathError{
+					Op:   "open",
+					Path: name,
+					Err:  os.ErrNotExist,
+				}
+			}
+			vd := newVirtualDir(ed)
+			return &File{virtualD: vd}, nil
+		}
+
+		// box is embedded
+		vf := newVirtualFile(ef)
+		return &File{virtualF: vf}, nil
+	}
+
+	// perform os open
+	file, err := os.Open(filepath.Join(b.absolutePath, name))
+	if err != nil {
+		return nil, err
+	}
+	return &File{realF: file}, nil
+}
+
+// Bytes returns the content of the file with given name as []byte
+func (b *Box) Bytes(name string) ([]byte, error) {
+	// check if box is embedded
+	if b.IsEmbedded() {
+		// find file in embed
+		ef := b.embed.Files[name]
+		if ef == nil {
+			return nil, os.ErrNotExist
+		}
+		// clone byteSlice
+		cpy := make([]byte, 0, len(ef.Content))
+		cpy = append(cpy, ef.Content...)
+		// return copied bytes
+		return cpy, nil
+	}
+
+	// open actual file from disk
+	file, err := os.Open(filepath.Join(b.absolutePath, name))
+	if err != nil {
+		return nil, err
+	}
+	// read complete content
+	bts, err := ioutil.ReadAll(file)
+	if err != nil {
+		return nil, err
+	}
+	// return result
+	return bts, nil
+}
+
+// String returns the content of the file with given name as string
+func (b *Box) String(name string) (string, error) {
+	// check if box is embedded
+	if b.IsEmbedded() {
+		// find file in embed
+		ef := b.embed.Files[name]
+		if ef == nil {
+			return "", os.ErrNotExist
+		}
+		// return as string
+		return ef.Content, nil
+	}
+
+	// open actual file from disk
+	file, err := os.Open(filepath.Join(b.absolutePath, name))
+	if err != nil {
+		return "", err
+	}
+	// read complete content
+	bts, err := ioutil.ReadAll(file)
+	if err != nil {
+		return "", err
+	}
+	// return result as string
+	return string(bts), nil
+}
