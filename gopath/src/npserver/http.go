@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/GeertJohan/go.rice"
 	"github.com/gorilla/mux"
 	"log"
 	"net"
@@ -12,7 +13,11 @@ const headerKeySessionKey = `X-Nulpunt-SessionKey`
 // initHTTPServer sets up the http.FileServer and other http services.
 func initHTTPServer() {
 	// create fileServer that servces that static files (html,css,js,etc.)
-	fileServer := http.FileServer(http.Dir(flags.HTTPFiles))
+	boxHTTPFiles, err := rice.FindBox("../../../http-files")
+	if err != nil {
+		log.Fatalf("cannot find rice box. error: %s\n", err)
+	}
+	fileServer := http.FileServer(boxHTTPFiles.HTTPBox())
 
 	// rootRouter is directly linked to the http server.
 	rootRouter := mux.NewRouter()
