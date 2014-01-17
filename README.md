@@ -1,6 +1,8 @@
 0.
 ================================
 
+foo bar
+
 [![Build Status](https://ci.nulpunt.nu/job/nightly/badge/icon)](https://ci.nulpunt.nu/job/nightly)
 
 This repository contains the server and the static web files (html,css,js) for Nulpunt

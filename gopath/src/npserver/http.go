@@ -1,12 +1,6 @@
 package main
 
-import (
-	"github.com/GeertJohan/go.rice"
-	"github.com/gorilla/mux"
-	"log"
-	"net"
-	"net/http"
-)
+WOW GUIZE ANOPE IS SO GREAT
 
 const headerKeySessionKey = `X-Nulpunt-SessionKey`
 
