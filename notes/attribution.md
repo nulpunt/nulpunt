@@ -41,6 +41,12 @@ Software included in nulpunt
  - License: [BSD-style License](https://github.com/GeertJohan/go.inremental/blob/master/LICENSE)
  - Location: [/gopath/src/github.com/GeertJohan/go.inremental](/gopath/src/github.com/GeertJohan/go.inremental)
 
+##### go.rice
+ - Source: [https://github.com/geertjohan/go.rice](https://github.com/geertjohan/go.rice)
+ - Author: Geert-Johan Riemer
+ - License: [BSD-style License](https://github.com/GeertJohan/go.rice/blob/master/LICENSE)
+ - Location: [/gopath/src/github.com/GeertJohan/go.rice](/gopath/src/github.com/GeertJohan/go.rice)
+ - 
 ##### resize
  - Source: [https://github.com/nfnt/resize](github.com/nfnt/resize)
  - Author: Jan Schlicht
