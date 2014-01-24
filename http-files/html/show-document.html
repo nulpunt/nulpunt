@@ -71,9 +71,9 @@
 <div class="masthead document-viewer">
 	<div class="container">
 	<div class="row">
-		  	<div class="col-lg-6">
-		  		<h1>{{ document.Title }}</h1>
-		  		<div class="document-metadata">
+			<div class="col-lg-6">
+				<h1>{{ document.Title }}</h1>
+				<div class="document-metadata">
 					<span class="source">Source: {{document.Source}}  ({{ document.Country }}) on <strong>{{document.OriginalDate | date:'dd MMMM yyyy, hh:mm'}}</strong></span>
 					<span class="upload">Uploaded on <strong>{{document.UploadDate | date:'dd MMMM yyyy, hh:mm'}}</strong> by <span class="uploader">{{document.UploaderUsername}}</span></span>
 					<span class="request" ng-show="item.requester">Requested by: {{document.FOIRequester }}</span>
@@ -87,7 +87,7 @@
 				<li><a ng-href="https://twitter.com/share?url={{twitter.url | urlencode}}&text={{twitter.text | urlencode}}&hashtags=nulpunt" class="btn btn-default" data-lang="en" target="_blank" ><i class="fa fa-twitter"></i> Tweet this document</a></li>
 				<li><a class="btn btn-default" ng-href="/download-original/{{document.ID}}/{{document.UploadFilename}}" target="_blank"><i class="fa fa-download"></i> Download original</a></li>
 				<li><a class="btn btn-default" href="/#/documents/">More documents</a></li>
-			        </ul>
+					</ul>
 			</div>
 	</div> <!-- row -->
 	</div> <!-- container -->
@@ -108,17 +108,33 @@
 					<a class="btn btn-xs col-lg-2 col-lg-offset-2" ng-click="nextPage()">Next page <span class="glyphicon glyphicon-chevron-right"></span></a>
 		</div>
 
-		<div class="row main">
-				<div class="imageBox" >
-					<img ng-src="/docfiles/pages/{{document.ID}}/{{currentPage.number}}.png" class="img-responsive" />
+		<style>
+			#pageBox{ 
+				/*width: 100%;
+				height: 100%;*/
+				position: relative;
+			}
+			#cvPage {
+				width: 100%;
+				height: 100%;
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				background-color: rgba(0,0,0,0);
+			}
+		</style>
+		<div class="row main pageWrapper">
+			<div id="pageBox" >
+				<canvas id="cvPage" ></canvas>
+				<img ng-src="/docfiles/pages/{{document.ID}}/{{currentPage.number}}.png" class="img-responsive" />
 			</div>
-			<div id="lines" class="selectable" >
+			<!-- <div id="lines" class="selectable" >
 				<div class="line" ng-repeat="line in currentPage.data.Lines">
 					<div ng-repeat="character in line"
 							class="charpos charpos-{{character.C}}" style="bottom: {{character.Y1}}%; left: {{character.X1}}%;"
 							>{{character.C}}</div>
 				</div>
-			</div>
+			</div> -->
 		</div>
 
 				<div class="row">
@@ -143,8 +159,8 @@
 			<p>By: {{ comment.CommenterUsername }}</p>
 			<p>Date: {{ comment.CreateDate }}</p>
 			<!-- we don't do threaded comments yet
-			     <p>Threaded comments: {{ comment.Comments }}</p>
-			     -->
+				 <p>Threaded comments: {{ comment.Comments }}</p>
+				 -->
 		</div> <!-- repeat comments in annotation -->
 
 		<h5>Add a comment (non threaded)</h5>
@@ -165,18 +181,18 @@
 				</div>
 			</form>
 		</div> <!-- CommentSubmitCtrl -->
-            </div> <!-- ng_show="account.username -->
+			</div> <!-- ng_show="account.username -->
 	</div> <!-- annotation in annotations -->
 		<br><hr>
 
 		<!--
-		    Here you can create an annotation... 
-		    This is the interface we need.
-		    Someone might want to rewrite it with a nice pointy-clicky user interface. It should give the coordinates:
-		    ng-model="locations" value: { [ { PageNumber, x1, y1, x2, y2 }, ... ] } 
-		    We allow for multiple coordinates. These should be used when a single rectancle won't fit. 
-		    For example when the selection starts indented. Or when an quote spans page boundaries. (future version).
-		    The server will add Annotator-Username and date-created.
+			Here you can create an annotation... 
+			This is the interface we need.
+			Someone might want to rewrite it with a nice pointy-clicky user interface. It should give the coordinates:
+			ng-model="locations" value: { [ { PageNumber, x1, y1, x2, y2 }, ... ] } 
+			We allow for multiple coordinates. These should be used when a single rectancle won't fit. 
+			For example when the selection starts indented. Or when an quote spans page boundaries. (future version).
+			The server will add Annotator-Username and date-created.
 		-->
 		<h5>Create your annotation</h5>
 		<div ng_hide="account.username">You need to log in before you can post comments. Click <a href="/#/sign-in">Here</a></div>
@@ -197,7 +213,7 @@
 				</div>
 			</form>
 		</div> <!-- AnnotationSubmitCtrl -->
-              </div> <!-- ng_show="account.username -->
+			  </div> <!-- ng_show="account.username -->
 </div> <!-- container -->
 <script>
 	// Disable image dragging, interferes with selection etc

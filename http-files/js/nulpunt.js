@@ -136,8 +136,8 @@ nulpunt.controller("OverviewCtrl", function($scope){
 nulpunt.controller("DashboardCtrl", function($scope, $http, SearchDocumentService) {
 	$scope.documents = [];
 	$scope.searchTags = [];
-       // Don't show anything at page load
-       // Leave it in for when we will default on the users' profile.
+	   // Don't show anything at page load
+	   // Leave it in for when we will default on the users' profile.
 	// $http({method: "POST", url: "/service/getDocuments", data: {} }).
 	// success(function(data) {
 	// 	console.log(data);
@@ -147,9 +147,9 @@ nulpunt.controller("DashboardCtrl", function($scope, $http, SearchDocumentServic
 	//     console.log('error retrieving raw documents: ', error);
 	// });
 
- 	// Tagsearch gets the tag to add or remove.
+	// Tagsearch gets the tag to add or remove.
 	$scope.TagSearch = function(tags, tag) {
-	    console.log("TagSearch has: ", tags, tag)
+		console.log("TagSearch has: ", tags, tag)
 		//var tags = profile_tags.filter(function(x) {return true}); // copy into new array to make it idempotent.
 		var index = tags.indexOf(tag)
 		if (index > -1) { // found it, remove from tags list
@@ -175,11 +175,11 @@ nulpunt.controller("DashboardCtrl", function($scope, $http, SearchDocumentServic
 			return false;
 		}
 		var index = tags.indexOf(tag);
-	    if (index == -1) {
+		if (index == -1) {
 		return "np-notselected"
-	    } else {
+		} else {
 		return "np-selected"
-	    }
+		}
 	};
 });
 
@@ -290,6 +290,109 @@ nulpunt.controller("ShowDocCtrl", function($scope, $http, $routeParams) {
 		}).error(function(error) {
 			console.log('error retrieving raw documents: ', error);
 		});
+
+	var canvas = document.getElementById("cvPage");
+	var ctx = canvas.getContext("2d");
+
+	// page location and size
+	var pageOffsetX;
+	var pageOffsetY;
+	var pageWidth;
+	var pageHeight;
+
+	// box locations
+	var boxStartX;
+	var boxStartY;
+	var boxStopX;
+	var boxStopY;
+
+	var highlight = {x1: 0, x2: 0, y1: 0, y2: 0};
+
+	var isDown = false;
+
+	function handleMouseDown(e) {
+		// udpate page and canvas width/height
+		if(document.defaultView) {
+			pageWidth = parseInt(document.defaultView.getComputedStyle(document.getElementById('pageBox'), "").getPropertyValue("width"));
+			pageHeight = parseInt(document.defaultView.getComputedStyle(document.getElementById('pageBox'), "").getPropertyValue("height"));
+		} else if(document.getElementById('pageBox').currentStyle) {
+			pageWidth = parseInt(document.getElementById('pageBox').currentStyle["width"]);
+			pageHeight = parseInt(document.getElementById('pageBox').currentStyle["height"]);
+		} else {
+			console.error('Could not update width/height on canvas element.');
+			//++ TODO: automated error reporting (after user consent).
+			alert('There seems to be a problem. Please report this problem to the nulpunt development team.');
+			// fake and wrong values
+			pageWidth = 42;
+			pageHeight = 42;
+		}
+
+		// set canvas width/height
+		document.getElementById("cvPage").width = pageWidth;
+		document.getElementById("cvPage").height = pageHeight;
+
+		// update offset details
+		var canvasOffset = $("#pageBox").offset();
+		pageOffsetX = canvasOffset.left;
+		pageOffsetY = canvasOffset.top;
+		console.log('pageOffsetX: '+pageOffsetX+' pageOffsetY: '+pageOffsetY);
+
+		// save mouse location
+		boxStartX = parseInt(e.clientX - pageOffsetX);
+		boxStartY = parseInt(e.clientY - pageOffsetY + $(window).scrollTop());
+		console.log('mouseX: '+boxStartX+' mouseY: '+boxStartY);
+
+		// all done
+		isDown = true;
+	}
+
+	function handleMouseUp(e) {
+		// save mouse location
+		boxStopX = parseInt(e.clientX - pageOffsetX);
+		boxStopY = parseInt(e.clientY - pageOffsetY + $(window).scrollTop());
+		console.log('mouseX: '+boxStopX+' mouseY: '+boxStopY);
+
+		highlight.x1 = boxStartX/pageWidth*100;
+		highlight.x2 = boxStopX/pageWidth*100;
+		highlight.y1 = boxStartY/pageHeight*100;
+		highlight.y2 = boxStopY/pageHeight*100;
+		console.log(highlight);
+
+		// all done
+		isDown = false;
+	}
+
+	function handleMouseMove(e) {
+		// only do stuff if mouse is down (update rect)
+		if (!isDown) {
+			return;
+		}
+
+		// save mouse positions
+		boxStopX = parseInt(e.clientX - pageOffsetX);
+		boxStopY = parseInt(e.clientY - pageOffsetY + $(window).scrollTop());
+
+		// update highlight
+		updateHighlight();
+	}
+
+	function updateHighlight() {
+		// clear canvas
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+		// draw new rectangle
+		var width = boxStopX - boxStartX;
+		var height = boxStopY - boxStartY;
+		ctx.beginPath();
+		ctx.rect(boxStartX, boxStartY, width, height);
+		ctx.globalAlpha = "0.5";
+		ctx.fillStyle = "#FFFF00";
+		ctx.fill();
+	}
+
+	$("#cvPage").mousedown(handleMouseDown);
+	$("#cvPage").mousemove(handleMouseMove);
+	$("#cvPage").mouseup(handleMouseUp);
 });
 
 nulpunt.controller("AnnotationSubmitCtrl", function($scope, $http) {
@@ -377,7 +480,7 @@ nulpunt.controller("TrendingCtrl", function($scope) {
 			title: "Verdict US Foreign Intelligence Surveillance Court NSA", 
 			description: "The Foreign Intelligence Surveillance Court verdict on the bulk acquisition of metadata by the National Security Agency (NSA). The matter discussed is the gathering of large amounts of data, which for years have exceeded the previously authorized acquisition.", 
 			source: "United States Foreign Intelligence Surveillance Court",
-		    country: "USA",
+			country: "USA",
 			sourceDate: "unknown", 
 			uploadDate: "12/11/2013",
 			docID: "52c1ac7d0b4aec49b4a50eaf",			
@@ -730,7 +833,7 @@ nulpunt.controller("AdminProcessEditMetaCtrl", function($scope, $http, $routePar
 
 		$scope.OriginalDateString = String($filter('date')(data.document.OriginalDate, 'dd-MM-yyyy'));
 		$scope.document = data.document;
-	    if($scope.document.Tags == undefined) { $scope.document.Tags = []; };
+		if($scope.document.Tags == undefined) { $scope.document.Tags = []; };
 		console.log(data);
 	}).
 	error(function(error) {
