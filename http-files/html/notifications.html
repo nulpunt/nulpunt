@@ -1,6 +1,11 @@
 <h1>Notifications</h1>
 
 <div ng-repeat="item in notifications.items" class="row np-row np-notification" ng-class-even="'np-row-even'">
-	<p ng-show="item.type=='comment'"><span class="np-notification-time">{{item.time}}</span><strong><a href="/#/profile/{{item.userId}}">{{item.user}}</a></strong> has commented on document "<strong><a href="/#/document/{{item.documentId}}">{{item.documentTitle}}</a></strong>"</p>
-	<p ng-show="item.type=='annotation'"><span class="np-notification-time">{{item.time}}</span><strong><a href="/#/profile/{{item.userId}}">{{item.user}}</a></strong> has placed an annotation at document "<strong><a href="/#/document/{{item.documentId}}">{{item.documentTitle}}</a></strong>"</p>
+	<p ng-show="item.type=='comment'">
+		<span class="np-notification-time">{{item.time}}</span>
+		<strong><a href="/#/profile/{{item.userId}}">{{item.user}}</a></strong> has commented on document "<strong><a href="/#/document/{{item.documentId}}">{{item.documentTitle}}</a></strong>"
+	</p>
+	<p ng-show="item.type=='annotation'">
+		<span class="np-notification-time">{{item.time}}</span><strong><a href="/#/profile/{{item.userId}}">{{item.user}}</a></strong> has placed an annotation at document "<strong><a href="/#/document/{{item.documentId}}">{{item.documentTitle}}</a></strong>"
+	</p>
 </div>

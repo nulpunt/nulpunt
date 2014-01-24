@@ -1,100 +1,86 @@
 <div class="container">
-<div ng-show="done" class="alert" >
-	<strong>Welcome to 0.</strong><br/>
-	Your account '{{username}}' was successfully registered.
-	<! --  You can now sign in. -->
-</div>
+	<div ng-show="done" class="alert" >
+		<strong>Welcome to 0.</strong><br/>
+		Your account '{{username}}' was successfully registered.
+		<!--  You can now sign in. -->
+	</div>
 
+	<div ng-show="error" class="alert alert-error" >
+		<strong>Sorry, something went wrong.</strong><br/>
+		Please refresh the page.<br/>
+		{{error}}
+	</div>
 
-
-
-<div ng-show="error" class="alert alert-error" >
-	<strong>Sorry, something went wrong.</strong><br/>
-	Please refresh the page.<br/>
-	{{error}}
-</div>
-
-<div ng-hide="done||error" >
-<form ng-submit="submit()" role="form" class="col-lg-8 col-lg-offset-2">
-	<h3>Register a new account</h3>
-		<div class="row">
-			<div class="col-lg-12">
-
-				<div class="row">
-					<div class="col-lg-6">
-						<div class="form-group">
-							<label for="registerUsername" class="control-label sr-only" >Choose a Username</label>
-							<input type="text" class="form-control" id="registerUsername" placeholder="Choose a Username" required ng-model="username" >
-						</div>
-					</div>
-					<div class="col-lg-6">
-						<div class="help-form"></div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-6">
-						<div class="form-group">
-							<label for="registerEmail" class="control-label sr-only" >Enter an E-mail</label>
-							<input type="text" class="form-control" id="registerEmail" placeholder="E-mail" ng-model="email" >
-						</div>
-					</div>
-					<div class="col-lg-6">
-						<div class="help-form"></div>					
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-lg-6">					
-						<div class="form-group">
-							<label for="registerPassword" class="control-label sr-only" >Choose a Password</label>
-							<input type="password" class="form-control" id="registerPassword" placeholder="Choose a Password" required ng-model="password" >
-						</div>
-						<div class="form-group">
-							<label for="registerPasswordRepeat" class="control-label sr-only">Verify your Password</label>
-							<input type="password" class="form-control" id="registerPasswordRepeat" placeholder="Verify your Password" required ng-model="passwordRepeat" >
-						</div>
-					</div>
-					<div class="col-lg-6">
-						<div class="help-form">You cannot change your password once you created it. Nor can we retrieve the password in case you forget it. The reason for this is that 0. saves your password by encrypting it on the server. See <a href="/#/about">About</a> for more information.</div>					
+	<div ng-hide="done||error" >
+		<form ng-submit="submit()" role="form" class="col-lg-8 col-lg-offset-2">
+			<h3>Register a new account</h3>
+			<div class="row">
+				<div class="col-lg-6">
+					<div class="form-group">
+						<label for="registerUsername" class="control-label sr-only" >Choose a Username</label>
+						<input type="text" class="form-control" id="registerUsername" placeholder="Choose a Username" required ng-model="username" >
 					</div>
 				</div>
 				<div class="col-lg-6">
-					<div class="help-form">Choose your nice color!</div>
-				</div>		
- 				<div class="row">
-					<div class="col-lg-6">
-						<div class="form-group row">
-							<div class="col-lg-6">
-								<label for="color" class="control-label sr-only" >Choose a Color</label>
-								<input type="text" id="colorSelector" class="form-control demo" data-inline="true" value="#4fc8db" placeholder="Choose a Color" ng-model="color">
-							</div>
-							<div class="col-lg-6">
-								<div class="color-preview" style="display:block; background-color:{{ color }}">Use this selector to choose your highlighting color. This is how your text selection will look. Choose wisely.
-								</div>
-							</div>
-						</div>					
-					</div>
-
+					<div class="help-form"></div>
 				</div>
-				<div class="form-group">
-					<div class="row">
-					<div class="col-lg-6">
-					<button type="submit" class="btn btn-default btn-block btn-lg">Create an account</button>
-					</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6">
+					<div class="form-group">
+						<label for="registerEmail" class="control-label sr-only" >Enter an E-mail</label>
+						<input type="text" class="form-control" id="registerEmail" placeholder="E-mail" ng-model="email" >
 					</div>
 				</div>
-			</form>
-		</div>
+				<div class="col-lg-6">
+					<div class="help-form"></div>					
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6">					
+					<div class="form-group">
+						<label for="registerPassword" class="control-label sr-only" >Choose a Password</label>
+						<input type="password" class="form-control" id="registerPassword" placeholder="Choose a Password" required ng-model="password" >
+					</div>
+					<div class="form-group">
+						<label for="registerPasswordRepeat" class="control-label sr-only">Verify your Password</label>
+						<input type="password" class="form-control" id="registerPasswordRepeat" placeholder="Verify your Password" required ng-model="passwordRepeat" >
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<div class="help-form">You cannot change your password once you created it. Nor can we retrieve the password in case you forget it. The reason for this is that 0. saves your password by encrypting it on the server. See <a href="/#/about">About</a> for more information.</div>					
+				</div>
+			</div>
+			<div class="col-lg-12">
+				<div class="form-group row">
+					<div class="col-lg-6">
+						<label for="color" class="control-label sr-only" >Choose a Color</label>
+						<input type="text" id="colorSelector" class="form-control demo" data-inline="true" value="#4fc8db" placeholder="Choose a Color" ng-model="color">
+					</div>
+					<div class="col-lg-6">
+						<div class="color-preview" style="display:block; background-color:{{ color }}">
+							Use this selector to choose your highlighting color. This is how your text selection will look. Choose wisely.
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="row">
+					<div class="col-lg-6">
+						<button type="submit" class="btn btn-default btn-block btn-lg">Create an account</button>
+					</div>
+				</div>
+			</div>
+		</form>
 	</div>
 </div>
 <script type="text/javascript">
+	$.minicolors.defaults = $.extend($.minicolors.defaults, {
+		changeDelay: 200,
+		theme: 'bootstrap',
+		control: 'brightness',
+		inline: 'true'
+	});
+	$('#colorSelector').minicolors();
+</script>
 
-			$.minicolors.defaults = $.extend($.minicolors.defaults, {
-				changeDelay: 200,
-				theme: 'bootstrap',
-				control: 'brightness',
-				inline: 'true'
-				});
-
-			$('#colorSelector').minicolors();
-
-</script></div>

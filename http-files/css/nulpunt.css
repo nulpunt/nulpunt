@@ -1,6 +1,31 @@
 body, html {
 	height:100%;
 }
+
+/*disable selection by default*/
+html {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+
+	/* No support for these yet, use at own risk */
+	-o-user-select: none;
+	user-select: none;
+}
+/*explicit enabled for text selection*/
+.selectable, .selectable div {
+	-webkit-touch-callout: all;
+	-webkit-user-select: all;
+	-khtml-user-select: all;
+	-moz-user-select: all;
+	-ms-user-select: all;
+	-o-user-select: all;
+	user-select: all;
+}
+
+/*anchor styles*/
 a:link, a:visited, a:active {
 	   color: #000;
 	   text-decoration: none;
@@ -9,20 +34,23 @@ a:hover {
 	color:#222;
 }
 
+/*heading styles*/
 h1 {
 	font-size:28px;
 }
-
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 	line-height: 1;
 	text-shadow: 0px 1px 0px rgba(255, 255, 255, 1);
 	letter-spacing: -0.03em;
 }
 
+/*bootstrap overrides*/
 .container { 
 		padding-left: 0;
 		padding-right: 0;
 }
+
+/*annotation and document related styles*/
 .annotation {
 		background-color: #f7f7f7;
 		padding: 14px 14px 0 14px;

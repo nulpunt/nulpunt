@@ -1,9 +1,9 @@
 <h3>Available Tags</h3>
 
 <div class="clearfix">
-  <ul>
-    <li class="np-document-tag" ng-repeat="tag in tags">{{tag.Tag}} <span class="glyphicon glyphicon-remove glyphicon-delete-button" ng-click="delete_tag(tag.Tag)"></span></li>
-  </ul>
+	<ul>
+		<li class="np-document-tag" ng-repeat="tag in tags">{{tag.Tag}} <span class="glyphicon glyphicon-remove glyphicon-delete-button" ng-click="delete_tag(tag.Tag)"></span></li>
+	</ul>
 </div>
 
 <div ng-show="error" class="alert alert-danger" >
