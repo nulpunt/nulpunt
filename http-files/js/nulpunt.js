@@ -21,8 +21,8 @@ nulpunt.config(function($routeProvider) {
 	})
 
 	.when('/document/:docID', {
-		templateUrl: "/html/show-document.html",
-		controller: "ShowDocCtrl"
+		templateUrl: "/html/document.html",
+		controller: "DocumentCtrl"
 	})
 	.when('/register', {
 		templateUrl: "/html/register.html",
@@ -240,7 +240,7 @@ nulpunt.controller("DocumentsByTagsCtrl", function ($scope, $http, ProfileServic
 	};
 });
 
-nulpunt.controller("ShowDocCtrl", function($scope, $http, $routeParams) {
+nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams) {
 	$scope.currentPage = {
 		number: 1,
 		data: {},
