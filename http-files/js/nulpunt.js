@@ -396,22 +396,19 @@ nulpunt.controller("ShowDocCtrl", function($scope, $http, $routeParams) {
 });
 
 nulpunt.controller("AnnotationSubmitCtrl", function($scope, $http) {
+    $scope.showForm = false;
 	$scope.submit = function() {
 		$http({method: 'POST', url: '/service/session/add-annotation', data: {
 			documentId: $scope.document.ID,
 			locations: $scope.locations,
 			annotationText: $scope.annotationText,
-			
 		}}).
 		success(function(data, status, headers, config) {
-			if(data.success) {
-				$scope.done = true
-			} else {
-				$scope.error = data.error;
-			}
+		    $scope.annotations.push(data)
+		    $scope.showForm = false;
 		}).
 		error(function(data, status, headers, config) {
-			console.log("invalid response for registerAccount")
+		    console.log("invalid response for AnnotationSubmit:");
 			console.log(data, status, headers);
 			$scope.error = "Could not make request to server";
 		});
@@ -419,6 +416,7 @@ nulpunt.controller("AnnotationSubmitCtrl", function($scope, $http) {
 });
 
 nulpunt.controller("CommentSubmitCtrl", function($scope, $http) {
+    $scope.showForm = false;
 	$scope.submit = function() {
 		$http({method: 'POST', url: '/service/session/add-comment', data: {
 			annotationId: $scope.annotation.ID,
@@ -426,14 +424,11 @@ nulpunt.controller("CommentSubmitCtrl", function($scope, $http) {
 			// parentId: $scope.parentID, // is for threaded comments
 		}}).
 		success(function(data, status, headers, config) {
-			if(data.success) {
-				$scope.done = true
-			} else {
-				$scope.error = data.error;
-			}
+		    $scope.annotation.Comments.push(data);
+		    $scope.showForm = false;
 		}).
 		error(function(data, status, headers, config) {
-			console.log("invalid response for registerAccount")
+			console.log("invalid response for CommentSubmit:")
 			console.log(data, status, headers);
 			$scope.error = "Could not make request to server";
 		});
@@ -601,7 +596,8 @@ nulpunt.controller("RegisterCtrl", function($scope, $rootScope, $http) {
 		$http({method: 'POST', url: '/service/session/registerAccount', data: {
 			username: $scope.username,
 			email: $scope.email,
-			password: $scope.password
+		    password: $scope.password,
+		    color: $scope.color
 		}}).
 		success(function(data, status, headers, config) {
 			if(data.success) {

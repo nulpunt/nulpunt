@@ -80,6 +80,7 @@ func sessionAuthenticateAccountHandlerFunc(w http.ResponseWriter, r *http.Reques
 		Success bool   `json:"success"`
 		Error   string `json:"error"`
 		Admin   bool   `json:"admin"`
+		Color   string `json:"color"`
 		//++ add account details
 	}
 
@@ -117,6 +118,7 @@ func sessionAuthenticateAccountHandlerFunc(w http.ResponseWriter, r *http.Reques
 	if acc != nil {
 		outData.Success = true
 		outData.Admin = acc.Admin
+		outData.Color = acc.Color
 	}
 }
 
@@ -125,6 +127,7 @@ func sessionResumeHandlerFunc(w http.ResponseWriter, r *http.Request) {
 		Success  bool   `json:"success"`
 		Username string `json:"username,omitempty"`
 		Admin    bool   `json:"admin"`
+		Color    string `json:"color"`
 	}
 
 	outData := &outDataType{}
@@ -153,5 +156,6 @@ func sessionResumeHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	// all done
 	outData.Username = acc.Username
 	outData.Admin = acc.Admin
+	outData.Color = acc.Color
 	outData.Success = true
 }
