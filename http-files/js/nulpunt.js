@@ -354,12 +354,12 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams) {
 		var canvasOffset = $("#pageBox").offset();
 		pageOffsetX = canvasOffset.left;
 		pageOffsetY = canvasOffset.top;
-		console.log('pageOffsetX: '+pageOffsetX+' pageOffsetY: '+pageOffsetY);
+		// console.log('pageOffsetX: '+pageOffsetX+' pageOffsetY: '+pageOffsetY);
 
 		// save mouse location
 		boxStartX = parseInt(e.clientX - pageOffsetX);
 		boxStartY = parseInt(e.clientY - pageOffsetY + $(window).scrollTop());
-		console.log('mouseX: '+boxStartX+' mouseY: '+boxStartY);
+		// console.log('mouseX: '+boxStartX+' mouseY: '+boxStartY);
 
 		// all done
 		isDown = true;
@@ -369,13 +369,13 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams) {
 		// save mouse location
 		boxStopX = parseInt(e.clientX - pageOffsetX);
 		boxStopY = parseInt(e.clientY - pageOffsetY + $(window).scrollTop());
-		console.log('mouseX: '+boxStopX+' mouseY: '+boxStopY);
+		// console.log('mouseX: '+boxStopX+' mouseY: '+boxStopY);
 
 		highlight.x1 = boxStartX/pageWidth*100;
 		highlight.x2 = boxStopX/pageWidth*100;
 		highlight.y1 = boxStartY/pageHeight*100;
 		highlight.y2 = boxStopY/pageHeight*100;
-		console.log(highlight);
+		// console.log(highlight);
 
 		// all done
 		isDown = false;
