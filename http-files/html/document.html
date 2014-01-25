@@ -98,11 +98,13 @@
 			<div class="row">
 				<a class="btn btn-xs col-lg-2" ng-click="prevPage()"><span class="glyphicon glyphicon-chevron-left"></span> Previous page</a>
 				<div class="col-lg-4 col-lg-offset-2">
-					<input ng-model="currentPage.number" type="number" class="form-control np-document-viewer-pagination" />
-					<p class="text-center">of {{document.PageCount}}</p>
+					<div style="float: left;" ><input ng-model="currentPage.number" type="number" class="form-control np-document-viewer-pagination" /></div>
+					<div style="float: left; margin-left: 8px;" >of {{document.PageCount}}</div>
 				</div>
 				<a class="btn btn-xs col-lg-2 col-lg-offset-2" ng-click="nextPage()">Next page <span class="glyphicon glyphicon-chevron-right"></span></a>
 			</div>
+
+			<!-- page itself -->
 			<div class="row main pageWrapper">
 				<div id="pageBox" >
 					<canvas id="cvPage" ></canvas>
@@ -121,11 +123,12 @@
 			<div class="row">
 				<a class="btn btn-xs col-lg-2" ng-click="prevPage()"><span class="glyphicon glyphicon-chevron-left"></span> Previous page</a>
 				<div class="col-lg-4 col-lg-offset-2">
-					<input ng-model="currentPage.number" type="number" class="form-control np-document-viewer-pagination" />
-					<p class="text-center">of {{document.PageCount}}</p>
+					<div style="float: left;" ><input ng-model="currentPage.number" type="number" class="form-control np-document-viewer-pagination" /></div>
+					<div style="float: left; margin-left: 8px;" >of {{document.PageCount}}</div>
 				</div>
 				<a class="btn btn-xs col-lg-2 col-lg-offset-2" ng-click="nextPage()">Next page <span class="glyphicon glyphicon-chevron-right"></span></a>
 			</div>
+
 
 		</div> <!-- pageView -->
 
