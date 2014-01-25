@@ -148,7 +148,8 @@
 			</div>
 
 			<!-- Show the login button if not signed in -->
-			<div ng-hide="account.username">You need to log in before you can post comments. 
+			<div ng-hide="account.username">
+				You need to log in before you can post comments. 
 				<a class="btn btn-default" href="#/sign-in/">Sign In</a>
 			</div>
 				
@@ -186,33 +187,24 @@
 		-->
 
 		<!-- Show the login button if not signed in -->
-		<div ng-hide="account.username">You need to log in before you can add an Annotation. 
-			<a class="btn btn-default" href="#/sign-in/">Sign In</a>
-		</div>
 		
-		<div ng-show="account.username">
-			<!-- when logged, in, show the Annotate-button -->
-			<div ng-controller="AnnotationSubmitCtrl">
-				
-				<!-- when logged in and pressed the annotate-button, show the form -->
-				<div ng-hide="showForm" class="btn btn-default" ng-click="showForm=true">Add a Annotation</div>
+		<div ng-show="account.username && !highlight.x1" >
+			Please highlight the document to create an annotation.
+		</div>
 
-				<form ng-show="showForm" ng-submit="submit()" role="form" class="form-horizontal">
-					<input type="hidden" ng-model="locations" value="{ [{ 1, 10, 20, 100, 40 }] }" />
-					<div class="form-group">
-						<label class="col-md-2 control-label">Your visions please</label>
-						<div class="col-md-10">
-							<textarea class="form-control" id="annotation-text" placeholder="Annotation text" ng-model="annotationText"></textarea>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-md-offset-2 col-md-10">
-							<button type="submit" class="btn btn-default">Publish</button>
-						</div>
-					</div>
-				</form>
-			</div><!-- AnnotationSubmitCtrl -->
-		</div><!-- ng_show="account.username -->
+		<div ng-show="highlight.x1" >
+			<div ng-show="account.username" >
+				<!-- when logged in and having a higlight: show the Annotate-button -->
+				<div class="btn btn-default" ng-click="addAnnotation()">Add a Annotation</div>
+			</div>
+
+			<div ng-hide="account.username" >
+				<!-- we have a highlight but no auth, let user auth -->
+				You need to log in before you can add an Annotation. 
+				<a class="btn btn-default" href="#/sign-in/">Sign In</a>
+			</div>
+		</div>
+
 	</div><!-- row -->
 </div><!-- container -->
 
