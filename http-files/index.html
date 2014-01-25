@@ -1,146 +1,150 @@
 <!doctype html>
 <html ng-app="nulpunt" >
-  <head>
-    <title>Nulpunt - towards a democracy without secrects</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Bootstrap -->
-    <link href="css/bootstrap.min.css" rel="stylesheet" >
-    <link href="css/bootstrap-theme.css" rel="stylesheet" >
-    <link href="css/datepicker.css" rel="stylesheet" >
-    <link href="css/nulpunt.css" rel="stylesheet" >
-    <link rel="stylesheet" href="css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/jquery.minicolors.css">
+	<head>
+		<title>Nulpunt - towards a democracy without secrects</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script src="js/jquery.min.js" ></script>
-    <script>
-    jQuery(document).ready(function() {
-    		// Convert SVG imgs into inline SVG
-        	jQuery('img.svg').each(function(){
-            var $img = jQuery(this);
-            var imgID = $img.attr('id');
-            var imgClass = $img.attr('class');
-            var imgURL = $img.attr('src');
+		<!-- Bootstrap -->
+		<link href="css/bootstrap.min.css" rel="stylesheet" >
+		<link href="css/bootstrap-theme.css" rel="stylesheet" >
+		<link href="css/datepicker.css" rel="stylesheet" >
+		<link href="css/nulpunt.css" rel="stylesheet" >
+		<link rel="stylesheet" href="css/font-awesome.min.css">
+		<link rel="stylesheet" href="css/jquery.minicolors.css">
 
-            jQuery.get(imgURL, function(data) {
-                // Get the SVG tag, ignore the rest
-                var $svg = jQuery(data).find('svg');
-
-                // Add replaced image's ID to the new SVG
-                if(typeof imgID !== 'undefined') {
-                    $svg = $svg.attr('id', imgID);
-                }
-                // Add replaced image's classes to the new SVG
-                if(typeof imgClass !== 'undefined') {
-                    $svg = $svg.attr('class', imgClass+' replaced-svg');
-                }
-
-                // Remove any invalid XML tags as per http://validator.w3.org
-                $svg = $svg.removeAttr('xmlns:a');
-
-                // Replace image with new SVG
-                $img.replaceWith($svg);
-
-            }, 'xml');
-
-        	});
-        });
-        </script>
-
-  </head>
-  
-  <body ng-controller="MainCtrl" id="body" >
-  <div id="np-wrap">
-    <div ng-controller="NavbarCtrl">
-      
-      <div class="navbar navbar-static-top">
-			<!-- brand and toggle get grouped for better mobile display -->
-			<div class="navbar-header">
-			
-				<button type="button" class="navbar-toggle" ng-init="navCollapsed = true" ng-click="navCollapsed = !navCollapsed">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-			
-				<a class="navbar-brand" href="/#/" style="display:block; background-color:{{ account.color }}"><img id="np-logo" class="svg" src="img/np-logo_alpha.svg" /></a>			
-			</div> <!-- "navbar-header -->
-			
-			<div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
-			</div> <!-- navbar collapse -->
-
-		</div> <!-- navbar static top -->
-  </div> <!-- NavBarCtrl -->
-
-	
-		<!-- location for the view to load (see ngRoute) -->		
-		<div ng-view class="np-main-content" >
-
-		</div>		
-	      <div ng-show="account.admin">
-		 <a ng-href="/#/admin/upload"><span class="glyphicon glyphicon-file" ></span> Upload documents</a>
-		 <a ng-href="/#/admin/analyse"><span class="glyphicon glyphicon-search" ></span> Ugly hack</a> <!-- remove this when OCR works -->
-		 <a href="/#/admin/process"><span class="glyphicon glyphicon-asterisk" ></span> Process documents</a>
-		 <a href="/#/admin/tags"><span class="glyphicon glyphicon-asterisk" ></span> Add/Remove tags</a>
-	  </div>
-</div><!-- np-wrap -->
-
-	    <footer id="np-footer" class="navbar">
-	    	    <div class="navbar-header navbar-right">
-					<a class="navbar-brand" href="/#/"><img id="np-logo" src="img/np-logo.svg" /></a>				
-				</div>
-				<div class="container">
-					<ul class="nav navbar-nav navbar-left">
-						<li><a	ng-class="getClass('/about')" href="/#/about">About</a></li>
-						<li><a	ng-class="getClass('/contact')" href="/#/contact">Contact</a></li>					
-						<li><a	ng-class="getClass('/colophon')" href="/#/colophon">Colophon</a></li>
-					</ul>	
-					<ul class="nav navbar-nav navbar-right">
-					<li><a href="http://facebook.com/"><i class="fa fa-lg fa-facebook-square"></i></a></li>
-					<li><a href="http://twitter.com/0punt"><i class="fa fa-lg fa-twitter-square"></i></a></li>
-					<li><a href="http://github.com/nulpunt"><i class="fa fa-lg fa-github-square"></i></a></li>
-					</ul>				
-					<div class="np-tagline">
-					<p>Towards a democracy without secrets.</p>
-					</div>
-					</div>
-		</footer>
-		
-
-
-		
-		<!-- jQuery -->
 		<script src="js/jquery.min.js" ></script>
+		<script>
+			jQuery(document).ready(function() {
+				// Convert SVG imgs into inline SVG
+				jQuery('img.svg').each(function(){
+				var $img = jQuery(this);
+				var imgID = $img.attr('id');
+				var imgClass = $img.attr('class');
+				var imgURL = $img.attr('src');
+
+				jQuery.get(imgURL, function(data) {
+					// Get the SVG tag, ignore the rest
+					var $svg = jQuery(data).find('svg');
+
+					// Add replaced image's ID to the new SVG
+					if(typeof imgID !== 'undefined') {
+						$svg = $svg.attr('id', imgID);
+					}
+					// Add replaced image's classes to the new SVG
+					if(typeof imgClass !== 'undefined') {
+						$svg = $svg.attr('class', imgClass+' replaced-svg');
+					}
+
+					// Remove any invalid XML tags as per http://validator.w3.org
+					$svg = $svg.removeAttr('xmlns:a');
+
+					// Replace image with new SVG
+					$img.replaceWith($svg);
+
+				}, 'xml');
+
+				});
+			});
+		</script>
+	</head>
+  
+<body ng-controller="MainCtrl" id="body" >
+	<div id="np-wrap">
+		<div ng-controller="NavbarCtrl">
+		  
+		  <div class="navbar navbar-static-top">
+				<!-- brand and toggle get grouped for better mobile display -->
+				<div class="navbar-header">
+					<!-- navigation dropdown button -->
+					<button type="button" class="navbar-toggle" ng-init="navCollapsed = true" ng-click="navCollapsed = !navCollapsed">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					
+					<!-- nulpunt logo -->
+					<a class="navbar-brand" href="/#/" style="display:block; background-color:{{ account.color }}"><img id="np-logo" class="svg" src="img/np-logo_alpha.svg" /></a>			
+				</div> <!-- "navbar-header -->
+				
+				<div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'"></div>
+			</div> <!-- navbar static top -->
+		</div> <!-- NavBarCtrl -->
+
+		<!-- location for the view to load (see ngRoute) -->		
+		<div ng-view class="np-main-content" ></div>	
+
+		<!-- admin buttons -->	
+		<div ng-show="account.admin">
+			 <a ng-href="/#/admin/upload"><span class="glyphicon glyphicon-file" ></span> Upload documents</a>
+			 <a ng-href="/#/admin/analyse"><span class="glyphicon glyphicon-search" ></span> Ugly hack</a> <!-- remove this when OCR works -->
+			 <a href="/#/admin/process"><span class="glyphicon glyphicon-asterisk" ></span> Process documents</a>
+			 <a href="/#/admin/tags"><span class="glyphicon glyphicon-asterisk" ></span> Add/Remove tags</a>
+		</div>
+	</div><!-- np-wrap -->
+
+	<footer id="np-footer" class="navbar">
+		<div class="navbar-header navbar-right">
+			<a class="navbar-brand" href="/#/"><img id="np-logo" src="img/np-logo.svg"></a>
+		</div>
+		<div class="container">
+			<ul class="nav navbar-nav navbar-left">
+				<li>
+					<a ng-class="isActivePage('/about')" href="/#/about">About</a>
+				</li>
+				<li>
+					<a ng-class="isActivePage('/contact')" href="/#/contact">Contact</a>
+				</li>
+				<li>
+					<a ng-class="isActivePage('/colophon')" href="/#/colophon">Colophon</a>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="http://facebook.com/"></a>
+				</li>
+				<li>
+					<a href="http://twitter.com/0punt"></a>
+				</li>
+				<li>
+					<a href="http://github.com/nulpunt"></a>
+				</li>
+			</ul>
+			<div class="np-tagline">
+				<p>
+					Towards a democracy without secrets.
+				</p>
+			</div>
+		</div>
+	</footer>
 		
-		<!-- official ng core+modules -->
-		<script src="js/angular.min.js" ></script>
-		<script src="js/angular-route.min.js" ></script>
-		<script src="js/angular-animate.min.js" ></script>
-		<script src="js/angular-file-upload.min.js" ></script>
+	<!-- jQuery -->
+	<script src="js/jquery.min.js" ></script>
+	
+	<!-- official ng core+modules -->
+	<script src="js/angular.min.js" ></script>
+	<script src="js/angular-route.min.js" ></script>
+	<script src="js/angular-animate.min.js" ></script>
+	<script src="js/angular-file-upload.min.js" ></script>
 
-		<!-- third party jquery plugins -->
-		<script src="js/watch.min.js" ></script>
-		<script src="js/jquery.watch.min.js" ></script>
+	<!-- third party ng modules -->
+	<script src="js/angular-ui-bootstrap-0.6.0-tpls.min.js" ></script>
+	<script src="js/ngStorage.js" ></script>
+	<script src="js/checklist-model.js"></script>
+	
+	<!-- underscore, for work with datasets -->
+	<script src="js/underscore.min.js" ></script>
 
-		<!-- third party ng modules -->
-		<script src="js/angular-ui-bootstrap-0.6.0-tpls.min.js" ></script>
-		<script src="js/ngStorage.js" ></script>
-		<script src="js/checklist-model.js"></script>
-		
-		<!-- underscore, for work with datasets -->
-		<script src="js/underscore.min.js" ></script>
+	<!-- nulpunt -->
+	<script src="js/nulpunt.js" ></script>
+	<script src="js/nulpunt-ClientSessionService.js" ></script>
+	<script src="js/nulpunt-AccountAuthService.js" ></script>
+	<script src="js/nulpunt-AccountDataService.js" ></script>
+	<script src="js/nulpunt-ProfileService.js" ></script>
 
-		<!-- nulpunt -->
-		<script src="js/nulpunt.js" ></script>
-		<script src="js/nulpunt-ClientSessionService.js" ></script>
-		<script src="js/nulpunt-AccountAuthService.js" ></script>
-		<script src="js/nulpunt-AccountDataService.js" ></script>
-		<script src="js/nulpunt-ProfileService.js" ></script>
-
-		<script src="js/bootstrap-datepicker.js"></script>
-		<script src="js/jquery.minicolors.js"></script>
-		<script src="js/jquery.minicolors.js"></script>
+	<script src="js/bootstrap-datepicker.js"></script>
+	<script src="js/jquery.minicolors.js"></script>
+	<script src="js/jquery.minicolors.js"></script>
 
 	</body>
 </html>

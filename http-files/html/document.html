@@ -1,0 +1,219 @@
+<style>
+	body {
+		background-color:#EEE;
+	}
+
+	.masthead {
+		background-color:#FFF;
+	}
+
+	.navbar {
+		background-color:#000;
+	}
+
+	.np-logo-image {
+		fill:#FFF;
+	}
+
+	.np-logo-text-background {
+		fill:#FF0;
+	}
+
+	.np-logo-text {
+		fill:#000;
+	}
+
+	#np-footer {
+		border-top: 1px solid #DDD;
+	}
+
+	.pageView { 
+		position: relative;
+		display: table;
+	}
+
+	/*character position css*/
+	.charpos {
+		position: absolute;
+		display: inline;
+		font-weight: bold;
+		color: rgba(0,0,0,0);
+	}
+	.charpos::selection {
+		background: rgba(255 ,255, 255, 0); /* No colour selection for now */
+		}
+	.charpos::-moz-selection {
+		background: rgba(255,255,255,0); /* No colour selection for now */
+	}
+
+	/*canvas css*/
+	#pageBox {
+		position: relative;
+	}
+	#cvPage {
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		background-color: rgba(0,0,0,0);
+	}
+</style>
+
+<div class="masthead document-viewer">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-6">
+				<h1>{{ document.Title }}</h1>
+				<div class="document-metadata">
+					<span class="source">Source: {{document.Source}}  ({{ document.Country }}) on <strong>{{document.OriginalDate | date:'dd MMMM yyyy, hh:mm'}}</strong></span>
+					<span class="upload">Uploaded on <strong>{{document.UploadDate | date:'dd MMMM yyyy, hh:mm'}}</strong> by <span class="uploader">{{document.UploaderUsername}}</span></span>
+					<span class="request" ng-show="item.requester">Requested by: {{document.FOIRequester }}</span>
+					<div class="tags-metadata">
+						<span ng-repeat="tag in document.Tags" class="np-document-tag"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</span>
+					</div>
+				</div>
+			</div><!-- col-lg-6 -->
+			<div class="col-lg-6">
+				<ul class="nav nav-pills pull-right">
+					<li><a ng-href="https://twitter.com/share?url={{twitter.url | urlencode}}&text={{twitter.text | urlencode}}&hashtags=nulpunt" class="btn btn-default" data-lang="en" target="_blank" ><i class="fa fa-twitter"></i> Tweet this document</a></li>
+					<li><a class="btn btn-default" ng-href="/download-original/{{document.ID}}/{{document.UploadFilename}}" target="_blank"><i class="fa fa-download"></i> Download original</a></li>
+					<li><a class="btn btn-default" href="/#/documents/">More documents</a></li>
+				</ul>
+			</div>
+		</div> <!-- row -->
+	</div> <!-- container -->
+</div> <!-- masthead document-viewer -->
+
+<div class="container document-viewer">
+	<!-- <div ng-repeat="page in pages" > -->
+	<div class="row">
+		<div class="pageView col-lg-7">
+			<!-- display current page number -->
+			<div class="row">
+				<h5 class="pull-left">Page {{ currentPage.number }}</h5>
+			</div>
+
+			<!-- page navigation -->
+			<div class="row">
+				<a class="btn btn-xs col-lg-2" ng-click="prevPage()"><span class="glyphicon glyphicon-chevron-left"></span> Previous page</a>
+				<div class="col-lg-4 col-lg-offset-2">
+					<input ng-model="currentPage.number" type="number" class="form-control np-document-viewer-pagination" />
+					<p class="text-center">of {{document.PageCount}}</p>
+				</div>
+				<a class="btn btn-xs col-lg-2 col-lg-offset-2" ng-click="nextPage()">Next page <span class="glyphicon glyphicon-chevron-right"></span></a>
+			</div>
+			<div class="row main pageWrapper">
+				<div id="pageBox" >
+					<canvas id="cvPage" ></canvas>
+					<img ng-src="/docfiles/pages/{{document.ID}}/{{currentPage.number}}.png" class="img-responsive" />
+				</div>
+				<!-- <div id="lines" class="selectable" >
+					<div class="line" ng-repeat="line in currentPage.data.Lines">
+						<div ng-repeat="character in line"
+								class="charpos charpos-{{character.C}}" style="bottom: {{character.Y1}}%; left: {{character.X1}}%;"
+								>{{character.C}}</div>
+					</div>
+				</div> -->
+			</div>
+
+			<!-- page navigation -->
+			<div class="row">
+				<a class="btn btn-xs col-lg-2" ng-click="prevPage()"><span class="glyphicon glyphicon-chevron-left"></span> Previous page</a>
+				<div class="col-lg-4 col-lg-offset-2">
+					<input ng-model="currentPage.number" type="number" class="form-control np-document-viewer-pagination" />
+					<p class="text-center">of {{document.PageCount}}</p>
+				</div>
+				<a class="btn btn-xs col-lg-2 col-lg-offset-2" ng-click="nextPage()">Next page <span class="glyphicon glyphicon-chevron-right"></span></a>
+			</div>
+
+		</div> <!-- pageView -->
+
+		<h3>Annotations</h3>
+		<div ng-repeat="annotation in annotations">
+			<p class="np-document-description">{{ annotation.Annotation }}</p>
+			<p>By: {{ annotation.AnnotatorUsername }}</p>
+			<p>Date: {{annotation.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
+			<p>Coordinates: {{ annotation.Locations }}</p>
+			<p>The wisdom: <strong><span  style="background-color:{{ annotation.Color }}">{{ annotation.AnnotationText }}</span></strong></p>
+			
+			<div ng-repeat="comment in annotation.Comments">
+				<h4>Comment</h4>
+				<p><strong><span  style="background-color:{{ comment.Color }}">{{ comment.CommentText }}</span></strong></p>
+				<p>By: {{ comment.CommenterUsername }}</p>
+				<p>Date: {{ comment.CreateDate }}</p>
+			</div>
+
+			<!-- Show the login button if not signed in -->
+			<div ng-hide="account.username">You need to log in before you can post comments. 
+				<a class="btn btn-default" href="#/sign-in/">Sign In</a>
+			</div>
+				
+			<div ng-show="account.username">
+				<!-- when logged, in, show the Comment-button -->
+				<div ng-controller="CommentSubmitCtrl">
+					<!-- when logged in and press the comment-button, show the form -->
+					<div ng-hide="showForm" class="btn btn-default" ng-click="showForm=true">Add a Comment</div>
+					<form ng_show="showForm" ng-submit="submit()" role="form" class="form-horizontal">
+						<div class="form-group">
+							<label class="col-md-2 control-label">Your comment on these visions please</label>
+							<div class="col-md-10">
+								<textarea class="form-control" id="comment-text" placeholder="Comment text" ng-model="commentText"></textarea>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-offset-2 col-md-10">
+								<button type="submit" class="btn btn-default">Publish</button>
+							</div>
+						</div>
+					</form>
+				</div> <!-- CommentSubmitCtrl -->
+			</div> <!-- ng_show="account.username -->
+		</div> <!-- annotation in annotations -->
+		<br><hr>
+			
+		<!--
+			Here you can create an annotation... 
+			This is the interface we need.
+			Someone might want to rewrite it with a nice pointy-clicky user interface. It should give the coordinates:
+			ng-model="locations" value: { [ { PageNumber, x1, y1, x2, y2 }, ... ] } 
+			We allow for multiple coordinates. These should be used when a single rectancle won't fit. 
+			For example when the selection starts indented. Or when an quote spans page boundaries. (future version).
+			The server will add Annotator-Username and date-created.
+		-->
+
+		<!-- Show the login button if not signed in -->
+		<div ng-hide="account.username">You need to log in before you can add an Annotation. 
+			<a class="btn btn-default" href="#/sign-in/">Sign In</a>
+		</div>
+		
+		<div ng-show="account.username">
+			<!-- when logged, in, show the Annotate-button -->
+			<div ng-controller="AnnotationSubmitCtrl">
+				
+				<!-- when logged in and pressed the annotate-button, show the form -->
+				<div ng-hide="showForm" class="btn btn-default" ng-click="showForm=true">Add a Annotation</div>
+
+				<form ng-show="showForm" ng-submit="submit()" role="form" class="form-horizontal">
+					<input type="hidden" ng-model="locations" value="{ [{ 1, 10, 20, 100, 40 }] }" />
+					<div class="form-group">
+						<label class="col-md-2 control-label">Your visions please</label>
+						<div class="col-md-10">
+							<textarea class="form-control" id="annotation-text" placeholder="Annotation text" ng-model="annotationText"></textarea>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-md-offset-2 col-md-10">
+							<button type="submit" class="btn btn-default">Publish</button>
+						</div>
+					</div>
+				</form>
+			</div><!-- AnnotationSubmitCtrl -->
+		</div><!-- ng_show="account.username -->
+	</div><!-- row -->
+</div><!-- container -->
+
+<script>
+	// Disable image dragging, interferes with selection etc
+	$('img').mousedown(function(){return false});
+</script>

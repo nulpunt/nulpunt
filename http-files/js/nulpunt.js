@@ -21,8 +21,8 @@ nulpunt.config(function($routeProvider) {
 	})
 
 	.when('/document/:docID', {
-		templateUrl: "/html/show-document.html",
-		controller: "ShowDocCtrl"
+		templateUrl: "/html/document.html",
+		controller: "DocumentCtrl"
 	})
 	.when('/register', {
 		templateUrl: "/html/register.html",
@@ -51,9 +51,9 @@ nulpunt.config(function($routeProvider) {
 		templateUrl: '/html/search.html',
 		controller: "SearchCtrl"
 	})
-	.when('/profile', {
+	.when('/profile/:username', {
 		templateUrl: '/html/profile.html',
-		controller: "EmptyCtrl"
+		controller: "ProfileCtrl"
 	})
 	.when('/settings', {
 		templateUrl: '/html/settings.html',
@@ -97,33 +97,37 @@ nulpunt.config(function($routeProvider) {
 	});
 });
 
+// EmptyCtrl for when no controller is required
 nulpunt.controller("EmptyCtrl", function() {
 	// Empty controller can be used to when a template specifies the controllers in-line.
 });
 
 nulpunt.controller("MainCtrl", function($scope, $rootScope, AccountAuthService) {
-
+	// change account in scope on auth_changed event
 	$rootScope.$on("auth_changed", function() {
 		$scope.account = AccountAuthService.account;
 	});
 });
 
+// NavbarCtrl manages the top navigation bar
 nulpunt.controller("NavbarCtrl", function($scope, $rootScope, $location, AccountAuthService) {
-
+	// change account in scope on auth_changed event
 	$rootScope.$on("auth_changed", function() {
 		$scope.account = AccountAuthService.account;
 	});
 
+	// search handler
 	$scope.search = function() {
 		var safeSearchValue = $scope.searchValue.replace(/[\/\? ]/g, '+').replace('++', '+').trim('+');
 		$location.path("search/"+safeSearchValue);
 	};
 
-	$scope.getClass = function(path) {
+	// returns wether given page path is currently active
+	$scope.isActivePage = function(path) {
 		if ($location.path().substr(0, path.length) == path) {
-		  return "active";
+			return "active";
 		} else {
-		  return "";
+			return "";
 		}
 	}
 });
@@ -136,8 +140,9 @@ nulpunt.controller("OverviewCtrl", function($scope){
 nulpunt.controller("DashboardCtrl", function($scope, $http, SearchDocumentService) {
 	$scope.documents = [];
 	$scope.searchTags = [];
-	   // Don't show anything at page load
-	   // Leave it in for when we will default on the users' profile.
+	// TODO MARKED FOR REMOVAL
+	// // Don't show anything at page load
+	// // Leave it in for when we will default on the users' profile.
 	// $http({method: "POST", url: "/service/getDocuments", data: {} }).
 	// success(function(data) {
 	// 	console.log(data);
@@ -150,23 +155,27 @@ nulpunt.controller("DashboardCtrl", function($scope, $http, SearchDocumentServic
 	// Tagsearch gets the tag to add or remove.
 	$scope.TagSearch = function(tags, tag) {
 		console.log("TagSearch has: ", tags, tag)
-		//var tags = profile_tags.filter(function(x) {return true}); // copy into new array to make it idempotent.
+		// TODO MARKED FOR REMOVAL
+		// var tags = profile_tags.filter(function(x) {return true}); // copy into new array to make it idempotent.
 		var index = tags.indexOf(tag)
-		if (index > -1) { // found it, remove from tags list
+		if (index > -1) {
+			// found it, remove from tags list
 			tags.splice(index, 1);
-		} else { // not in there, add it
+		} else {
+			// not in there, add it
 			tags.push(tag);
-		};
+		}
 		console.log("TagSearch has: ", tag, " -> ", tags)
 		SearchDocumentService.searchDocuments(tags).then(
 			function(data) {
 				//console.log("TagSearch got from SearchDoc promise: ", data);
 				$scope.documents = data.documents;
 			},
-				function(error) {
+			function(error) {
 					console.log('error retrieving raw documents: ', error);
 					deferred.reject('error');
-			});
+			}
+		);
 	};
 	
 	// To assist in show/hide
@@ -176,58 +185,67 @@ nulpunt.controller("DashboardCtrl", function($scope, $http, SearchDocumentServic
 		}
 		var index = tags.indexOf(tag);
 		if (index == -1) {
-		return "np-notselected"
+			return "np-notselected";
 		} else {
-		return "np-selected"
+			return "np-selected";
 		}
 	};
 });
 
 
 nulpunt.controller("InboxCtrl", function() {
+	//++
 });
 
 // This controllers is used on inbox-page to query on users' selected Tags
 nulpunt.controller("DocumentsByTagsCtrl", function ($scope, $http, ProfileService, SearchDocumentService) {
 	console.log("DocumentsByTagsCtrl has found profile: ", $scope.profiles);
 	ProfileService.getProfile().then(
-	function(profile) {
-		
-		console.log("DocumentsByTagCtrl got from Profile promise: ", profile)
+		function(profile) {
+			console.log("DocumentsByTagCtrl got from Profile promise: ", profile);
 			SearchDocumentService.searchDocuments(profile.Tags).then(
-		function(data) {
-			console.log("DocumentsByTagCtrl got from SearchDoc promise: ", data);
-			$scope.documents = data.documents;
+				function(data) {
+					console.log("DocumentsByTagCtrl got from SearchDoc promise: ", data);
+					$scope.documents = data.documents;
+				},
+				function(error) {
+					console.log('error retrieving raw documents: ', error);
+					deferred.reject('error');
+				}
+			);
 		},
-			function(error) {
-				console.log('error retrieving raw documents: ', error);
-				deferred.reject('error');
-		}),
 		function(error) {
-			console.log('error retrieving raw documents: ', error);
+			console.log('error retrieving profile: ', error);
 			deferred.reject('error');
-		}});
+		}
+	);
 	
 	// Tagsearch gets the tag to add or remove.
 	$scope.TagSearch = function(tags, tag) {
+		// TODO MARKED FOR REMOVAL
 		//console.log("TagSearch has: ", profile_tags, tag)
+		// TODO MARKED FOR REMOVAL
 		//var tags = profile_tags.filter(function(x) {return true}); // copy into new array to make it idempotent.
 		var index = tags.indexOf(tag)
-		if (index > -1) { // found it, remove from tags list
+		if (index > -1) {
+			// found it, remove from tags list
 			tags.splice(index, 1);
-		} else { // not in there, add it
+		} else {
+			// not in there, add it
 			tags.push(tag);
 		};
+		// TODO MARKED FOR REMOVAL
 		//console.log("TagSearch has: ", profile_tags, tag, " -> ", tags)
 		SearchDocumentService.searchDocuments(tags).then(
 			function(data) {
 				console.log("TagSearch got from SearchDoc promise: ", data);
 				$scope.documents = data.documents;
 			},
-				function(error) {
-					console.log('error retrieving raw documents: ', error);
-					deferred.reject('error');
-			});
+			function(error) {
+				console.log('error retrieving raw documents: ', error);
+				deferred.reject('error');
+			}
+		);
 	};
 	
 	// To assist in ng-show/hide
@@ -240,7 +258,7 @@ nulpunt.controller("DocumentsByTagsCtrl", function ($scope, $http, ProfileServic
 	};
 });
 
-nulpunt.controller("ShowDocCtrl", function($scope, $http, $routeParams) {
+nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams) {
 	$scope.currentPage = {
 		number: 1,
 		data: {},
@@ -291,6 +309,7 @@ nulpunt.controller("ShowDocCtrl", function($scope, $http, $routeParams) {
 			console.log('error retrieving raw documents: ', error);
 		});
 
+	// get canvas
 	var canvas = document.getElementById("cvPage");
 	var ctx = canvas.getContext("2d");
 
@@ -376,6 +395,7 @@ nulpunt.controller("ShowDocCtrl", function($scope, $http, $routeParams) {
 		updateHighlight();
 	}
 
+	// update highlight on screen with latest info
 	function updateHighlight() {
 		// clear canvas
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -390,25 +410,30 @@ nulpunt.controller("ShowDocCtrl", function($scope, $http, $routeParams) {
 		ctx.fill();
 	}
 
+	// attach mouse handlers
 	$("#cvPage").mousedown(handleMouseDown);
 	$("#cvPage").mousemove(handleMouseMove);
 	$("#cvPage").mouseup(handleMouseUp);
 });
 
 nulpunt.controller("AnnotationSubmitCtrl", function($scope, $http) {
-    $scope.showForm = false;
+	$scope.showForm = false;
 	$scope.submit = function() {
-		$http({method: 'POST', url: '/service/session/add-annotation', data: {
-			documentId: $scope.document.ID,
-			locations: $scope.locations,
-			annotationText: $scope.annotationText,
-		}}).
+		$http({
+			method: 'POST',
+			url: '/service/session/add-annotation',
+			data: {
+				documentId: $scope.document.ID,
+				locations: $scope.locations,
+				annotationText: $scope.annotationText,
+			}
+		}).
 		success(function(data, status, headers, config) {
-		    $scope.annotations.push(data)
-		    $scope.showForm = false;
+			$scope.annotations.push(data)
+			$scope.showForm = false;
 		}).
 		error(function(data, status, headers, config) {
-		    console.log("invalid response for AnnotationSubmit:");
+			console.log("invalid response for AnnotationSubmit:");
 			console.log(data, status, headers);
 			$scope.error = "Could not make request to server";
 		});
@@ -416,16 +441,17 @@ nulpunt.controller("AnnotationSubmitCtrl", function($scope, $http) {
 });
 
 nulpunt.controller("CommentSubmitCtrl", function($scope, $http) {
-    $scope.showForm = false;
+	$scope.showForm = false;
 	$scope.submit = function() {
 		$http({method: 'POST', url: '/service/session/add-comment', data: {
 			annotationId: $scope.annotation.ID,
 			commentText: $scope.commentText,
+			// TODO MARKED FOR REMOVAL
 			// parentId: $scope.parentID, // is for threaded comments
 		}}).
 		success(function(data, status, headers, config) {
-		    $scope.annotation.Comments.push(data);
-		    $scope.showForm = false;
+			$scope.annotation.Comments.push(data);
+			$scope.showForm = false;
 		}).
 		error(function(data, status, headers, config) {
 			console.log("invalid response for CommentSubmit:")
@@ -439,6 +465,8 @@ nulpunt.controller("HistoryCtrl", function($scope, $routeParams) {
 	$scope.documents = [];
 });
 
+// TrendingCtrl (TODO) retrieves latest trending data from server
+// At this point it simply shows hardcoded information (TODO)
 nulpunt.controller("TrendingCtrl", function($scope) {
 	$scope.documents = {
 		items: [],
@@ -496,7 +524,8 @@ nulpunt.controller("TrendingCtrl", function($scope) {
 			],
 			annotations: [
 				{annotationDate: "2013-08-20", annotator: "rick", annotation: "Quas illaboritati ius de plit prae vid maxim que dendae re ne plaborio. Facideb itatur ressiment apiendae. Itatemo luptaestius am essimi, te rem volorum sed maximintiis si remporp oremperatia dit incitati dolorposse provitas ad ut fuga. Hillore nobitemquis et ma si con commol"}
-			] },
+			]
+		},
 		{
 			title: "Contract Koninklijke Landmacht en Blackwater", 
 /* 			description: "A short 1 or 2 sentence description of the document. Include or not?",  */
@@ -521,87 +550,123 @@ nulpunt.controller("TrendingCtrl", function($scope) {
 				],
 			annotations: [
 				{annotationDate: "some day", annotator: "rick", annotation: "Quas illaboritati ius de plit prae vid maxim que dendae re ne plaborio. Facideb itatur ressiment apiendae. Itatemo luptaestius am essimi, te rem volorum sed maximintiis si remporp oremperatia dit incitati dolorposse provitas ad ut fuga. Hillore nobitemquis et ma si con commol"}
-			] },
+			]
+		},
 	];
 });
 
+// NotificationsCtrl (TODO)
 nulpunt.controller("NotificationsCtrl", function($scope) {
 	$scope.notifications = [];
 });
 
+// SearchCtrl (TODO) makes a search request at the server and displays the data through search.html
 nulpunt.controller("SearchCtrl", function($scope, $routeParams) {
 	$scope.mySearch = $routeParams.searchValue.replace(/[+]/g, ' ');
 });
 
-nulpunt.controller("ProfileCtrl", function($scope, $http) {
-	$scope.done = false;
-	$scope.error = "";
+// ProfileCtrl retrieves a users profile and prepares data for display by profile.html
+nulpunt.controller("ProfileCtrl", function($scope, $http, $routeParams) {
 	// load the users' profile
 	$http({
 		method: "GET", 
-		url: "/service/session/get-profile", 
-		// no parameters, the server uses the session.account.username value.
+		url: "/service/session/get-profile",
+		data: {
+			username: $routeParams.username,
+		},
 	}).
 	success(function(data) {
 		console.log(data);
-			 // UGLY HACK: 
-			// Each user has only one profile, yet  we create an array.
-			// This is so that the inbox.html template can use a ng-repeat
-			// That makes the dependencies between that and this controller clear to Angular.
 		$scope.profile = data.profile;
-		$scope.profiles = [ data.profile ];
 	}).
 	error(function(error) {	
 		console.log('error retrieving profile ', error);
 		$scope.error = error;
-	})
-
-	// save the updated document
-	$scope.submit = function() {
-		$scope.done = false;
-		$scope.error = "";
-		$http({
-			method: 'POST', 
-			url: "/service/session/update-profile",
-			data: $scope.profile
-		}).
-		success(function(data, status, headers, config) {
-			console.log(data)
-			$scope.done = true
-		}).
-		error(function(data, status, headers, config) {
-			console.log("error updateProfile");
-			console.log(data, status, headers);
-			$scope.error = data;
-		});
-	}
+	});
 });
 
+// original ProfileCtrl, required in some places where it shouldn't be included
+// nulpunt.controller("ProfileCtrl", function($scope, $http, $routeParams) {
+// 	$scope.done = false;
+// 	$scope.error = "";
+// 	// load the users' profile
+// 	$http({
+// 		method: "GET", 
+// 		url: "/service/session/get-profile",
+// 	}).
+// 	success(function(data) {
+// 		console.log(data);
+// 		// UGLY HACK: 
+// 		// Each user has only one profile, yet  we create an array.
+// 		// This is so that the inbox.html template can use a ng-repeat
+// 		// That makes the dependencies between that and this controller clear to Angular.
+// 		$scope.profile = data.profile;
+// 		$scope.profiles = [ data.profile ];
+// 	}).
+// 	error(function(error) {	
+// 		console.log('error retrieving profile ', error);
+// 		$scope.error = error;
+// 	});
+
+// 	// save the updated document
+// 	$scope.submit = function() {
+// 		$scope.done = false;
+// 		$scope.error = "";
+// 		$http({
+// 			method: 'POST', 
+// 			url: "/service/session/update-profile",
+// 			data: $scope.profile
+// 		}).
+// 		success(function(data, status, headers, config) {
+// 			console.log(data)
+// 			$scope.done = true
+// 		}).
+// 		error(function(data, status, headers, config) {
+// 			console.log("error updateProfile");
+// 			console.log(data, status, headers);
+// 			$scope.error = data;
+// 		});
+// 	}
+// });
+
+// NotFoundCtrl prepares information for the not-found.html page
 nulpunt.controller('NotFoundCtrl', function($scope, $location) {
 	$scope.path = $location.url();
 });
 
+// AboutCtrl controls the about page
 nulpunt.controller('AboutCtrl', function($scope, $location) {
-	$scope.path = $location.url();
-});
-nulpunt.controller('ContactCtrl', function($scope, $location) {
-	$scope.path = $location.url();
-});
-nulpunt.controller('ColophonCtrl', function($scope, $location) {
-	$scope.path = $location.url();
+	// empty controller
 });
 
+// ContactCtrl controls the contact page
+nulpunt.controller('ContactCtrl', function($scope, $location) {
+	// empty controller
+});
+
+// ColophonCtrl controls the colophon page
+nulpunt.controller('ColophonCtrl', function($scope, $location) {
+	// empty controller
+});
+
+// RegisterCtrl (TODO) checks registration input and sends the registration request
 nulpunt.controller("RegisterCtrl", function($scope, $rootScope, $http) {
+	// TODO: check input on-change (passwords match etc. etc.)
+
+	// submit sends registration request to the server
 	$scope.submit = function() {
 		$http({method: 'POST', url: '/service/session/registerAccount', data: {
 			username: $scope.username,
 			email: $scope.email,
-		    password: $scope.password,
-		    color: $scope.color
+			password: $scope.password,
+			color: $scope.color
 		}}).
 		success(function(data, status, headers, config) {
 			if(data.success) {
-				$scope.done = true
+				// set error to null in case of previous error
+				$scope.error = null;
+				// registration is done
+				$scope.done = true;
 			} else {
 				$scope.error = data.error;
 			}
@@ -614,13 +679,9 @@ nulpunt.controller("RegisterCtrl", function($scope, $rootScope, $http) {
 	};
 });
 
+// SettingsCtrl fetches and stores settings
 nulpunt.controller("SettingsCtrl", function($scope, AccountDataService) {
-	// defaults
-	$scope.settings = {
-		testA: "emptyA",
-		testB: "emptyB",
-	};
-
+	// TODO: fix
 	// get settings from server
 	var settingsPromise = AccountDataService.getObject("settings");
 	settingsPromise.then(
@@ -647,76 +708,85 @@ nulpunt.controller("SettingsCtrl", function($scope, AccountDataService) {
 	}
 });
 
+// SignInCtrl manages user sign-in
 nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService) {
-	$scope.submit = function() {
-		$scope.success = false;
-		$scope.wrong = false;
-		$scope.error = "";
-		var prom = AccountAuthService.authenticate($scope.username, $scope.password);
+	$scope.success = false;
+	$scope.wrong = false;
+	$scope.error = "";
 
-		prom.then(function() {
+	$scope.submit = function() {
+		var prom = AccountAuthService.authenticate($scope.username, $scope.password);
+		prom.then(
+			function() {
 				$scope.success = true;
-				window.location.href = "/#/documents";
-				window.location.reload();
-			}, function(error) {
+				//++ TODO: let user choose to go to dashboard or to go to the page he/she came from?
+				// TODO MARKED FOR REMOVAL
+				// window.location.href = "/#/dashboard";
+				// window.location.reload();
+			},
+			function(error) {
 				if(error == "") {
 					// no success, but also no error: credentials are wrong.
 					$scope.wrong = true;
 				} else {
 					$scope.error = error;
 				}
-				//++ need to do some "digest" on $scope ?? or $scope.$apply()?
-				//++ find out what good convention is
+				//++ TODO: need to do some "digest" on $scope ?? or $scope.$apply()? find out what good convention is
 			}
 		);
 	};
 	
+	// watch auth_changed event and set scope if required
+	// TODO: how is this cleaned up when controller is destroyed????
 	$rootScope.$on("auth_changed", function() {
 		$scope.account = AccountAuthService.account;
 	});
 });
 
+// AdminTagsCtrl does stuff TODO
 nulpunt.controller("AdminTagsCtrl", function($scope, $rootScope, $http, TagService) {
 	TagService.getTags().then(
-	function(data) {
-		console.log("AdminTagsCtrl received data: ", data);
-		$scope.tags = data.tags;
-	},
-	function(error) {
-		console.log(error);
-	}
-	);
-	
-	$scope.add_tag = function() {
-	console.log('adding tag: ', $scope.tag);
-	TagService.addTag($scope.tag).then(
 		function(data) {
-		console.log(data);
-		$scope.tags = data.tags;
-		$scope.done = true;
-		},
-		function(error) {
-		console.log(error);
-		}
-	)};
-	
-	$scope.delete_tag = function(tagname) {
-	console.log('deleting tag: '+tagname);
-	TagService.deleteTag(tagname).then(
-		function(data) {
-			console.log(data);
-			//var index = $scope.tags.indexOf($scope.tag)
-			//$scope.tags.splice(index, 1);
+			console.log("AdminTagsCtrl received data: ", data);
 			$scope.tags = data.tags;
-			$scope.done = true;
 		},
 		function(error) {
 			console.log(error);
 		}
-	)};
+	);
+	
+	$scope.add_tag = function() {
+		console.log('adding tag: ', $scope.tag);
+		TagService.addTag($scope.tag).then(
+			function(data) {
+				console.log(data);
+				$scope.tags = data.tags;
+				$scope.done = true;
+			},
+			function(error) {
+				console.log(error);
+			}
+		);
+	};
+	
+	$scope.delete_tag = function(tagname) {
+		console.log('deleting tag: '+tagname);
+		TagService.deleteTag(tagname).then(
+			function(data) {
+				console.log(data);
+				//var index = $scope.tags.indexOf($scope.tag)
+				//$scope.tags.splice(index, 1);
+				$scope.tags = data.tags;
+				$scope.done = true;
+			},
+			function(error) {
+				console.log(error);
+			}
+		);
+	};
 });
 	
-
+// AdminUploadCtrl manages document uploads
 nulpunt.controller("AdminUploadCtrl", function($scope, $upload) {
 	$scope.uploading = false;
 	$scope.language = "nl_NL"; // default
@@ -765,6 +835,7 @@ nulpunt.controller("AdminUploadCtrl", function($scope, $upload) {
 	};
 });
 
+// TODO MARKED FOR REMOVAL
 // THIS CONTROLLER IS AN UGLY HACK! 
 // It copies uploaded-document data into new Document-record and a fake page-record. 
 // Remove after the OCR-processing creates the document/pages records.
@@ -799,6 +870,7 @@ nulpunt.controller("AdminUploadCtrl", function($scope, $upload) {
 // 	});
 //     }});
 
+// AdminProcessCtrl to process the files
 nulpunt.controller("AdminProcessCtrl", function($scope, $http) {
 	$scope.documents = [];
 	$http({method: "POST", url: "/service/getDocumentList", data: {} }).
@@ -811,7 +883,7 @@ nulpunt.controller("AdminProcessCtrl", function($scope, $http) {
 	});
 });
 
-
+// AdminProcessEditMetaCtrl to edit the meta data
 nulpunt.controller("AdminProcessEditMetaCtrl", function($scope, $http, $routeParams, $filter, $window) {
 	$scope.done = false;
 	$scope.error = "";
@@ -903,6 +975,7 @@ nulpunt.controller("AdminProcessEditMetaCtrl", function($scope, $http, $routePar
 	};
 });
 
+// SignOutCtrl kills the complete user session (effectively logging out)
 nulpunt.controller("SignOutCtrl", function($scope, $location, AccountAuthService, ClientSessionService) {
 	$scope.username = AccountAuthService.getUsername();
 	ClientSessionService.stopSession().then(function() {
@@ -914,16 +987,22 @@ nulpunt.controller("SignOutCtrl", function($scope, $location, AccountAuthService
 	});
 });
 
+// bytes filter converts number of bytes to human readable value
 nulpunt.filter('bytes', function() {
 	return function(bytes, precision) {
-		if (bytes==0 || isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
-		if (typeof precision === 'undefined') precision = 1;
+		if (bytes==0 || isNaN(parseFloat(bytes)) || !isFinite(bytes)){
+			return '-';
+		}
+		if (typeof precision === 'undefined') {
+			precision = 1;
+		}
 		var units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'],
 		number = Math.floor(Math.log(bytes) / Math.log(1024));
 		return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) + ' ' + units[number];
 	}
 });
 
+// urlencode filter url escapes the given string
 nulpunt.filter('urlencode', function() {
 	return window.escape;
 });

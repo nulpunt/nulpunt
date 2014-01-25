@@ -69,62 +69,56 @@ func getDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 	// assemble results into a json-object
 	result := make(map[string]interface{})
 
-	switch req.Method {
-	case "POST":
-		// get document, annotation and comment parameters
-		body, _ := ioutil.ReadAll(req.Body)
-		log.Printf("request body is %s\n", string(body))
-		params := &DocumentParams{}
-		err := json.Unmarshal(body, params)
-		log.Printf("Params is: %#v\n", params)
-		if err != nil {
-			log.Printf("JSON unmarshal error %#v\n", err)
-			http.Error(rw, "JSON unmarshal error", http.StatusBadRequest) // 400
-			return
-		}
-
-		if params.DocID == "" {
-			log.Printf("DocID is empty.\n")
-			http.Error(rw, "DocID is empty", http.StatusBadRequest) // 400
-			return
-		}
-
-		// get document
-		doc, err := getDocument(bson.M{"_id": params.DocID})
-		if err != nil {
-			log.Printf("DocID not found: error %#v\n", err)
-			http.Error(rw, "DocID not found", http.StatusNotFound) // 404
-			return
-		}
-		result["document"] = doc
-
-		// Be paranoid and limit annotation to the Document they belong to.
-		selector := bson.M{"documentId": params.DocID}
-		if params.AnnotationID != "" {
-			selector["_id"] = params.AnnotationID
-		} // or leave it undefined for all annotations of DocID
-		annotations, err := getAnnotations(selector)
-		if err != nil {
-			log.Printf("AnnotationID not found: error %#v\n", err)
-			http.Error(rw, "AnnotationID not found", http.StatusNotFound) // 404
-			return
-		}
-		result["annotations"] = annotations
-
-		// marshal and write out.
-		j, err := json.Marshal(result)
-		if err != nil {
-			log.Printf("Error marshalling results: error %#v\n", err)
-			http.Error(rw, "Marshaling error", http.StatusInternalServerError) // 500
-			return
-		}
-		rw.WriteHeader(200)
-		rw.Write(j)
+	// get document, annotation and comment parameters
+	body, _ := ioutil.ReadAll(req.Body)
+	log.Printf("request body is %s\n", string(body))
+	params := &DocumentParams{}
+	err := json.Unmarshal(body, params)
+	log.Printf("Params is: %#v\n", params)
+	if err != nil {
+		log.Printf("JSON unmarshal error %#v\n", err)
+		http.Error(rw, "JSON unmarshal error", http.StatusBadRequest) // 400
 		return
-
-	default: // request.Method
-		http.Error(rw, "error", http.StatusMethodNotAllowed) // 405
 	}
+
+	if params.DocID == "" {
+		log.Printf("DocID is empty.\n")
+		http.Error(rw, "DocID is empty", http.StatusBadRequest) // 400
+		return
+	}
+
+	// get document
+	doc, err := getDocument(bson.M{"_id": params.DocID})
+	if err != nil {
+		log.Printf("DocID not found: error %#v\n", err)
+		http.Error(rw, "DocID not found", http.StatusNotFound) // 404
+		return
+	}
+	result["document"] = doc
+
+	// Be paranoid and limit annotation to the Document they belong to.
+	selector := bson.M{"documentId": params.DocID}
+	if params.AnnotationID != "" {
+		selector["_id"] = params.AnnotationID
+	} // or leave it undefined for all annotations of DocID
+	annotations, err := getAnnotations(selector)
+	if err != nil {
+		log.Printf("AnnotationID not found: error %#v\n", err)
+		http.Error(rw, "AnnotationID not found", http.StatusNotFound) // 404
+		return
+	}
+	result["annotations"] = annotations
+
+	// marshal and write out.
+	j, err := json.Marshal(result)
+	if err != nil {
+		log.Printf("Error marshalling results: error %#v\n", err)
+		http.Error(rw, "Marshaling error", http.StatusInternalServerError) // 500
+		return
+	}
+	rw.WriteHeader(200)
+	rw.Write(j)
+	return
 }
 
 // get all documents with certain limits.
@@ -426,49 +420,44 @@ func deleteDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 	}
 	// TODO: test for Admin-user flag.
 
-	switch req.Method {
-	case "POST":
-		body, _ := ioutil.ReadAll(req.Body)
-		log.Printf("\n\nbody is %s\n", string(body))
-		params := &DocumentParams{}
-		err := json.Unmarshal(body, params)
-		if err != nil {
-			log.Printf("\n\nJSON unmarshal error %#v\n", err)
-			http.Error(rw, "JSON unmarshal error", http.StatusBadRequest) // 400
-			return
-		}
-
-		// Delete Annotation-records with DocID
-		err = removeAnnotations(bson.M{"documentId": params.DocID})
-		if err != nil {
-			log.Printf("Error deleting annotation on document: error %#v\n", err)
-			http.Error(rw, "error deleting annotation on document", http.StatusInternalServerError) // 500
-			return
-		}
-
-		// Delete Page-records with DocID
-		err = removePages(bson.M{"documentId": params.DocID})
-		if err != nil {
-			log.Printf("Error deleting pages of document: error %#v\n", err)
-			http.Error(rw, "error deleting pages of document", http.StatusInternalServerError) // 500
-			return
-		}
-
-		// Delete the document record.
-		log.Printf("\n\nDocumentID to delete is: %#v\n", params.DocID)
-		err = removeDocument(params.DocID)
-		if err != nil {
-			log.Printf("Error deleting document: error %#v\n", err)
-			http.Error(rw, "error deleting document", http.StatusInternalServerError) // 500
-			return
-		}
-
-		rw.WriteHeader(200)
-		rw.Write([]byte(`OK, deleted`))
+	body, _ := ioutil.ReadAll(req.Body)
+	log.Printf("\n\nbody is %s\n", string(body))
+	params := &DocumentParams{}
+	err := json.Unmarshal(body, params)
+	if err != nil {
+		log.Printf("\n\nJSON unmarshal error %#v\n", err)
+		http.Error(rw, "JSON unmarshal error", http.StatusBadRequest) // 400
 		return
-	default:
-		http.Error(rw, "error", http.StatusMethodNotAllowed) // 405
 	}
+
+	// Delete Annotation-records with DocID
+	err = removeAnnotations(bson.M{"documentId": params.DocID})
+	if err != nil {
+		log.Printf("Error deleting annotation on document: error %#v\n", err)
+		http.Error(rw, "error deleting annotation on document", http.StatusInternalServerError) // 500
+		return
+	}
+
+	// Delete Page-records with DocID
+	err = removePages(bson.M{"documentId": params.DocID})
+	if err != nil {
+		log.Printf("Error deleting pages of document: error %#v\n", err)
+		http.Error(rw, "error deleting pages of document", http.StatusInternalServerError) // 500
+		return
+	}
+
+	// Delete the document record.
+	log.Printf("\n\nDocumentID to delete is: %#v\n", params.DocID)
+	err = removeDocument(params.DocID)
+	if err != nil {
+		log.Printf("Error deleting document: error %#v\n", err)
+		http.Error(rw, "error deleting document", http.StatusInternalServerError) // 500
+		return
+	}
+
+	rw.WriteHeader(200)
+	rw.Write([]byte(`OK, deleted`))
+	return
 }
 
 func pageImageHandlerFunc(w http.ResponseWriter, r *http.Request) {

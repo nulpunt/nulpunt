@@ -1,52 +1,52 @@
 <div class="masthead documents">
-		  <div class="container">
-			<div class="row">
-			  	<div class="col-lg-12">
-			  		<h1>Documents</h1>
-				  	<!-- show tag-cloud -->
-					<div ng-controller="AdminTagsCtrl">
-
-
-
-					    <ul class="list-unstyled">
-					      <li class="np-document-tag" ng-class="isElement(searchTags, tag.Tag)" ng-repeat="tag in tags">
-						<div class="TagSearchButton"  ng-click="TagSearch(searchTags, tag.Tag)"><span class="glyphicon glyphicon-tag"></span> {{tag.Tag}}</div>
-					      </li>
-					    </ul>
-
-				</div> <!-- ng-controller="AdminTagsCtrl" -->
-			  	</div>
-			  	<div class="col-lg-4">
-				</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+			  	<h1>Documents</h1>
+				<!-- show tag-cloud -->
+				<div ng-controller="AdminTagsCtrl">
+					<ul class="list-unstyled">
+						<li class="np-document-tag" ng-class="isElement(searchTags, tag.Tag)" ng-repeat="tag in tags">
+							<div class="TagSearchButton"  ng-click="TagSearch(searchTags, tag.Tag)">
+								<span class="glyphicon glyphicon-tag"></span> {{tag.Tag}}
+							</div>
+						</li>
+					</ul>
+				</div><!-- ng-controller="AdminTagsCtrl" -->
+			</div>
+			<div class="col-lg-4">
 			</div>
 		</div>
+	</div>
 </div>
 
 <div class="container">
-	  <div class="row">
-		  <div class="col-lg-12">
-		  	 <h1></h1>
-		  </div>
-	  </div>
+	<div class="row">
+		<div class="col-lg-12">
+			<h1></h1>
+		</div>
+	</div>
 
-<div ng-repeat="document in documents" class="row np-row np-document" ng-class-even="'np-row-even'">
+	<div ng-repeat="document in documents" class="row np-row np-document" ng-class-even="'np-row-even'">
+		<div class="col-lg-8">
 
-	<div class="col-lg-8">
-
-		<h2><a href="/#/document/{{ document.ID }}">{{ document.Title }}</a> <small>{{ document.Category }}</small></h2>
-		<div class="document-description"><p>{{document.Summary}}</p></div>
+			<h2><a href="/#/document/{{ document.ID }}">{{ document.Title }}</a> <small>{{ document.Category }}</small></h2>
+			<div class="document-description">
+				<p>{{document.Summary}}</p>
+			</div>
 			<div class="document-metadata">
 				<span class="source">Source: {{document.Source}} on {{document.OriginalDate | date:'dd MMMM yyyy, hh:mm'}} ({{ document.Country }})</span>
 				<span class="upload">Uploaded on <strong>{{document.UploadDate | date:'dd MMMM yyyy, hh:mm'}}</strong> by <span class="uploader">{{document.Uploader}}</span></span>
 				<span class="request" ng-show="item.requester">Request by: {{document.FOIRequester }}</span>
 				<!-- <span class="language">Language: {{ document.Language }}</span> -->
 			</div>
-		<div class="tags-metadata">
-			<span ng-repeat="tag in document.Tags" class="np-document-tag"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</span>
+			<div class="tags-metadata">
+				<span ng-repeat="tag in document.Tags" class="np-document-tag"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</span>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<!-- <button type="button" class="btn btn-black np-open-document">Open document...</button> -->
 		</div>
 	</div>
-	<div class="col-lg-4">
-	  <!-- <button type="button" class="btn btn-black np-open-document">Open document...</button> -->
-	</div>
-</div></div>
+</div>
 

@@ -23,18 +23,20 @@ func initHTTPServer() {
 	rootRouter := mux.NewRouter()
 
 	// serve static files on / and several subdirs
-	rootRouter.Path("/").Handler(fileServer)
-	rootRouter.PathPrefix("/css/").Handler(fileServer)
-	rootRouter.PathPrefix("/fonts/").Handler(fileServer)
-	rootRouter.PathPrefix("/html/").Handler(fileServer)
-	rootRouter.PathPrefix("/js/").Handler(fileServer)
-	rootRouter.PathPrefix("/img/").Handler(fileServer)
-	rootRouter.Path("/download-original/{documentIDHex}/{filename:.*}").HandlerFunc(downloadOriginalHandlerFunc)
+	// NOTE: only the exact path "/" will match. http.FileService will resolve this to index.html
+	// NOTE: "index.html" itself wont match
+	rootRouter.Methods("GET").Path("/").Handler(fileServer)
+	rootRouter.Methods("GET").PathPrefix("/css/").Handler(fileServer)
+	rootRouter.Methods("GET").PathPrefix("/fonts/").Handler(fileServer)
+	rootRouter.Methods("GET").PathPrefix("/html/").Handler(fileServer)
+	rootRouter.Methods("GET").PathPrefix("/js/").Handler(fileServer)
+	rootRouter.Methods("GET").PathPrefix("/img/").Handler(fileServer)
+	rootRouter.Methods("GET").Path("/download-original/{documentIDHex}/{filename:.*}").HandlerFunc(downloadOriginalHandlerFunc)
 
 	// serve document files on /docfiles/
 	docfilesRouter := rootRouter.PathPrefix("/docfiles/").Subrouter()
-	docfilesRouter.Path("/pages/{documentIDHex}/{pageNumber}.png").HandlerFunc(pageImageHandlerFunc)
-	docfilesRouter.Path("/thumbnails/{documentIDHex}.png").HandlerFunc(thumbnailImageHandlerFunc)
+	docfilesRouter.Methods("GET").Path("/pages/{documentIDHex}/{pageNumber}.png").HandlerFunc(pageImageHandlerFunc)
+	docfilesRouter.Methods("GET").Path("/thumbnails/{documentIDHex}.png").HandlerFunc(thumbnailImageHandlerFunc)
 
 	// create serviceRouter for /service/*
 	serviceRouter := rootRouter.PathPrefix("/service/").Subrouter()
@@ -42,10 +44,10 @@ func initHTTPServer() {
 	serviceRouter.Path("/sessionCheck").HandlerFunc(sessionCheckHandlerFunc)
 
 	// Document handlers
-	serviceRouter.Path("/getDocument").HandlerFunc(getDocumentHandler)
-	serviceRouter.Path("/getPage").HandlerFunc(getPageHandlerFunc)
-	serviceRouter.Path("/getDocuments").HandlerFunc(getDocumentsHandler)
-	serviceRouter.Path("/getDocumentList").HandlerFunc(getDocumentListHandler)
+	serviceRouter.Methods("POST").Path("/getDocument").HandlerFunc(getDocumentHandler) // TODO: why is this a POST?
+	serviceRouter.Methods("GET").Path("/getPage").HandlerFunc(getPageHandlerFunc)
+	serviceRouter.Methods("GET").Path("/getDocuments").HandlerFunc(getDocumentsHandler)
+	serviceRouter.Methods("GET").Path("/getDocumentList").HandlerFunc(getDocumentListHandler)
 
 	// create sessionPathRouter for /service/session/*
 	sessionPathRouter := rootRouter.PathPrefix("/service/session/").Subrouter()
@@ -65,28 +67,30 @@ func initHTTPServer() {
 	sessionRouter.Path("/dataBlobSave").HandlerFunc(sessionDataBlobSave)
 	sessionRouter.Path("/dataBlobLoad").HandlerFunc(sessionDataBlobLoad)
 
-	sessionRouter.Path("/add-annotation").HandlerFunc(addAnnotationHandler)
-	sessionRouter.Path("/add-comment").HandlerFunc(addCommentHandler)
+	sessionRouter.Methods("GET").Path("/get-tags").HandlerFunc(adminGetTags)
 
+	sessionRouter.Methods("POST").Path("/add-annotation").HandlerFunc(addAnnotationHandler)
+	sessionRouter.Methods("POST").Path("/add-comment").HandlerFunc(addCommentHandler)
+
+	sessionRouter.Methods("GET").Path("/get-profile").HandlerFunc(getProfileHandler)
 	// Users can't make profiles yet. BLOCK em.
-	//sessionRouter.Path("/get-profile").HandlerFunc(getProfileHandler)
-	//sessionRouter.Path("/update-profile").HandlerFunc(updateProfileHandler)
+	// sessionRouter.Methods("POST").Path("/update-profile").HandlerFunc(updateProfileHandler)
 
 	sessionRouter.Path("/get-documents-by-tags").HandlerFunc(getDocumentsByTagsHandler)
 
 	// register /service/session/admin/* handlers
 	adminRouter := sessionRouter.PathPrefix("/admin/").Subrouter()
 	adminRouter.Path("/upload").HandlerFunc(adminUpload)
-	adminRouter.Path("/getRawUploads").HandlerFunc(adminGetRawUploads)
+	adminRouter.Methods("GET").Path("/getRawUploads").HandlerFunc(adminGetRawUploads)
 
-	sessionRouter.Path("/get-tags").HandlerFunc(adminGetTags) //  /service/get-tags, ie for all
-	adminRouter.Path("/add-tag").HandlerFunc(adminAddTag)     //  /service/add-tags, ie only for admins
-	adminRouter.Path("/delete-tag").HandlerFunc(adminDeleteTag)
+	adminRouter.Methods("POST").Path("/add-tag").HandlerFunc(adminAddTag) //  /service/add-tags, ie only for admins
+	adminRouter.Methods("POST").Path("/delete-tag").HandlerFunc(adminDeleteTag)
 
-	adminRouter.Path("/updateDocument").HandlerFunc(updateDocumentHandler)
-	adminRouter.Path("/insertDocument").HandlerFunc(insertDocumentHandler)
-	adminRouter.Path("/deleteDocument").HandlerFunc(deleteDocumentHandler)
+	adminRouter.Methods("POST").Path("/updateDocument").HandlerFunc(updateDocumentHandler)
+	adminRouter.Methods("POST").Path("/insertDocument").HandlerFunc(insertDocumentHandler)
+	adminRouter.Methods("POST").Path("/deleteDocument").HandlerFunc(deleteDocumentHandler)
 
+	// 404 when /service/session/admin/* was not found
 	adminRouter.PathPrefix("/").Handler(http.NotFoundHandler())
 
 	// 404 when /service/session/* was not found
