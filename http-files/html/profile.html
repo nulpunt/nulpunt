@@ -1,4 +1,11 @@
-<h3>User {{ profile.username }} profile</h3>
-<div>
-	Display info about user {{ profile.username }}
+<div ng-show="error" >
+	<h3>Error</h3>
+	{{ error }}
+</div>
+
+<div ng-hide="error" >
+	<h3>User {{ profile.username }} profile</h3>
+	<div>
+		Display info about user {{ profile.username }}
+	</div>
 </div>

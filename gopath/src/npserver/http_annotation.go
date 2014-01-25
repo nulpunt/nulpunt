@@ -29,47 +29,42 @@ func addAnnotationHandler(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	switch req.Method {
-	case "POST":
-		body, _ := ioutil.ReadAll(req.Body)
-		log.Printf("\n\nbody is %s\n", string(body))
-		annot := &Annotation{}
-		err := json.Unmarshal(body, annot)
-		if err != nil {
-			log.Printf("\n\nJSON unmarshal error %#v\n", err)
-			http.Error(rw, "JSON unmarshal error", http.StatusBadRequest) // 400
-			return
-		}
-
-		// Set every other field to things we control.
-		annot.ID = bson.NewObjectId()
-		annot.AnnotatorUsername = acc.Username
-		annot.Color = acc.Color
-		annot.CreateDate = time.Now()
-		annot.Comments = []Comment{}
-
-		log.Printf("\n\nAnnotation to insert is: %#v\n", *annot)
-
-		err = insertAnnotation(annot)
-		if err != nil {
-			log.Printf("Error inserting annotation: error %#v\n", err)
-			http.Error(rw, "error inserting annotation", http.StatusInternalServerError) // 500
-			return
-		}
-
-		// marshal and write out.
-		j, err := json.Marshal(annot)
-		if err != nil {
-			log.Printf("Error marshalling results: error %#v\n", err)
-			http.Error(rw, "Marshaling error", http.StatusInternalServerError) // 500
-			return
-		}
-		rw.WriteHeader(200)
-		rw.Write(j)
+	body, _ := ioutil.ReadAll(req.Body)
+	log.Printf("\n\nbody is %s\n", string(body))
+	annot := &Annotation{}
+	err := json.Unmarshal(body, annot)
+	if err != nil {
+		log.Printf("\n\nJSON unmarshal error %#v\n", err)
+		http.Error(rw, "JSON unmarshal error", http.StatusBadRequest) // 400
 		return
-	default:
-		http.Error(rw, "error", http.StatusMethodNotAllowed) // 405
 	}
+
+	// Set every other field to things we control.
+	annot.ID = bson.NewObjectId()
+	annot.AnnotatorUsername = acc.Username
+	annot.Color = acc.Color
+	annot.CreateDate = time.Now()
+	annot.Comments = []Comment{}
+
+	log.Printf("\n\nAnnotation to insert is: %#v\n", *annot)
+
+	err = insertAnnotation(annot)
+	if err != nil {
+		log.Printf("Error inserting annotation: error %#v\n", err)
+		http.Error(rw, "error inserting annotation", http.StatusInternalServerError) // 500
+		return
+	}
+
+	// marshal and write out.
+	j, err := json.Marshal(annot)
+	if err != nil {
+		log.Printf("Error marshalling results: error %#v\n", err)
+		http.Error(rw, "Marshaling error", http.StatusInternalServerError) // 500
+		return
+	}
+	rw.WriteHeader(200)
+	rw.Write(j)
+	return
 }
 
 // AddCommentParams
@@ -99,46 +94,41 @@ func addCommentHandler(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	switch req.Method {
-	case "POST":
-		body, _ := ioutil.ReadAll(req.Body)
-		log.Printf("\n\nbody is %s\n", string(body))
-		params := &AddCommentParams{}
-		err := json.Unmarshal(body, params)
-		if err != nil {
-			log.Printf("\n\nJSON unmarshal error %#v\n", err)
-			http.Error(rw, "JSON unmarshal error", http.StatusBadRequest) // 400
-			return
-		}
-
-		comment := Comment{
-			ID:                bson.NewObjectId(),
-			CommenterUsername: acc.Username,
-			Color:             acc.Color,
-			CreateDate:        time.Now(),
-			CommentText:       params.CommentText,
-			Comments:          []Comment{},
-		}
-		log.Printf("\n\ncomment to add is: %#v\n", comment)
-
-		err = updateAnnotationID(params.AnnotationID, bson.M{"$push": bson.M{"comments": comment}})
-		if err != nil {
-			log.Printf("Error adding comment to annotation: error %#v\n", err)
-			http.Error(rw, "error adding comment to annotation", http.StatusInternalServerError) // 500
-			return
-		}
-
-		// marshal and write out.
-		j, err := json.Marshal(comment)
-		if err != nil {
-			log.Printf("Error marshalling results: error %#v\n", err)
-			http.Error(rw, "Marshaling error", http.StatusInternalServerError) // 500
-			return
-		}
-		rw.WriteHeader(200)
-		rw.Write(j)
+	body, _ := ioutil.ReadAll(req.Body)
+	log.Printf("\n\nbody is %s\n", string(body))
+	params := &AddCommentParams{}
+	err := json.Unmarshal(body, params)
+	if err != nil {
+		log.Printf("\n\nJSON unmarshal error %#v\n", err)
+		http.Error(rw, "JSON unmarshal error", http.StatusBadRequest) // 400
 		return
-	default:
-		http.Error(rw, "error", http.StatusMethodNotAllowed) // 405
 	}
+
+	comment := Comment{
+		ID:                bson.NewObjectId(),
+		CommenterUsername: acc.Username,
+		Color:             acc.Color,
+		CreateDate:        time.Now(),
+		CommentText:       params.CommentText,
+		Comments:          []Comment{},
+	}
+	log.Printf("\n\ncomment to add is: %#v\n", comment)
+
+	err = updateAnnotationID(params.AnnotationID, bson.M{"$push": bson.M{"comments": comment}})
+	if err != nil {
+		log.Printf("Error adding comment to annotation: error %#v\n", err)
+		http.Error(rw, "error adding comment to annotation", http.StatusInternalServerError) // 500
+		return
+	}
+
+	// marshal and write out.
+	j, err := json.Marshal(comment)
+	if err != nil {
+		log.Printf("Error marshalling results: error %#v\n", err)
+		http.Error(rw, "Marshaling error", http.StatusInternalServerError) // 500
+		return
+	}
+	rw.WriteHeader(200)
+	rw.Write(j)
+	return
 }
