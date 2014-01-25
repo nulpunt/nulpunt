@@ -32,7 +32,7 @@ func addAnnotationHandler(rw http.ResponseWriter, req *http.Request) {
 	body, _ := ioutil.ReadAll(req.Body)
 	log.Printf("\n\nbody is %s\n", string(body))
 	annot := &Annotation{}
-	err := json.Unmarshal(body, annot)
+	err = json.Unmarshal(body, annot)
 	if err != nil {
 		log.Printf("\n\nJSON unmarshal error %#v\n", err)
 		http.Error(rw, "JSON unmarshal error", http.StatusBadRequest) // 400
@@ -67,7 +67,7 @@ func addAnnotationHandler(rw http.ResponseWriter, req *http.Request) {
 	return
 }
 
-// AddCommentParams
+// AddCommentParams holds comment parameters
 type AddCommentParams struct {
 	//DocumentID bson.ObjectId
 	AnnotationID bson.ObjectId
@@ -97,13 +97,12 @@ func addCommentHandler(rw http.ResponseWriter, req *http.Request) {
 	body, _ := ioutil.ReadAll(req.Body)
 	log.Printf("\n\nbody is %s\n", string(body))
 	params := &AddCommentParams{}
-	err := json.Unmarshal(body, params)
+	err = json.Unmarshal(body, params)
 	if err != nil {
 		log.Printf("\n\nJSON unmarshal error %#v\n", err)
 		http.Error(rw, "JSON unmarshal error", http.StatusBadRequest) // 400
 		return
 	}
-
 	comment := Comment{
 		ID:                bson.NewObjectId(),
 		CommenterUsername: acc.Username,

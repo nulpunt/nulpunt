@@ -423,7 +423,7 @@ func deleteDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 	body, _ := ioutil.ReadAll(req.Body)
 	log.Printf("\n\nbody is %s\n", string(body))
 	params := &DocumentParams{}
-	err := json.Unmarshal(body, params)
+	err = json.Unmarshal(body, params)
 	if err != nil {
 		log.Printf("\n\nJSON unmarshal error %#v\n", err)
 		http.Error(rw, "JSON unmarshal error", http.StatusBadRequest) // 400
