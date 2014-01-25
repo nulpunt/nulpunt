@@ -3,8 +3,9 @@ var nulpunt = angular.module('nulpunt', [
 	// please keep this list sorted
 	'ngRoute',
 	'ngStorage',
-	'ui.bootstrap.collapse',
-	'ui.bootstrap.dropdownToggle',
+	'ui.bootstrap',
+	// 'ui.bootstrap.collapse',
+	// 'ui.bootstrap.dropdownToggle',
 	'angularFileUpload',
 	'checklist-model'
 ]);
@@ -258,7 +259,7 @@ nulpunt.controller("DocumentsByTagsCtrl", function ($scope, $http, ProfileServic
 	};
 });
 
-nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams) {
+nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal) {
 	$scope.currentPage = {
 		number: 1,
 		data: {},
@@ -326,6 +327,7 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams) {
 	var boxStopY;
 
 	var highlight = {x1: 0, x2: 0, y1: 0, y2: 0};
+	$scope.highlight = highlight;
 
 	var isDown = false;
 
@@ -354,31 +356,15 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams) {
 		var canvasOffset = $("#pageBox").offset();
 		pageOffsetX = canvasOffset.left;
 		pageOffsetY = canvasOffset.top;
-		console.log('pageOffsetX: '+pageOffsetX+' pageOffsetY: '+pageOffsetY);
+		// console.log('pageOffsetX: '+pageOffsetX+' pageOffsetY: '+pageOffsetY);
 
 		// save mouse location
 		boxStartX = parseInt(e.clientX - pageOffsetX);
 		boxStartY = parseInt(e.clientY - pageOffsetY + $(window).scrollTop());
-		console.log('mouseX: '+boxStartX+' mouseY: '+boxStartY);
+		// console.log('mouseX: '+boxStartX+' mouseY: '+boxStartY);
 
 		// all done
 		isDown = true;
-	}
-
-	function handleMouseUp(e) {
-		// save mouse location
-		boxStopX = parseInt(e.clientX - pageOffsetX);
-		boxStopY = parseInt(e.clientY - pageOffsetY + $(window).scrollTop());
-		console.log('mouseX: '+boxStopX+' mouseY: '+boxStopY);
-
-		highlight.x1 = boxStartX/pageWidth*100;
-		highlight.x2 = boxStopX/pageWidth*100;
-		highlight.y1 = boxStartY/pageHeight*100;
-		highlight.y2 = boxStopY/pageHeight*100;
-		console.log(highlight);
-
-		// all done
-		isDown = false;
 	}
 
 	function handleMouseMove(e) {
@@ -393,6 +379,28 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams) {
 
 		// update highlight
 		updateHighlight();
+	}
+
+	function handleMouseUp(e) {
+		// save mouse location
+		boxStopX = parseInt(e.clientX - pageOffsetX);
+		boxStopY = parseInt(e.clientY - pageOffsetY + $(window).scrollTop());
+		// console.log('mouseX: '+boxStopX+' mouseY: '+boxStopY);
+
+		highlight.x1 = boxStartX/pageWidth*100;
+		highlight.x2 = boxStopX/pageWidth*100;
+		highlight.y1 = boxStartY/pageHeight*100;
+		highlight.y2 = boxStopY/pageHeight*100;
+
+		// TODO: check if highlight is not too small and not too large.
+		// In case of very small highligh (or same xy1 as xy2) remove the highlight all together and set to 0
+		// In case of large highlight, give notification and color red..
+
+		// console.log(highlight);
+		$scope.$apply();
+
+		// all done
+		isDown = false;
 	}
 
 	// update highlight on screen with latest info
@@ -414,31 +422,104 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams) {
 	$("#cvPage").mousedown(handleMouseDown);
 	$("#cvPage").mousemove(handleMouseMove);
 	$("#cvPage").mouseup(handleMouseUp);
-});
 
-nulpunt.controller("AnnotationSubmitCtrl", function($scope, $http) {
-	$scope.showForm = false;
-	$scope.submit = function() {
-		$http({
-			method: 'POST',
-			url: '/service/session/add-annotation',
-			data: {
-				documentId: $scope.document.ID,
-				locations: $scope.locations,
-				annotationText: $scope.annotationText,
+
+	$scope.addAnnotation = function () {
+
+		var modalInstance = $modal.open({
+			templateUrl: 'html/new-annotation-modal.html',
+				controller: "NewAnnotationModal",
+				resolve: {
+				highlight: function () {
+					return highlight;
+				},
+				documentId: function() {
+					return $scope.document.ID;
+				},
+				pageNr: function() {
+					return $scope.currentPage.number;
+				},
 			}
-		}).
-		success(function(data, status, headers, config) {
-			$scope.annotations.push(data)
-			$scope.showForm = false;
-		}).
-		error(function(data, status, headers, config) {
-			console.log("invalid response for AnnotationSubmit:");
-			console.log(data, status, headers);
-			$scope.error = "Could not make request to server";
+		});
+
+		modalInstance.result.then(function (annotationText) {
+			console.log('annotation result: '+annotationText);
+			$http({
+				method: 'POST',
+				url: '/service/session/add-annotation',
+				data: {
+					documentId: $scope.document.ID,
+					pageNr: $scope.currentPage.number,
+					highlight: $scope.highlight,
+					annotationText: annotationText,
+				}
+			}).
+			success(function(data, status, headers, config) {
+				$scope.annotations.push(data);
+				$scope.showForm = false;
+			}).
+			error(function(data, status, headers, config) {
+				console.log("invalid response for AnnotationSubmit:");
+				console.log(data, status, headers);
+				$scope.error = "Could not make request to server";
+			});
+		}, function (info) {
+			console.log('modal dismissed because: '+info);
 		});
 	};
 });
+
+nulpunt.controller("NewAnnotationModal", function($scope, $modalInstance, highlight, documentId, pageNr) {
+	// highlight location for crop
+	// TODO: use documentId, pageNr and highlight area for page crop
+	$scope.highlight = highlight;
+	$scope.documentId = documentId;
+	$scope.pageNr = pageNr;
+
+	// TODO: remove this
+	$scope.annotation = {
+		text: "test",
+	};
+
+	// save new annotation
+	$scope.save = function () {
+		$modalInstance.close($scope.annotation.text);
+	};
+
+	// cancel new annocation
+	$scope.cancel = function () {
+		$modalInstance.dismiss('cancel');
+	};
+});
+
+// MARKED FOR DELETION
+// MARKED FOR DELETION
+// MARKED FOR DELETION
+// MARKED FOR DELETION
+// MARKED FOR DELETION
+// nulpunt.controller("AnnotationSubmitCtrl", function($scope, $http) {
+// 	$scope.showForm = false;
+// 	$scope.submit = function() {
+// 		$http({
+// 			method: 'POST',
+// 			url: '/service/session/add-annotation',
+// 			data: {
+// 				documentId: $scope.document.ID,
+// 				locations: $scope.locations,
+// 				annotationText: $scope.annotationText,
+// 			}
+// 		}).
+// 		success(function(data, status, headers, config) {
+// 			$scope.annotations.push(data)
+// 			$scope.showForm = false;
+// 		}).
+// 		error(function(data, status, headers, config) {
+// 			console.log("invalid response for AnnotationSubmit:");
+// 			console.log(data, status, headers);
+// 			$scope.error = "Could not make request to server";
+// 		});
+// 	};
+// });
 
 nulpunt.controller("CommentSubmitCtrl", function($scope, $http) {
 	$scope.showForm = false;
@@ -710,11 +791,14 @@ nulpunt.controller("SettingsCtrl", function($scope, AccountDataService) {
 
 // SignInCtrl manages user sign-in
 nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService) {
-	$scope.success = false;
-	$scope.wrong = false;
-	$scope.error = "";
 
 	$scope.submit = function() {
+		// reset state on scope
+		$scope.success = false;
+		$scope.wrong = false;
+		$scope.error = "";
+
+		// authenticate to server
 		var prom = AccountAuthService.authenticate($scope.username, $scope.password);
 		prom.then(
 			function() {
