@@ -49,19 +49,18 @@ func adminAddTag(rw http.ResponseWriter, req *http.Request) {
 
 	body, _ := ioutil.ReadAll(req.Body)
 	tag := &Tag{}
-	err := json.Unmarshal(body, tag)
-
+	err = json.Unmarshal(body, tag)
 	if err != nil {
 		log.Printf("Tag is empty.\n")
 		http.Error(rw, "error", http.StatusBadRequest) // 400
 		return
 	}
-
 	if tag.Tag == "" {
 		log.Printf("Tag is empty.\n")
 		http.Error(rw, "error", http.StatusBadRequest) // 400
 		return
 	}
+
 	// Todo UPDATE complete tag when tag.ID != nil.
 	// Now, we just want the string value, to insert.
 	err = insertTag(newTag(tag.Tag))
@@ -98,14 +97,12 @@ func adminDeleteTag(rw http.ResponseWriter, req *http.Request) {
 
 	body, _ := ioutil.ReadAll(req.Body)
 	tag := &Tag{}
-	err := json.Unmarshal(body, tag)
-
+	err = json.Unmarshal(body, tag)
 	if err != nil {
 		log.Printf("Tag is empty.\n")
 		http.Error(rw, "error", http.StatusBadRequest) // 400
 		return
 	}
-
 	if tag.Tag == "" {
 		log.Printf("Tag is empty.\n")
 		http.Error(rw, "error", http.StatusBadRequest) // 400
