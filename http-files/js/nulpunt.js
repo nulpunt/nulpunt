@@ -710,11 +710,14 @@ nulpunt.controller("SettingsCtrl", function($scope, AccountDataService) {
 
 // SignInCtrl manages user sign-in
 nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService) {
-	$scope.success = false;
-	$scope.wrong = false;
-	$scope.error = "";
 
 	$scope.submit = function() {
+		// reset state on scope
+		$scope.success = false;
+		$scope.wrong = false;
+		$scope.error = "";
+
+		// authenticate to server
 		var prom = AccountAuthService.authenticate($scope.username, $scope.password);
 		prom.then(
 			function() {
