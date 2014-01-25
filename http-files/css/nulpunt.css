@@ -2,6 +2,11 @@ body, html {
 	height:100%;
 }
 
+/*always display scrollbar*/
+html {
+	overflow-y: scroll;
+}
+
 /*disable selection by default*/
 html {
 	-webkit-touch-callout: none;
