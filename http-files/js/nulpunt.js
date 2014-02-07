@@ -286,11 +286,48 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal)
 		loadPage();
 	});
 
+    // get any annotation that has coordinates at the given pageNr.
+    function annotationsOnPage(pageNr) {
+	// console.log("filter annotations on page: ", pageNr);
+	annotations = _.filter($scope.annotations, function(ann) {
+	    return _.some(ann.Locations, function(loc) { 
+		return loc.PageNumber == pageNr;
+	    })
+	})	   
+	return annotations
+    }
+
+    function clearHighlights() {
+	$("#highlights").html("");
+    }
+
+    function updateHighlights() {
+	//console.log("updateHighlights is called");
+	anns = annotationsOnPage($scope.currentPage.number);
+	_.each(anns, function(ann) {
+	    _.each(ann.Locations, function(location) {
+		if (location.PageNumber == $scope.currentPage.number) {
+		    $("#highlights").append(
+			"<canvas class='highlight highlight-transparency' " + 
+			    "style='" + 
+			    "background-color: " + ann.Color + "; " + 
+			    "left: " + location.X1 + "%; " +
+			    "top: " + location.Y1 + "%; " +
+			    "width: " + (location.X2 - location.X1) + "%; " +
+			    "height: " + (location.Y2 - location.Y1) + "%; " +
+			    "'></canvas>");
+		}
+	    });
+	});
+    }
+
 	function loadPage() {
+		clearHighlights();
 		$http({method: 'POST', url: "/service/getPage", data: {documentID: $routeParams.docID, pageNumber: $scope.currentPage.number}}).
 			success(function(data) {
 					console.log(data);
 					$scope.currentPage.data = data;
+					updateHighlights();
 			}).
 			error(function(error) {
 					console.error('error retrieving page information: ', error);

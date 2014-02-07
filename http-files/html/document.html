@@ -57,6 +57,9 @@
 		top: 0px;
 		left: 0px;
 	}
+	.highlight {
+		position: absolute;
+	}
 </style>
 
 <div class="masthead document-viewer">
@@ -108,6 +111,10 @@
 				<div id="pageBox" >
 					<canvas id="cvPage" ></canvas>
 					<img ng-src="/docfiles/pages/{{document.ID}}/{{currentPage.number}}.png" class="img-responsive" />
+					<span id="highlights">
+					  <!-- this span gets these canvases, one for each annotation on this page -->
+					  <!-- <canvas id="{annotation.ID}" class="highlight highlight-transparency" style="background-color: green; width:200px; height:20px; top: 50px; left: 100px; "></canvas> -->
+					</span>
 				</div>
 				<!-- <div id="lines" class="selectable" >
 					<div class="line" ng-repeat="line in currentPage.data.Lines">
@@ -137,11 +144,11 @@
 			<p>By: {{ annotation.AnnotatorUsername }}</p>
 			<p>Date: {{annotation.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
 			<p>Coordinates: {{ annotation.Locations }}</p>
-			<p>The wisdom: <strong><span  style="background-color:{{ annotation.Color }}">{{ annotation.AnnotationText }}</span></strong></p>
+			<p>The wisdom: <strong><span  class="highlight-transparency" style="background-color:{{ annotation.Color }}">{{ annotation.AnnotationText }}</span></strong></p>
 			
 			<div ng-repeat="comment in annotation.Comments">
 				<h4>Comment</h4>
-				<p><strong><span  style="background-color:{{ comment.Color }}">{{ comment.CommentText }}</span></strong></p>
+				<p><strong><span class="highlight-transparency" style="background-color:{{ comment.Color }}">{{ comment.CommentText }}</span></strong></p>
 				<p>By: {{ comment.CommenterUsername }}</p>
 				<p>Date: {{ comment.CreateDate }}</p>
 			</div>
