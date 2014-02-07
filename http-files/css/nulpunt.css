@@ -356,3 +356,9 @@ a.custom-tweet-button {
 .np-logo-text-background {
 	fill:#FF0;
 }
+
+.highlight-transparency {
+	zoom: 1;
+	filter: alpha(opacity=60);
+	opacity: 0.6;
+}
