@@ -286,11 +286,48 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal)
 		loadPage();
 	});
 
+    // get any annotation that has coordinates at the given pageNr.
+    function annotationsOnPage(pageNr) {
+	// console.log("filter annotations on page: ", pageNr);
+	annotations = _.filter($scope.annotations, function(ann) {
+	    return _.some(ann.Locations, function(loc) { 
+		return loc.PageNumber == pageNr;
+	    })
+	})	   
+	return annotations
+    }
+
+    function clearHighlights() {
+	$("#highlights").html("");
+    }
+
+    function updateHighlights() {
+	//console.log("updateHighlights is called");
+	anns = annotationsOnPage($scope.currentPage.number);
+	_.each(anns, function(ann) {
+	    _.each(ann.Locations, function(location) {
+		if (location.PageNumber == $scope.currentPage.number) {
+		    $("#highlights").append(
+			"<canvas class='highlight highlight-transparency' " + 
+			    "style='" + 
+			    "background-color: " + ann.Color + "; " + 
+			    "left: " + location.X1 + "%; " +
+			    "top: " + location.Y1 + "%; " +
+			    "width: " + (location.X2 - location.X1) + "%; " +
+			    "height: " + (location.Y2 - location.Y1) + "%; " +
+			    "'></canvas>");
+		}
+	    });
+	});
+    }
+
 	function loadPage() {
+		clearHighlights();
 		$http({method: 'POST', url: "/service/getPage", data: {documentID: $routeParams.docID, pageNumber: $scope.currentPage.number}}).
 			success(function(data) {
 					console.log(data);
 					$scope.currentPage.data = data;
+					updateHighlights();
 			}).
 			error(function(error) {
 					console.error('error retrieving page information: ', error);
@@ -387,6 +424,7 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal)
 		boxStopY = parseInt(e.clientY - pageOffsetY + $(window).scrollTop());
 		// console.log('mouseX: '+boxStopX+' mouseY: '+boxStopY);
 
+		highlight.pagenumber = $scope.currentPage.number;
 		highlight.x1 = boxStartX/pageWidth*100;
 		highlight.x2 = boxStopX/pageWidth*100;
 		highlight.y1 = boxStartY/pageHeight*100;
@@ -413,8 +451,8 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal)
 		var height = boxStopY - boxStartY;
 		ctx.beginPath();
 		ctx.rect(boxStartX, boxStartY, width, height);
-		ctx.globalAlpha = "0.5";
-		ctx.fillStyle = "#FFFF00";
+		ctx.globalAlpha = "0.6";
+		ctx.fillStyle = $scope.account.color;
 		ctx.fill();
 	}
 
@@ -449,9 +487,8 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal)
 				url: '/service/session/add-annotation',
 				data: {
 					documentId: $scope.document.ID,
-					pageNr: $scope.currentPage.number,
-					highlight: $scope.highlight,
 					annotationText: annotationText,
+				        locations: [  $scope.highlight ],
 				}
 			}).
 			success(function(data, status, headers, config) {
