@@ -1,32 +1,56 @@
 package flags
 
+import (
+	"fmt"
+)
+
 // ErrorType represents the type of error.
 type ErrorType uint
 
 const (
-	// Unknown or generic error
+	// ErrUnknown indicates a generic error.
 	ErrUnknown ErrorType = iota
 
-	// Expected an argument but got none
+	// ErrExpectedArgument indicates that an argument was expected.
 	ErrExpectedArgument
 
-	// Unknown flag
+	// ErrUnknownFlag indicates an unknown flag.
 	ErrUnknownFlag
 
-	// Unknown group
+	// ErrUnknownGroup indicates an unknown group.
 	ErrUnknownGroup
 
-	// Failed to marshal value
+	// ErrMarshal indicates a marshalling error while converting values.
 	ErrMarshal
 
-	// The error contains the builtin help message
+	// ErrHelp indicates that the builtin help was shown (the error
+	// contains the help message).
 	ErrHelp
 
-	// An argument for a boolean value was specified
+	// ErrNoArgumentForBool indicates that an argument was given for a
+	// boolean flag (which don't not take any arguments).
 	ErrNoArgumentForBool
 
-	// A required flag was not specified
+	// ErrRequired indicates that a required flag was not provided.
 	ErrRequired
+
+	// ErrShortNameTooLong indicates that a short flag name was specified,
+	// longer than one character.
+	ErrShortNameTooLong
+
+	// ErrDuplicatedFlag indicates that a short or long flag has been
+	// defined more than once
+	ErrDuplicatedFlag
+
+	// ErrTag indicates an error while parsing flag tags.
+	ErrTag
+
+	// ErrCommandRequired indicates that a command was required but not
+	// specified
+	ErrCommandRequired
+
+	// ErrUnknownCommand indicates that an unknown command was specified.
+	ErrUnknownCommand
 )
 
 // Error represents a parser error. The error returned from Parse is of this
@@ -39,7 +63,7 @@ type Error struct {
 	Message string
 }
 
-// Get the errors error message.
+// Error returns the error's message
 func (e *Error) Error() string {
 	return e.Message
 }
@@ -51,10 +75,16 @@ func newError(tp ErrorType, message string) *Error {
 	}
 }
 
-func wrapError(err error) error {
-	if _, ok := err.(*Error); !ok {
+func newErrorf(tp ErrorType, format string, args ...interface{}) *Error {
+	return newError(tp, fmt.Sprintf(format, args...))
+}
+
+func wrapError(err error) *Error {
+	ret, ok := err.(*Error)
+
+	if !ok {
 		return newError(ErrUnknown, err.Error())
 	}
 
-	return err
+	return ret
 }

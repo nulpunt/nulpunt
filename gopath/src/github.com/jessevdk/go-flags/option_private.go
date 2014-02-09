@@ -4,71 +4,100 @@ import (
 	"reflect"
 )
 
-func (option *Option) canArgument() bool {
-	if option.isBool() {
-		return false
-	}
-
+// Set the value of an option to the specified value. An error will be returned
+// if the specified value could not be converted to the corresponding option
+// value type.
+func (option *Option) set(value *string) error {
 	if option.isFunc() {
-		return (option.Value.Type().NumIn() > 0)
+		return option.call(value)
+	} else if value != nil {
+		return convert(*value, option.value, option.tag)
 	}
 
-	return true
+	return convert("", option.value, option.tag)
+}
+
+func (option *Option) canCli() bool {
+	return option.ShortName != 0 || len(option.LongName) != 0
+}
+
+func (option *Option) canArgument() bool {
+	if u := option.isUnmarshaler(); u != nil {
+		return true
+	}
+
+	return !option.isBool()
 }
 
 func (option *Option) clear() {
-	tp := option.Value.Type()
+	tp := option.value.Type()
 
 	switch tp.Kind() {
 	case reflect.Func:
 		// Skip
 	case reflect.Map:
 		// Empty the map
-		option.Value.Set(reflect.MakeMap(tp))
+		option.value.Set(reflect.MakeMap(tp))
 	default:
 		zeroval := reflect.Zero(tp)
-		option.Value.Set(zeroval)
+		option.value.Set(zeroval)
 	}
+}
+
+func (option *Option) isUnmarshaler() Unmarshaler {
+	v := option.value
+
+	for {
+		if !v.CanInterface() {
+			break
+		}
+
+		i := v.Interface()
+
+		if u, ok := i.(Unmarshaler); ok {
+			return u
+		}
+
+		if !v.CanAddr() {
+			break
+		}
+
+		v = v.Addr()
+	}
+
+	return nil
 }
 
 func (option *Option) isBool() bool {
-	tp := option.Value.Type()
+	tp := option.value.Type()
 
-	switch tp.Kind() {
-	case reflect.Bool:
-		return true
-	case reflect.Slice:
-		return (tp.Elem().Kind() == reflect.Bool)
+	for {
+		switch tp.Kind() {
+		case reflect.Bool:
+			return true
+		case reflect.Slice:
+			return (tp.Elem().Kind() == reflect.Bool)
+		case reflect.Func:
+			return tp.NumIn() == 0
+		case reflect.Ptr:
+			tp = tp.Elem()
+		default:
+			return false
+		}
 	}
-
-	return false
 }
 
 func (option *Option) isFunc() bool {
-	return option.Value.Type().Kind() == reflect.Func
-}
-
-func (option *Option) iniName() string {
-	if len(option.iniUsedName) != 0 {
-		return option.iniUsedName
-	}
-
-	name := option.tag.Get("ini-name")
-
-	if len(name) != 0 {
-		return name
-	}
-
-	return option.Field.Name
+	return option.value.Type().Kind() == reflect.Func
 }
 
 func (option *Option) call(value *string) error {
 	var retval []reflect.Value
 
 	if value == nil {
-		retval = option.Value.Call(nil)
+		retval = option.value.Call(nil)
 	} else {
-		tp := option.Value.Type().In(0)
+		tp := option.value.Type().In(0)
 
 		val := reflect.New(tp)
 		val = reflect.Indirect(val)
@@ -77,7 +106,7 @@ func (option *Option) call(value *string) error {
 			return err
 		}
 
-		retval = option.Value.Call([]reflect.Value{val})
+		retval = option.value.Call([]reflect.Value{val})
 	}
 
 	if len(retval) == 1 && retval[0].Type() == reflect.TypeOf((*error)(nil)).Elem() {

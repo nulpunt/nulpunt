@@ -23,6 +23,12 @@
 //     Supports maps
 //     Supports function callbacks
 //
+// Additional features specific to Windows:
+//     Options with short names (/v)
+//     Options with long names (/verbose)
+//     Windows-style options with arguments use a colon as the delimiter
+//     Modify generated help message with Windows-style / options
+//
 // The flags package uses structs, reflection and struct field tags
 // to allow users to specify command line options. This results in very simple
 // and consise specification of your application options. For example:
@@ -49,6 +55,10 @@
 // Then, the AuthorInfo map can be filled with something like
 // -a name:Jesse -a "surname:van den Kieboom".
 //
+// Finally, for full control over the conversion between command line argument
+// values and options, user defined types can choose to implement the Marshaler
+// and Unmarshaler interfaces.
+//
 // Available field tags:
 //     short:          the short name of the option (single character)
 //     long:           the long name of the option
@@ -59,6 +69,12 @@
 //                     times in the case of maps or slices (optional)
 //     default:        the default value of an option. This tag can be specified
 //                     multiple times in the case of slices or maps (optional).
+//     default-mask:   when specified, this value will be displayed in the help
+//                     instead of the actual default value. This is useful
+//                     mostly for hiding otherwise sensitive information from
+//                     showing up in the help. If default-mask takes the special
+//                     value "-", then no default value will be shown at all
+//                     (optional)
 //     required:       whether an option is required to appear on the command
 //                     line. If a required option is not present, the parser
 //                     will return ErrRequired.
@@ -70,11 +86,9 @@
 //                     a separate group with the given name (optional).
 //     command:        when specified on a struct field, makes the struct field
 //                     a (sub)command with the given name (optional).
-//     name:           the display name of the command. This name is the name
-//                     shown in the builtin generated help and can be used
-//                     to provide a more informative title of a command. If not
-//                     specified this defaults to the name given in the command
-//                     command tag (optional).
+//
+//     subcommands-optional: when specified on a command struct field, makes
+//                           any subcommands of that command optional.
 //
 // Either short: or long: must be specified to make the field eligible as an
 // option.
@@ -116,15 +130,15 @@
 // the global parser.
 //
 // When parsing ends and there is an active command and that command implements
-// the Command interface, then its Execute method will be run providing the
-// remaining arguments.
+// the Commander interface, then its Execute method will be run with the
+// remaining command line arguments.
 //
 // Command structs can have options which become valid to parse after the
 // command has been specified on the command line. It is currently not valid
 // to specify options from the parent level of the command after the command
 // name has occurred. Thus, given a toplevel option "-v" and a command "add":
 //
-// Valid:   ./app -v add
-// Invalid: ./app add -v
+//     Valid:   ./app -v add
+//     Invalid: ./app add -v
 //
 package flags

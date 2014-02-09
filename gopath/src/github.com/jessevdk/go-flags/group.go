@@ -6,80 +6,78 @@ package flags
 
 import (
 	"errors"
+	"strings"
 )
 
-// The provided container is not a pointer to a struct
+// ErrNotPointerToStruct indicates that a provided data container is not
+// a pointer to a struct. Only pointers to structs are valid data containers
+// for options.
 var ErrNotPointerToStruct = errors.New("provided data is not a pointer to struct")
 
-// The provided short name is longer than a single character
-var ErrShortNameTooLong = errors.New("short names can only be 1 character")
-
-// An option group. The option group has a name and a set of options.
+// Group represents an option group. Option groups can be used to logically
+// group options together under a description. Groups are only used to provide
+// more structure to options both for the user (as displayed in the help message)
+// and for you, since groups can be nested.
 type Group struct {
-	Commander
+	// A short description of the group. The
+	// short description is primarily used in the builtin generated help
+	// message
+	ShortDescription string
 
-	// The name of the group.
-	Name string
-
-	Names    map[string]*Option
-	IniNames map[string]*Option
-
-	// A map of long names to option option descriptions.
-	LongNames map[string]*Option
-
-	// A map of short names to option option descriptions.
-	ShortNames map[rune]*Option
-
-	// A list of all the options in the group.
-	Options []*Option
-
-	// An error which occurred when creating the group.
-	Error error
-
-	// Groups embedded in this group
-	EmbeddedGroups []*Group
-
-	IsCommand       bool
+	// A long description of the group. The long
+	// description is primarily used to present information on commands
+	// (Command embeds Group) in the builtin generated help and man pages.
 	LongDescription string
+
+	// All the options in the group
+	options []*Option
+
+	// All the subgroups
+	groups []*Group
+
+	// Whether the group represents the builtin help group
+	isBuiltinHelp bool
 
 	data interface{}
 }
 
-// The command interface should be implemented by any command added in the
-// options. When implemented, the Execute method will be called for the last
-// specified (sub)command providing the remaining command line arguments.
-type Command interface {
-	// Execute will be called for the last active (sub)command. The
-	// args argument contains the remaining command line arguments. The
-	// error that Execute returns will be eventually passed out of the
-	// Parse method of the Parser.
-	Execute(args []string) error
-}
+// AddGroup adds a new group to the command with the given name and data. The
+// data needs to be a pointer to a struct from which the fields indicate which
+// options are in the group.
+func (g *Group) AddGroup(shortDescription string, longDescription string, data interface{}) (*Group, error) {
+	group := newGroup(shortDescription, longDescription, data)
 
-type Usage interface {
-	Usage() string
-}
-
-// NewGroup creates a new option group with a given name and underlying data
-// container. The data container is a pointer to a struct. The fields of the
-// struct represent the command line options (using field tags) and their values
-// will be set when their corresponding options appear in the command line
-// arguments.
-func NewGroup(name string, data interface{}) *Group {
-	ret := &Group{
-		Commander: Commander{
-			Commands: make(map[string]*Group),
-		},
-
-		Name:       name,
-		Names:      make(map[string]*Option),
-		IniNames:   make(map[string]*Option),
-		LongNames:  make(map[string]*Option),
-		ShortNames: make(map[rune]*Option),
-		IsCommand:  false,
-		data:       data,
+	if err := group.scan(); err != nil {
+		return nil, err
 	}
 
-	ret.Error = ret.scan()
+	g.groups = append(g.groups, group)
+	return group, nil
+}
+
+// Groups returns the list of groups embedded in this group.
+func (g *Group) Groups() []*Group {
+	return g.groups
+}
+
+// Options returns the list of options in this group.
+func (g *Group) Options() []*Option {
+	return g.options
+}
+
+// Find locates the subgroup with the given short description and returns it.
+// If no such group can be found Find will return nil. Note that the description
+// is matched case insensitively.
+func (g *Group) Find(shortDescription string) *Group {
+	lshortDescription := strings.ToLower(shortDescription)
+
+	var ret *Group
+
+	g.eachGroup(func(gg *Group) {
+		if gg != g && strings.ToLower(gg.ShortDescription) == lshortDescription {
+			ret = gg
+		}
+	})
+
 	return ret
 }

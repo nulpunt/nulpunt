@@ -19,6 +19,7 @@ type alignmentInfo struct {
 	hasShort        bool
 	hasValueName    bool
 	terminalColumns int
+	indent          bool
 }
 
 func (p *Parser) getAlignmentInfo() alignmentInfo {
@@ -33,8 +34,12 @@ func (p *Parser) getAlignmentInfo() alignmentInfo {
 		ret.terminalColumns = 80
 	}
 
-	alfunc := func(index int, grp *Group) {
-		for _, info := range grp.Options {
+	p.eachActiveGroup(func(c *Command, grp *Group) {
+		for _, info := range grp.options {
+			if !info.canCli() {
+				continue
+			}
+
 			if info.ShortName != 0 {
 				ret.hasShort = true
 			}
@@ -47,19 +52,16 @@ func (p *Parser) getAlignmentInfo() alignmentInfo {
 
 			l := utf8.RuneCountInString(info.LongName) + lv
 
+			if c != p.Command {
+				// for indenting
+				l = l + 4
+			}
+
 			if l > ret.maxLongLen {
 				ret.maxLongLen = l
 			}
 		}
-	}
-
-	if p.currentCommand != nil {
-		// Make sure to also check for toplevel arguments for the
-		// alignment since they are included in the help output also
-		p.eachTopLevelGroup(alfunc)
-	}
-
-	p.EachGroup(alfunc)
+	})
 
 	return ret
 }
@@ -70,10 +72,16 @@ func (p *Parser) writeHelpOption(writer *bufio.Writer, option *Option, info alig
 	distanceBetweenOptionAndDescription := 2
 	paddingBeforeOption := 2
 
-	line.WriteString(strings.Repeat(" ", paddingBeforeOption))
+	prefix := paddingBeforeOption
+
+	if info.indent {
+		prefix += 4
+	}
+
+	line.WriteString(strings.Repeat(" ", prefix))
 
 	if option.ShortName != 0 {
-		line.WriteString("-")
+		line.WriteRune(defaultShortOptDelimiter)
 		line.WriteRune(option.ShortName)
 	} else if info.hasShort {
 		line.WriteString("  ")
@@ -100,12 +108,12 @@ func (p *Parser) writeHelpOption(writer *bufio.Writer, option *Option, info alig
 			line.WriteString("  ")
 		}
 
-		line.WriteString("--")
+		line.WriteString(defaultLongOptDelimiter)
 		line.WriteString(option.LongName)
 	}
 
-	if !option.isBool() {
-		line.WriteString("=")
+	if option.canArgument() {
+		line.WriteRune(defaultNameArgDelimiter)
 
 		if len(option.ValueName) > 0 {
 			line.WriteString(option.ValueName)
@@ -122,23 +130,27 @@ func (p *Parser) writeHelpOption(writer *bufio.Writer, option *Option, info alig
 		def := ""
 		defs := option.Default
 
-		if len(defs) == 0 && !option.isBool() {
+		if len(option.DefaultMask) != 0 {
+			if option.DefaultMask != "-" {
+				def = option.DefaultMask
+			}
+		} else if len(defs) == 0 && option.canArgument() {
 			var showdef bool
 
-			switch option.Field.Type.Kind() {
+			switch option.field.Type.Kind() {
 			case reflect.Func, reflect.Ptr:
-				showdef = !option.Value.IsNil()
+				showdef = !option.value.IsNil()
 			case reflect.Slice, reflect.String, reflect.Array:
-				showdef = option.Value.Len() > 0
+				showdef = option.value.Len() > 0
 			case reflect.Map:
-				showdef = !option.Value.IsNil() && option.Value.Len() > 0
+				showdef = !option.value.IsNil() && option.value.Len() > 0
 			default:
-				zeroval := reflect.Zero(option.Field.Type)
-				showdef = !reflect.DeepEqual(zeroval.Interface(), option.Value.Interface())
+				zeroval := reflect.Zero(option.field.Type)
+				showdef = !reflect.DeepEqual(zeroval.Interface(), option.value.Interface())
 			}
 
 			if showdef {
-				def = convertToString(option.Value, option.tag)
+				def, _ = convertToString(option.value, option.tag)
 			}
 		} else if len(defs) != 0 {
 			def = strings.Join(defs, ", ")
@@ -160,6 +172,24 @@ func (p *Parser) writeHelpOption(writer *bufio.Writer, option *Option, info alig
 	writer.WriteString("\n")
 }
 
+func maxCommandLength(s []*Command) int {
+	if len(s) == 0 {
+		return 0
+	}
+
+	ret := len(s[0].Name)
+
+	for _, v := range s[1:] {
+		l := len(v.Name)
+
+		if l > ret {
+			ret = l
+		}
+	}
+
+	return ret
+}
+
 // WriteHelp writes a help message containing all the possible options and
 // their descriptions to the provided writer. Note that the HelpFlag parser
 // option provides a convenient way to add a -h/--help option group to the
@@ -173,34 +203,71 @@ func (p *Parser) WriteHelp(writer io.Writer) {
 	wr := bufio.NewWriter(writer)
 	aligninfo := p.getAlignmentInfo()
 
-	if p.ApplicationName != "" {
+	cmd := p.Command
+
+	for cmd.Active != nil {
+		cmd = cmd.Active
+	}
+
+	if p.Name != "" {
 		wr.WriteString("Usage:\n")
-		fmt.Fprintf(wr, "  %s", p.ApplicationName)
+		wr.WriteString(" ")
 
-		if p.Usage != "" {
-			fmt.Fprintf(wr, " %s", p.Usage)
-		}
+		allcmd := p.Command
 
-		if len(p.currentCommandString) > 0 {
-			cmdusage := fmt.Sprintf("[%s-OPTIONS]", p.currentCommandString[len(p.currentCommandString)-1])
+		for allcmd != nil {
+			var usage string
 
-			if p.currentCommand != nil {
-				if us, ok := p.currentCommand.data.(Usage); ok {
-					cmdusage = us.Usage()
+			if allcmd == p.Command {
+				if len(p.Usage) != 0 {
+					usage = p.Usage
+				} else if p.Options&HelpFlag != 0 {
+					usage = "[OPTIONS]"
+				}
+			} else if us, ok := allcmd.data.(Usage); ok {
+				usage = us.Usage()
+			} else if allcmd.hasCliOptions() {
+				usage = fmt.Sprintf("[%s-OPTIONS]", allcmd.Name)
+			}
+
+			if len(usage) != 0 {
+				fmt.Fprintf(wr, " %s %s", allcmd.Name, usage)
+			} else {
+				fmt.Fprintf(wr, " %s", allcmd.Name)
+			}
+
+			if allcmd.Active == nil && len(allcmd.commands) > 0 {
+				var co, cc string
+
+				if allcmd.SubcommandsOptional {
+					co, cc = "[", "]"
+				} else {
+					co, cc = "<", ">"
+				}
+
+				if len(allcmd.commands) > 3 {
+					fmt.Fprintf(wr, " %scommand%s", co, cc)
+				} else {
+					subcommands := allcmd.sortedCommands()
+					names := make([]string, len(subcommands))
+
+					for i, subc := range subcommands {
+						names[i] = subc.Name
+					}
+
+					fmt.Fprintf(wr, " %s%s%s", co, strings.Join(names, " | "), cc)
 				}
 			}
 
-			fmt.Fprintf(wr, " %s %s",
-				strings.Join(p.currentCommandString, " "),
-				cmdusage)
+			allcmd = allcmd.Active
 		}
 
 		fmt.Fprintln(wr)
 
-		if p.currentCommand != nil && len(p.currentCommand.LongDescription) != 0 {
+		if len(cmd.LongDescription) != 0 {
 			fmt.Fprintln(wr)
 
-			t := wrapText(p.currentCommand.LongDescription,
+			t := wrapText(cmd.LongDescription,
 				aligninfo.terminalColumns,
 				"")
 
@@ -208,56 +275,55 @@ func (p *Parser) WriteHelp(writer io.Writer) {
 		}
 	}
 
-	seen := make(map[*Group]bool)
+	prevcmd := p.Command
 
-	writeHelp := func(index int, grp *Group) {
-		if len(grp.Options) == 0 || seen[grp] {
+	p.eachActiveGroup(func(c *Command, grp *Group) {
+		first := true
+
+		// Skip builtin help group for all commands except the toplevel
+		// parser
+		if grp.isBuiltinHelp && c != p.Command {
 			return
 		}
 
-		seen[grp] = true
+		for _, info := range grp.options {
+			if info.canCli() {
+				if prevcmd != c {
+					fmt.Fprintf(wr, "\n[%s command options]\n", c.Name)
+					prevcmd = c
+					aligninfo.indent = true
+				}
 
-		wr.WriteString("\n")
+				if first && prevcmd.Group != grp {
+					fmt.Fprintln(wr)
 
-		fmt.Fprintf(wr, "%s:\n", grp.Name)
+					if aligninfo.indent {
+						wr.WriteString("    ")
+					}
 
-		for _, info := range grp.Options {
-			p.writeHelpOption(wr, info, aligninfo)
-		}
-	}
+					fmt.Fprintf(wr, "%s:\n", grp.ShortDescription)
+					first = false
+				}
 
-	// If there is a command, still write all the toplevel help too
-	if p.currentCommand != nil {
-		p.eachTopLevelGroup(writeHelp)
-	}
-
-	p.EachGroup(writeHelp)
-
-	commander := p.currentCommander()
-	names := commander.sortedNames()
-
-	if len(names) > 0 {
-		maxnamelen := len(names[0])
-
-		for i := 1; i < len(names); i++ {
-			l := len(names[i])
-
-			if l > maxnamelen {
-				maxnamelen = l
+				p.writeHelpOption(wr, info, aligninfo)
 			}
 		}
+	})
+
+	scommands := cmd.sortedCommands()
+
+	if len(scommands) > 0 {
+		maxnamelen := maxCommandLength(scommands)
 
 		fmt.Fprintln(wr)
 		fmt.Fprintln(wr, "Available commands:")
 
-		for _, name := range names {
-			fmt.Fprintf(wr, "  %s", name)
+		for _, c := range scommands {
+			fmt.Fprintf(wr, "  %s", c.Name)
 
-			cmd := commander.Commands[name]
-
-			if len(cmd.Name) > 0 {
-				pad := strings.Repeat(" ", maxnamelen-len(name))
-				fmt.Fprintf(wr, "%s  %s", pad, cmd.Name)
+			if len(c.ShortDescription) > 0 {
+				pad := strings.Repeat(" ", maxnamelen-len(c.Name))
+				fmt.Fprintf(wr, "%s  %s", pad, c.ShortDescription)
 			}
 
 			fmt.Fprintln(wr)

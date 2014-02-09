@@ -1,4 +1,4 @@
-// +build !windows
+// +build !windows,!plan9
 
 package flags
 
@@ -8,20 +8,20 @@ import (
 )
 
 type winsize struct {
-	ws_row, ws_col       uint16
-	ws_xpixel, ws_ypixel uint16
+	row, col       uint16
+	xpixel, ypixel uint16
 }
 
 func getTerminalColumns() int {
 	ws := winsize{}
 
-	if TIOCGWINSZ != 0 {
+	if tIOCGWINSZ != 0 {
 		syscall.Syscall(syscall.SYS_IOCTL,
 			uintptr(0),
-			uintptr(TIOCGWINSZ),
+			uintptr(tIOCGWINSZ),
 			uintptr(unsafe.Pointer(&ws)))
 
-		return int(ws.ws_col)
+		return int(ws.col)
 	}
 
 	return 80
