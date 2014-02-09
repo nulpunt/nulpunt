@@ -46,6 +46,14 @@ func addAnnotationHandler(rw http.ResponseWriter, req *http.Request) {
 	annot.CreateDate = time.Now()
 	annot.Comments = []Comment{}
 
+	// Normalize the coordinates: X1,Y1 at top left, X2,Y2 as bottom right.
+	for _, coord := range annot.Locations {
+		coord.X1 = min(coord.X1, coord.X2)
+		coord.X2 = max(coord.X1, coord.X2)
+		coord.Y1 = min(coord.Y1, coord.Y2)
+		coord.Y2 = max(coord.Y1, coord.Y2)
+	}
+
 	log.Printf("\n\nAnnotation to insert is: %#v\n", *annot)
 
 	err = insertAnnotation(annot)
@@ -130,4 +138,21 @@ func addCommentHandler(rw http.ResponseWriter, req *http.Request) {
 	rw.WriteHeader(200)
 	rw.Write(j)
 	return
+}
+
+// Because package Math doesn't have Max and Min for float32...
+func min(a, b float32) float32 {
+	if a < b {
+		return a
+	} else {
+		return b
+	}
+}
+
+func max(a, b float32) float32 {
+	if a > b {
+		return a
+	} else {
+		return b
+	}
 }

@@ -138,13 +138,32 @@
 
 		</div> <!-- pageView -->
 
+		<!-- Show the login button if not signed in -->
+		<div ng-show="account.username && !highlight.x1" >
+			Please highlight the document to create an annotation.
+		</div>
+
+		<div ng-show="highlight.x1" >
+			<div ng-show="account.username" >
+				<!-- when logged in and having a higlight: show the Annotate-button -->
+				<div class="btn btn-default" ng-click="addAnnotation()">Add a Annotation</div>
+			</div>
+		</div>
+
+		<div ng-hide="account.username" >
+		  <!-- we have a highlight but no auth, let user auth -->
+		  You need to log in before you can add an Annotation. 
+		  <a class="btn btn-default" href="#/sign-in/">Sign In</a>
+		</div>
+
+
 		<h3>Annotations</h3>
-		<div ng-repeat="annotation in annotations">
+		<div ng-repeat="annotation in annotationsOnPage(currentPage.number)">
 			<p class="np-document-description">{{ annotation.Annotation }}</p>
 			<p>By: {{ annotation.AnnotatorUsername }}</p>
 			<p>Date: {{annotation.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
 			<p>Coordinates: {{ annotation.Locations }}</p>
-			<p>The wisdom: <strong><span  class="highlight-transparency" style="background-color:{{ annotation.Color }}">{{ annotation.AnnotationText }}</span></strong></p>
+			<p>The annotation: <strong><span  class="highlight-transparency" style="background-color:{{ annotation.Color }}">{{ annotation.AnnotationText }}</span></strong></p>
 			
 			<div ng-repeat="comment in annotation.Comments">
 				<h4>Comment</h4>
@@ -182,34 +201,6 @@
 		</div> <!-- annotation in annotations -->
 		<br><hr>
 			
-		<!--
-			Here you can create an annotation... 
-			This is the interface we need.
-			Someone might want to rewrite it with a nice pointy-clicky user interface. It should give the coordinates:
-			ng-model="locations" value: { [ { PageNumber, x1, y1, x2, y2 }, ... ] } 
-			We allow for multiple coordinates. These should be used when a single rectancle won't fit. 
-			For example when the selection starts indented. Or when an quote spans page boundaries. (future version).
-			The server will add Annotator-Username and date-created.
-		-->
-
-		<!-- Show the login button if not signed in -->
-		
-		<div ng-show="account.username && !highlight.x1" >
-			Please highlight the document to create an annotation.
-		</div>
-
-		<div ng-show="highlight.x1" >
-			<div ng-show="account.username" >
-				<!-- when logged in and having a higlight: show the Annotate-button -->
-				<div class="btn btn-default" ng-click="addAnnotation()">Add a Annotation</div>
-			</div>
-
-			<div ng-hide="account.username" >
-				<!-- we have a highlight but no auth, let user auth -->
-				You need to log in before you can add an Annotation. 
-				<a class="btn btn-default" href="#/sign-in/">Sign In</a>
-			</div>
-		</div>
 
 	</div><!-- row -->
 </div><!-- container -->
