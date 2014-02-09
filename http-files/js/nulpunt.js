@@ -287,23 +287,28 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal)
 	});
 
     // get any annotation that has coordinates at the given pageNr.
-    function annotationsOnPage(pageNr) {
-	// console.log("filter annotations on page: ", pageNr);
+    $scope.annotationsOnPage = function(pageNr) {
+	console.log("filter annotations on page: ", pageNr);
+	console.log("annotatations in scope: ", $scope.annotations);
 	annotations = _.filter($scope.annotations, function(ann) {
 	    return _.some(ann.Locations, function(loc) { 
+		console.log("found: ", loc);
 		return loc.PageNumber == pageNr;
 	    })
-	})	   
+	})
+	console.log("returning: ", annotations);
 	return annotations
     }
 
     function clearHighlights() {
 	$("#highlights").html("");
+	document.getElementById("cvPage").width = 0;
+	document.getElementById("cvPage").height = 0;
     }
 
     function updateHighlights() {
 	//console.log("updateHighlights is called");
-	anns = annotationsOnPage($scope.currentPage.number);
+	anns = $scope.annotationsOnPage($scope.currentPage.number);
 	_.each(anns, function(ann) {
 	    _.each(ann.Locations, function(location) {
 		if (location.PageNumber == $scope.currentPage.number) {
