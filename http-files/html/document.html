@@ -72,7 +72,7 @@
 					<span class="upload">Uploaded on <strong>{{document.UploadDate | date:'dd MMMM yyyy, hh:mm'}}</strong> by <span class="uploader">{{document.UploaderUsername}}</span></span>
 					<span class="request" ng-show="item.requester">Requested by: {{document.FOIRequester }}</span>
 					<div class="tags-metadata">
-						<span ng-repeat="tag in document.Tags" class="np-document-tag"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</span>
+						<span ng-repeat="tag in document.Tags.sort()" class="np-document-tag"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</span>
 					</div>
 				</div>
 			</div><!-- col-lg-6 -->
