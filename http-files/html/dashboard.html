@@ -41,7 +41,7 @@
 				<!-- <span class="language">Language: {{ document.Language }}</span> -->
 			</div>
 			<div class="tags-metadata">
-				<span ng-repeat="tag in document.Tags" class="np-document-tag"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</span>
+				<span ng-repeat="tag in document.Tags.sort()" class="np-document-tag"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</span>
 			</div>
 		</div>
 		<div class="col-lg-4">

@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"sort"
 )
 
 func adminGetTags(rw http.ResponseWriter, req *http.Request) {
@@ -16,9 +17,17 @@ func adminGetTags(rw http.ResponseWriter, req *http.Request) {
 	return
 }
 
+type ByTag []Tag
+
+func (a ByTag) Len() int           { return len(a) }
+func (a ByTag) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByTag) Less(i, j int) bool { return a[i].Tag < a[j].Tag }
+
 // getEm gets the tags and sends them out.
 func getEm(rw http.ResponseWriter, req *http.Request) {
 	tags, err := getTags()
+	sort.Sort(ByTag(tags))
+
 	j, err := json.Marshal(map[string]interface{}{"tags": tags})
 	if err != nil {
 		http.Error(rw, "error", http.StatusInternalServerError) // 500

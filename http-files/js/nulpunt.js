@@ -642,8 +642,8 @@ nulpunt.controller("TrendingCtrl", function($scope) {
 			tags: [
 				{title: "Data Retention"},
 				{title: "Espionage"},
-				{title: "Surveillance"},
 				{title: "Privacy"}													
+				{title: "Surveillance"},
 			],
 			annotations: [
 				{annotationDate: "2013-08-20", annotator: "rick", annotation: "Quas illaboritati ius de plit prae vid maxim que dendae re ne plaborio. Facideb itatur ressiment apiendae. Itatemo luptaestius am essimi, te rem volorum sed maximintiis si remporp oremperatia dit incitati dolorposse provitas ad ut fuga. Hillore nobitemquis et ma si con commol"}
@@ -999,7 +999,8 @@ nulpunt.controller("AdminUploadCtrl", function($scope, $upload) {
 // AdminProcessCtrl to process the files
 nulpunt.controller("AdminProcessCtrl", function($scope, $http) {
 	$scope.documents = [];
-	$http({method: "POST", url: "/service/getDocumentList", data: {} }).
+	//$http({method: "POST", url: "/service/getDocumentList", data: {} }).
+	$http({method: "GET", url: "/service/getDocumentList", data: {} }).
 	success(function(data) {
 		console.log(data);
 		$scope.documents = data;
