@@ -168,8 +168,8 @@
 		  <!-- we have a highlight but no auth, let user auth -->
 		  You need to log in before you can add an Annotation. 
 		  
-		  <span ng-hide="showLoginForm" class="btn btn-default" ng-click="showLoginForm = true">Sign In</span>
-		  <span ng-show="showLoginForm">
+		  <span ng-hide="showLoginForm1" class="btn btn-default" ng-click="showLoginForm1 = true">Sign In</span>
+		  <span ng-show="showLoginForm1">
 		    <div ng-controller="SignInCtrl">
 		      <div ng-show="error" class="alert alert-error" >
 			<strong>Oops!</strong><br/>
@@ -201,7 +201,7 @@
 			
 		      </form>
 		    </div> <!-- SignInCtrl -->
-		  </span> <!-- ng-show="showLoginForm" -->
+		  </span> <!-- ng-show="showLoginForm1" -->
 		</div> <!-- ng-hide="account.username" -->
 
 
@@ -226,8 +226,8 @@
 			<!-- Show the login button if not signed in -->
 			<div ng-hide="account.username">
 				You need to log in before you can post comments. 
-				<span ng-hide="showLoginForm" class="btn btn-default" ng-click="showLoginForm = true">Sign In</span>
-				<span ng-show="showLoginForm">
+				<span ng-hide="showLoginForm2" class="btn btn-default" ng-click="showLoginForm2 = true">Sign In</span>
+				<span ng-show="showLoginForm2">
 				  <div ng-controller="SignInCtrl">
 				    <div ng-show="error" class="alert alert-error" >
 				      <strong>Oops!</strong><br/>
@@ -259,7 +259,7 @@
 				      
 				    </form>
 				  </div> <!-- SignInCtrl -->
-				</span> <!-- ng-show="showLoginForm" -->
+				</span> <!-- ng-show="showLoginForm2" -->
 		  	</div> <!-- ng-hide="account.username" -->
 
 			<div ng-show="account.username">
