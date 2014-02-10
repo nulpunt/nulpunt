@@ -60,6 +60,20 @@
 	.highlight {
 		position: absolute;
 	}
+
+	.annotation {
+	background-color: white;
+	padding: 10px;
+	margin: 20px;
+	display: block;
+	}
+
+	.comment {
+	background-color: #EEE;
+	display: block;
+	margin-left: 20px;
+	margin-right: 20px;
+	}
 </style>
 
 <div class="masthead document-viewer">
@@ -158,18 +172,21 @@
 
 
 		<h3>Annotations</h3>
-		<div ng-repeat="annotation in annotationsOnPage(currentPage.number)">
-			<p class="np-document-description">{{ annotation.Annotation }}</p>
+		<div  ng-repeat="annotation in annotationsOnPage(currentPage.number)">
+		  <span class="annotation">
+			<!-- <p class="np-document-description">{{ annotation.Annotation }}</p> -->
 			<p>By: {{ annotation.AnnotatorUsername }}</p>
 			<p>Date: {{annotation.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
-			<p>Coordinates: {{ annotation.Locations }}</p>
-			<p>The annotation: <strong><span  class="highlight-transparency" style="background-color:{{ annotation.Color }}">{{ annotation.AnnotationText }}</span></strong></p>
+			<!-- Use these coordinates to aling the annotation to the highlight --> 
+			<!-- <p>Coordinates: {{ annotation.Locations }}</p> -->
+			<p><strong><span  class="highlight-transparency" style="background-color:{{ annotation.Color }}">{{ annotation.AnnotationText }}</span></strong></p>
 			
-			<div ng-repeat="comment in annotation.Comments">
-				<h4>Comment</h4>
+			<div  ng-repeat="comment in annotation.Comments">
+			  <span class="comment">
+				<p>Comment by: {{ comment.CommenterUsername }}</p>
+				<p>Date: {{ comment.CreateDate | date:'dd MMMM yyyy, HH:m' }}</p>				
 				<p><strong><span class="highlight-transparency" style="background-color:{{ comment.Color }}">{{ comment.CommentText }}</span></strong></p>
-				<p>By: {{ comment.CommenterUsername }}</p>
-				<p>Date: {{ comment.CreateDate }}</p>
+				</span>
 			</div>
 
 			<!-- Show the login button if not signed in -->
@@ -198,6 +215,7 @@
 					</form>
 				</div> <!-- CommentSubmitCtrl -->
 			</div> <!-- ng_show="account.username -->
+			</span>
 		</div> <!-- annotation in annotations -->
 		<br><hr>
 			
