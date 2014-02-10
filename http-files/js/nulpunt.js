@@ -642,7 +642,7 @@ nulpunt.controller("TrendingCtrl", function($scope) {
 			tags: [
 				{title: "Data Retention"},
 				{title: "Espionage"},
-				{title: "Privacy"}													
+				{title: "Privacy"},													
 				{title: "Surveillance"},
 			],
 			annotations: [
