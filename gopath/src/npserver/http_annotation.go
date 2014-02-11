@@ -47,11 +47,10 @@ func addAnnotationHandler(rw http.ResponseWriter, req *http.Request) {
 	annot.Comments = []Comment{}
 
 	// Normalize the coordinates: X1,Y1 at top left, X2,Y2 as bottom right.
-	for _, coord := range annot.Locations {
-		coord.X1 = min(coord.X1, coord.X2)
-		coord.X2 = max(coord.X1, coord.X2)
-		coord.Y1 = min(coord.Y1, coord.Y2)
-		coord.Y2 = max(coord.Y1, coord.Y2)
+	for i, coord := range annot.Locations {
+		coord.X1, coord.X2 = min(coord.X1, coord.X2), max(coord.X1, coord.X2)
+		coord.Y1, coord.Y2 = min(coord.Y1, coord.Y2), max(coord.Y1, coord.Y2)
+		annot.Locations[i] = coord // set it, as range gives a copy.
 	}
 
 	log.Printf("\n\nAnnotation to insert is: %#v\n", *annot)
