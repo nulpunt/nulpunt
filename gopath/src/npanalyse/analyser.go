@@ -183,7 +183,7 @@ func (an *analyser) work() {
 			//++ defer a function that checks if this func was successfull (update with updateId has analyseState "completed")
 			//++ when was not successfull, set state to error, remove any pages with documentId
 
-			tmpDirName := fmt.Sprintf("/tmp/npanalyse-%s-%d-%d", instanceUnique, an.num, jobNum)
+			tmpDirName := fmt.Sprintf("/var/spool/nulpunt/npanalyse-%s-%d-%d", instanceUnique, an.num, jobNum)
 			err = os.Mkdir(tmpDirName, 0774)
 			if err != nil {
 				log.Printf("failed to create tmp dir '%s': %s\n", tmpDirName, err)
