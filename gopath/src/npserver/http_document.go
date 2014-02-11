@@ -233,37 +233,37 @@ func getDocumentsByTagsHandler(rw http.ResponseWriter, req *http.Request) {
 func getDocumentListHandler(rw http.ResponseWriter, req *http.Request) {
 	log.Printf("getDocument-request: %v\n", req)
 
-	switch req.Method {
-	case "POST": // Use POST as that's the easiest to encode json parameters
-		body, _ := ioutil.ReadAll(req.Body)
-		params := &DocumentParams{}
-		err := json.Unmarshal(body, params)
-		if err != nil {
-			log.Printf("JSON unmarshal error %#v\n", err)
-			http.Error(rw, "JSON unmarshal error", http.StatusBadRequest) // 400
-			return
-		}
+	//switch req.Method {
+	//case "POST": // Use POST as that's the easiest to encode json parameters
+	//body, _ := ioutil.ReadAll(req.Body)
+	//params := &DocumentParams{}
+	//err := json.Unmarshal(body, params)
+	//if err != nil {
+	//log.Printf("JSON unmarshal error %#v\n", err)
+	//http.Error(rw, "JSON unmarshal error", http.StatusBadRequest) // 400
+	//return
+	//}
 
-		docs, err := getDocuments(nil)
-		if err != nil {
-			log.Printf("getDocuments error %#v\n", err)
-			http.Error(rw, "getDocuments error", http.StatusInternalServerError) // 400
-			return
-		}
-
-		j, err := json.Marshal(docs)
-		if err != nil {
-			log.Printf("Error marshalling results: error %#v\n", err)
-			http.Error(rw, "Marshaling error", http.StatusInternalServerError) // 500
-			return
-		}
-		rw.WriteHeader(200)
-		rw.Write(j)
+	docs, err := getDocuments(nil)
+	if err != nil {
+		log.Printf("getDocuments error %#v\n", err)
+		http.Error(rw, "getDocuments error", http.StatusInternalServerError) // 400
 		return
-
-	default:
-		http.Error(rw, "error", http.StatusMethodNotAllowed) // 405
 	}
+
+	j, err := json.Marshal(docs)
+	if err != nil {
+		log.Printf("Error marshalling results: error %#v\n", err)
+		http.Error(rw, "Marshaling error", http.StatusInternalServerError) // 500
+		return
+	}
+	rw.WriteHeader(200)
+	rw.Write(j)
+	return
+
+	//default:
+	//	http.Error(rw, "error", http.StatusMethodNotAllowed) // 405
+	//}
 }
 
 func insertDocumentHandler(rw http.ResponseWriter, req *http.Request) {

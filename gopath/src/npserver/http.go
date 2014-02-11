@@ -45,7 +45,7 @@ func initHTTPServer() {
 
 	// Document handlers
 	serviceRouter.Methods("POST").Path("/getDocument").HandlerFunc(getDocumentHandler) // TODO: why is this a POST?
-	serviceRouter.Methods("GET").Path("/getPage").HandlerFunc(getPageHandlerFunc)
+	serviceRouter.Methods("POST").Path("/getPage").HandlerFunc(getPageHandlerFunc)
 	serviceRouter.Methods("GET").Path("/getDocuments").HandlerFunc(getDocumentsHandler)
 	serviceRouter.Methods("GET").Path("/getDocumentList").HandlerFunc(getDocumentListHandler)
 
