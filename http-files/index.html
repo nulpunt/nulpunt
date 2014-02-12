@@ -67,7 +67,12 @@
 					<a class="navbar-brand" href="/#/" style="display:block; background-color:{{ account.color }}"><img id="np-logo" class="svg" src="img/np-logo_alpha.svg" /></a>			
 				</div> <!-- "navbar-header -->
 				
-				<div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'"></div>
+				<div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
+					<div class="container">
+						<a ng-hide="account.username" class="btn pull-right" ng-click="showLogin()">Sign in</a>
+						<a ng-show="account.username" class="btn pull-right" href="/#/sign-out">Sign out</a>
+					</div>
+				</div>
 			</div> <!-- navbar static top -->
 		</div> <!-- NavBarCtrl -->
 
