@@ -427,24 +427,48 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal)
 		// save mouse location
 		boxStopX = parseInt(e.clientX - pageOffsetX);
 		boxStopY = parseInt(e.clientY - pageOffsetY + $(window).scrollTop());
-		// console.log('mouseX: '+boxStopX+' mouseY: '+boxStopY);
 
-		highlight.pagenumber = $scope.currentPage.number;
-		highlight.x1 = boxStartX/pageWidth*100;
-		highlight.x2 = boxStopX/pageWidth*100;
-		highlight.y1 = boxStartY/pageHeight*100;
-		highlight.y2 = boxStopY/pageHeight*100;
+		// Calculate box size
+		boxWidth = Math.abs(boxStopX - boxStartX);
+		boxHeight = Math.abs(boxStopY - boxStartY);
 
-		// TODO: check if highlight is not too small and not too large.
-		// In case of very small highligh (or same xy1 as xy2) remove the highlight all together and set to 0
+		if(boxWidth < 10 || boxHeight < 10) {
+			// clear selection if it's too small
+			clearHighlight();
+		} else {
+			// set hightlight
+			highlight.pagenumber = $scope.currentPage.number;
+			highlight.x1 = boxStartX/pageWidth*100;
+			highlight.x2 = boxStopX/pageWidth*100;
+			highlight.y1 = boxStartY/pageHeight*100;
+			highlight.y2 = boxStopY/pageHeight*100;
+
+			// set bottom and right to show "add annotation" box
+			highlight.xMax = Math.max(boxStartX, boxStopX);
+			highlight.yMax = Math.max(boxStartY, boxStopY);
+			$scope.$apply();
+		}
+
+		console.log(highlight);
+		// TODO: check if highlight is not too large.
 		// In case of large highlight, give notification and color red..
-
-		// console.log(highlight);
-		$scope.$apply();
 
 		// all done
 		isDown = false;
 	}
+
+	function clearHighlight() {
+		highlight.pagenumber = $scope.currentPage.number;
+		highlight.x1 = 0;
+		highlight.x2 = 0;
+		highlight.y1 = 0;
+		highlight.y2 = 0;
+
+		highlight.xMax = 0;
+		highlight.yMax = 0;
+		$scope.$apply();
+	}
+
 
 	// update highlight on screen with latest info
 	function updateHighlight() {
@@ -499,6 +523,8 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal)
 			success(function(data, status, headers, config) {
 				$scope.annotations.push(data);
 				$scope.showForm = false;
+				clearHighlight();
+				loadPage();
 			}).
 			error(function(data, status, headers, config) {
 				console.log("invalid response for AnnotationSubmit:");
