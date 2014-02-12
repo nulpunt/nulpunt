@@ -1,26 +1,10 @@
 <style>
 	body {
-		background-color:#EEE;
-	}
-
-	.masthead {
 		background-color:#FFF;
 	}
 
-	.navbar {
-		background-color:#000;
-	}
-
-	.np-logo-image {
-		fill:#FFF;
-	}
-
-	.np-logo-text-background {
-		fill:#FF0;
-	}
-
-	.np-logo-text {
-		fill:#000;
+	.masthead {
+		background-color:#EEE;
 	}
 
 	#np-footer {
@@ -30,6 +14,15 @@
 	.pageView { 
 		position: relative;
 		display: table;
+		background-color: #EEE;
+		padding: 10px 20px;
+		border: 1px solid #AAA;
+		border-radius: 2px;
+	}
+
+	.sticky {
+		position: fixed;
+		top: 0;
 	}
 
 	/*character position css*/
@@ -62,10 +55,11 @@
 	}
 
 	.annotation {
-		background-color: white;
+		background-color: #EEE;
+		border: 1px solid #AAA;
+		border-radius: 2px;
 		padding: 10px;
-		margin: 20px;
-		display: block;
+		margin: 20px 0px;
 	}
 
 	.author-box {
@@ -124,8 +118,19 @@
 				</div>
 			</div><!-- col-lg-6 -->
 			<div class="col-lg-6">
+				<!--<div class="dropdown">
+					<a data-toggle="dropdown btn btn-default">Amplify <span class="caret"></span></a>
+					<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+						<a ng-href="https://twitter.com/share?url={{twitter.url | urlencode}}&text={{twitter.text | urlencode}}&hashtags=nulpunt" class="btn btn-default" data-lang="en" target="_blank" ><i class="fa fa-twitter"></i> Tweet this document</a>
+					</ul>
+				</div>-->
 				<ul class="nav nav-pills pull-right">
-					<li><a ng-href="https://twitter.com/share?url={{twitter.url | urlencode}}&text={{twitter.text | urlencode}}&hashtags=nulpunt" class="btn btn-default" data-lang="en" target="_blank" ><i class="fa fa-twitter"></i> Tweet this document</a></li>
+					<li class="dropdown">
+				        <a id="drop4" class="btn btn-default btn-dropdown" role="button" data-toggle="dropdown"><span class="glyphicon glyphicon-flash"></span> Amplify <b class="caret"></b></a>
+				        <ul id="menu1" class="dropdown-menu" role="menu" aria-labelledby="drop4">
+				          <li role="presentation"><a ng-href="https://twitter.com/share?url={{twitter.url | urlencode}}&text={{twitter.text | urlencode}}&hashtags=nulpunt" class="amplify-item" data-lang="en" target="_blank" ><i class="fa fa-twitter"></i> Tweet this document</a></li>
+				        </ul>
+				      </li>
 					<li><a class="btn btn-default" ng-href="/download-original/{{document.ID}}/{{document.UploadFilename}}" target="_blank"><i class="fa fa-download"></i> Download original</a></li>
 					<li><a class="btn btn-default" href="/#/documents/">More documents</a></li>
 				</ul>
@@ -137,13 +142,7 @@
 <div class="container document-viewer">
 	<!-- <div ng-repeat="page in pages" > -->
 
-	<div class="row" style="text-align: center;">
-
-		<!-- Show the login button if not signed in -->
-		<div ng-show="account.username" >
-			Highlight the document to create an annotation.
-		</div>
-
+	<div class="row row-padding-bottom" style="text-align: center;">
 		<div ng-hide="account.username" >
 			<!-- we have a highlight but no auth, let user auth -->
 			You need to log in before you can add an Annotation. <a class="btn" ng-click="showLogin()">Sign in</a>
@@ -152,14 +151,9 @@
 
 
 	<div class="row">
-		<div class="pageView col-lg-7">
-			<!-- display current page number -->
-			<div class="row">
-				<h5 class="pull-left">Page {{ currentPage.number }}</h5>
-			</div>
-
+		<div class="pageView col-lg-7 stick-to-top">
 			<!-- page navigation -->
-			<div class="row">
+			<div class="row row-padding-bottom">
 				<a class="btn btn-xs col-lg-2" ng-click="prevPage()"><span class="glyphicon glyphicon-chevron-left"></span> Previous page</a>
 				<div class="col-lg-4 col-lg-offset-2">
 					<div style="float: left;" ><input ng-model="currentPage.number" type="number" class="form-control np-document-viewer-pagination" /></div>
@@ -189,7 +183,7 @@
 			</div>
 
 			<!-- page navigation -->
-			<div class="row">
+			<div class="row row-padding-top">
 				<a class="btn btn-xs col-lg-2" ng-click="prevPage()"><span class="glyphicon glyphicon-chevron-left"></span> Previous page</a>
 				<div class="col-lg-4 col-lg-offset-2">
 					<div style="float: left;" ><input ng-model="currentPage.number" type="number" class="form-control np-document-viewer-pagination" /></div>
@@ -204,8 +198,9 @@
 		<div class="annotationView col-lg-5">
 
 			<h3>Annotations</h3>
-			<div  ng-repeat="annotation in annotationsOnPage(currentPage.number)">
-			  <span class="annotation">
+			<p ng-show="account.username">Highlight the document to create an annotation.</p>
+
+			<div class="annotation" ng-repeat="annotation in annotationsOnPage(currentPage.number)">
 				<!-- <p class="np-document-description">{{ annotation.Annotation }}</p> -->
 				<div class="author-box">
 					<div class="author-thumbnail" style="background-color:{{ annotation.Color}}"></div>
@@ -250,7 +245,6 @@
 						</form>
 					</div> <!-- CommentSubmitCtrl -->
 				</div> <!-- ng_show="account.username -->
-				</span>
 			</div> <!-- annotation in annotations -->
 			<br><hr>
 

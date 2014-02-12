@@ -892,7 +892,6 @@ nulpunt.controller("SignInCtrl", function($scope, $rootScope, $modalInstance, Ac
 		$scope.error = "";
 
 		// authenticate to server
-		console.log($scope.signin);
 		var prom = AccountAuthService.authenticate($scope.signin.username, $scope.signin.password);
 		prom.then(
 			function() {
