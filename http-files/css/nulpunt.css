@@ -104,6 +104,9 @@ p.intro {
 		padding: 10px 15px;
 		height:60px;
 }
+.navbar .btn {
+	margin-top: 13px;
+}
 
 .masthead {
         background: #eee;
@@ -283,6 +286,7 @@ div.np-tagline p {
 }
 
 ul.features {
+	padding-top: 20px;
     font-size:21px;
     line-height:24px;
 }

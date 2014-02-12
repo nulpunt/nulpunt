@@ -10,6 +10,17 @@ var nulpunt = angular.module('nulpunt', [
 	'checklist-model'
 ]);
 
+nulpunt.factory('LoginFactory', function($modal) {
+	this.showLogin = function() {
+		var loginModalInstance = $modal.open({
+			templateUrl: 'html/sign-in.html',
+			controller: "SignInCtrl",
+		});
+	}
+
+	return this;
+});
+
 nulpunt.config(function($routeProvider) {
 	$routeProvider
 	.when('/', {
@@ -111,7 +122,7 @@ nulpunt.controller("MainCtrl", function($scope, $rootScope, AccountAuthService) 
 });
 
 // NavbarCtrl manages the top navigation bar
-nulpunt.controller("NavbarCtrl", function($scope, $rootScope, $location, AccountAuthService) {
+nulpunt.controller("NavbarCtrl", function($scope, $rootScope, $location, LoginFactory, AccountAuthService) {
 	// change account in scope on auth_changed event
 	$rootScope.$on("auth_changed", function() {
 		$scope.account = AccountAuthService.account;
@@ -131,6 +142,11 @@ nulpunt.controller("NavbarCtrl", function($scope, $rootScope, $location, Account
 			return "";
 		}
 	}
+
+	// Shows the login overlay
+	$scope.showLogin = function() {
+		LoginFactory.showLogin();
+	};
 });
 
 nulpunt.controller("OverviewCtrl", function($scope){
@@ -259,7 +275,7 @@ nulpunt.controller("DocumentsByTagsCtrl", function ($scope, $http, ProfileServic
 	};
 });
 
-nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal) {
+nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal, LoginFactory) {
 	$scope.currentPage = {
 		number: 1,
 		data: {},
@@ -534,6 +550,11 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal)
 		}, function (info) {
 			console.log('modal dismissed because: '+info);
 		});
+	};
+
+	// Shows the login overlay
+	$scope.showLogin = function() {
+		LoginFactory.showLogin();
 	};
 });
 
@@ -858,7 +879,11 @@ nulpunt.controller("SettingsCtrl", function($scope, AccountDataService) {
 });
 
 // SignInCtrl manages user sign-in
-nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService) {
+nulpunt.controller("SignInCtrl", function($scope, $rootScope, $modalInstance, AccountAuthService) {
+	$scope.signin = {
+		username: "",
+		password: "",
+	};
 
 	$scope.submit = function() {
 		// reset state on scope
@@ -867,10 +892,12 @@ nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService
 		$scope.error = "";
 
 		// authenticate to server
-		var prom = AccountAuthService.authenticate($scope.username, $scope.password);
+		console.log($scope.signin);
+		var prom = AccountAuthService.authenticate($scope.signin.username, $scope.signin.password);
 		prom.then(
 			function() {
 				$scope.success = true;
+				$modalInstance.close();
 				//++ TODO: let user choose to go to dashboard or to go to the page he/she came from?
 				// TODO MARKED FOR REMOVAL
 				// window.location.href = "/#/dashboard";
@@ -886,6 +913,10 @@ nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService
 				//++ TODO: need to do some "digest" on $scope ?? or $scope.$apply()? find out what good convention is
 			}
 		);
+	};
+
+	$scope.cancel = function () {
+		$modalInstance.dismiss('cancel');
 	};
 	
 	// watch auth_changed event and set scope if required
