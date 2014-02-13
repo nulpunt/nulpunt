@@ -579,6 +579,10 @@ nulpunt.controller("NewAnnotationModal", function($scope, $modalInstance, highli
 	$scope.documentId = documentId;
 	$scope.pageNr = pageNr;
 
+	$scope.annotation = {
+		text: "",
+	};
+
 	// save new annotation
 	$scope.save = function () {
 		$modalInstance.close($scope.annotation.text);
