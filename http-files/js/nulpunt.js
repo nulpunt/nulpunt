@@ -283,7 +283,7 @@ nulpunt.controller("DocumentsByTagsCtrl", function ($scope, $http, ProfileServic
 	};
 });
 
-nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal, LoginFactory) {
+nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal, $window, LoginFactory) {
 	$scope.currentPage = {
 		number: 1,
 		data: {},
@@ -327,33 +327,8 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
     }
 
     function clearHighlights() {
-    	console.log("clearHighlights is called");
-		//$("#highlights").html("");
-		document.getElementById("cvPage").width = 0;
+    	document.getElementById("cvPage").width = 0;
 		document.getElementById("cvPage").height = 0;
-    }
-
-    function updateHighlights() {
-		console.log("updateHighlights is called");
-		/*anns = $scope.annotationsOnPage($scope.currentPage.number);
-		_.each(anns, function(ann) {
-		    _.each(ann.Locations, function(location) {
-			if (location.PageNumber == $scope.currentPage.number) {
-			    $("#highlights").append(
-				"<canvas class='highlight highlight-transparency' " + 
-					"id='" + ann.ID + "'" +
-					"onmouseover=\"microappscope().activateHighlight(\'"+ ann.ID + "\')\"" +
-					"onmouseleave=\"microappscope().deactivateHighlight()\"" +
-				    "style='" + 
-				    "background-color: " + ann.Color + "; " + 
-				    "left: " + location.X1 + "%; " +
-				    "top: " + location.Y1 + "%; " +
-				    "width: " + (location.X2 - location.X1) + "%; " +
-				    "height: " + (location.Y2 - location.Y1) + "%; " +
-				    "'></canvas>");
-				}
-		    });
-		});*/
     }
 
 	function loadPage() {
@@ -365,7 +340,6 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
 				console.log("loadpage data");
 				console.log(data);
 				$scope.currentPage.data = data;
-				updateHighlights();
 			}).
 			error(function(error) {
 				console.error('error retrieving page information: ', error);
@@ -582,6 +556,10 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
 	$scope.deactivateHighlight = function() {
 		$('.active-highlight').removeClass('active-highlight');
 	};
+
+	$scope.shareDiaspora = function () {
+		$window.open('http://sharetodiaspora.github.io/?url='+encodeURIComponent($scope.twitter.url)+'&title='+encodeURIComponent($scope.twitter.text),'das','location=no,links=no,scrollbars=no,toolbar=no,width=620,height=550');
+	}
 });
 
 nulpunt.controller("NewAnnotationModal", function($scope, $modalInstance, highlight, documentId, pageNr) {
