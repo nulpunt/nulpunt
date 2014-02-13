@@ -10,11 +10,22 @@ var nulpunt = angular.module('nulpunt', [
 	'checklist-model'
 ]);
 
-nulpunt.factory('LoginFactory', function($modal) {
+nulpunt.factory('LoginFactory', function($modal, ClientSessionService) {
 	this.showLogin = function() {
 		var loginModalInstance = $modal.open({
 			templateUrl: 'html/sign-in.html',
 			controller: "SignInCtrl",
+		});
+	}
+
+	this.signOut = function() {
+		//$scope.username = AccountAuthService.getUsername();
+		ClientSessionService.stopSession().then(function() {
+			window.location.href = '/#/';
+			window.location.reload();
+		}, function() {
+			console.error('Could not destroy session. Internet connection lost?');
+			alert('Could not destroy session. Internet connection lost?');
 		});
 	}
 
@@ -143,10 +154,7 @@ nulpunt.controller("NavbarCtrl", function($scope, $rootScope, $location, LoginFa
 		}
 	}
 
-	// Shows the login overlay
-	$scope.showLogin = function() {
-		LoginFactory.showLogin();
-	};
+	$scope.loginFactory = LoginFactory;
 });
 
 nulpunt.controller("OverviewCtrl", function($scope){
@@ -281,6 +289,8 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
 		data: {},
 	};
 
+	$scope.loginFactory = LoginFactory;
+
 	$scope.nextPage = function() {
 		$scope.currentPage.number++;
 	}
@@ -317,14 +327,15 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
     }
 
     function clearHighlights() {
-		$("#highlights").html("");
+    	console.log("clearHighlights is called");
+		//$("#highlights").html("");
 		document.getElementById("cvPage").width = 0;
 		document.getElementById("cvPage").height = 0;
     }
 
     function updateHighlights() {
-		//console.log("updateHighlights is called");
-		anns = $scope.annotationsOnPage($scope.currentPage.number);
+		console.log("updateHighlights is called");
+		/*anns = $scope.annotationsOnPage($scope.currentPage.number);
 		_.each(anns, function(ann) {
 		    _.each(ann.Locations, function(location) {
 			if (location.PageNumber == $scope.currentPage.number) {
@@ -342,7 +353,7 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
 				    "'></canvas>");
 				}
 		    });
-		});
+		});*/
     }
 
 	function loadPage() {
@@ -427,6 +438,9 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
 		boxStartY = parseInt(e.clientY - pageOffsetY + $(window).scrollTop());
 		// console.log('mouseX: '+boxStartX+' mouseY: '+boxStartY);
 
+		// Hide + button
+		$('#annotation-add-btn').hide();
+
 		// all done
 		isDown = true;
 	}
@@ -475,6 +489,9 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
 		console.log(highlight);
 		// TODO: check if highlight is not too large.
 		// In case of large highlight, give notification and color red..
+
+		// Show + button
+		$('#annotation-add-btn').show();
 
 		// all done
 		isDown = false;
@@ -555,11 +572,6 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
 		}, function (info) {
 			console.log('modal dismissed because: '+info);
 		});
-	};
-
-	// Shows the login overlay
-	$scope.showLogin = function() {
-		LoginFactory.showLogin();
 	};
 
 	$scope.activateHighlight = function(annotationId) {

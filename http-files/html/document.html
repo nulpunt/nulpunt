@@ -157,7 +157,7 @@
 	<div class="row row-padding-bottom" style="text-align: center;">
 		<div ng-hide="account.username" >
 			<!-- we have a highlight but no auth, let user auth -->
-			To annotate or comment, please sign in first. <a class="btn" ng-click="showLogin()">Sign in</a>
+			To annotate or comment, please sign in first. <a class="btn" ng-click="loginFactory.showLogin()">Sign in</a>
 		</div> <!-- ng-hide="account.username" -->
 	</div>
 
@@ -177,12 +177,26 @@
 			<!-- page itself -->
 			<div class="row main pageWrapper">
 				<div id="pageBox" >
-					<div ng-show="highlight.yMax && account.username" class="btn btn-add-annotation" style="top: {{highlight.yMax}}px; left: {{highlight.xMax}}px; " ng-click="addAnnotation()"><span class="glyphicon glyphicon-plus"></span></div>
+					<div ng-show="highlight.yMax && account.username" id="annotation-add-btn" class="btn btn-add-annotation" style="top: {{highlight.yMax}}px; left: {{highlight.xMax}}px; " ng-click="addAnnotation()"><span class="glyphicon glyphicon-plus"></span></div>
 					<canvas ng-show="account.username" id="cvPage" ></canvas>
 					<img ng-src="/docfiles/pages/{{document.ID}}/{{currentPage.number}}.png" class="img-responsive" />
 					<span id="highlights">
 						<!-- this span gets these canvases, one for each annotation on this page -->
 						<!-- <canvas id="{annotation.ID}" class="highlight highlight-transparency" style="background-color: green; width:200px; height:20px; top: 50px; left: 100px; "></canvas> -->
+						<span ng-repeat="annotation in annotationsOnPage(currentPage.number)">
+							<canvas ng-repeat="location in annotation.Locations" 
+								ng-show"location.PageNumber == currentPage.number"
+								ng-mouseover="activateHighlight(annotation.ID)"
+								ng-mouseout="deactivateHighlight()"
+								class="highlight highlight-transparency"
+								style="background-color: {{annotation.Color}}; 
+									left: {{location.X1}}%; 
+									top: {{location.Y1}}%; 
+									width: {{location.X2 - location.X1}}%; 
+									height: {{location.Y2 - location.Y1}}%;"
+								id="{{annotation.ID}}">
+							</canvas>
+						</span>
 					</span>
 				</div>
 				<!-- <div id="lines" class="selectable" >

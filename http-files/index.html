@@ -69,8 +69,8 @@
 				
 				<div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
 					<div class="container">
-						<a ng-hide="account.username" class="btn pull-right" ng-click="showLogin()">Sign in</a>
-						<a ng-show="account.username" class="btn pull-right" href="/#/sign-out">Sign out</a>
+						<a ng-hide="account.username" class="btn pull-right" ng-click="loginFactory.showLogin()">Sign in</a>
+						<a ng-show="account.username" class="btn pull-right" ng-click="loginFactory.signOut()">Sign out</a>
 					</div>
 				</div>
 			</div> <!-- navbar static top -->
@@ -106,13 +106,13 @@
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li>
-					<a href="http://facebook.com/"></a>
+					<a href="http://facebook.com/">Facebook</a>
 				</li>
 				<li>
-					<a href="http://twitter.com/0punt"></a>
+					<a href="http://twitter.com/0punt">Twitter</a>
 				</li>
 				<li>
-					<a href="http://github.com/nulpunt"></a>
+					<a href="http://github.com/nulpunt">GitHub</a>
 				</li>
 			</ul>
 			<div class="np-tagline">
