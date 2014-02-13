@@ -304,46 +304,48 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
 
     // get any annotation that has coordinates at the given pageNr.
     $scope.annotationsOnPage = function(pageNr) {
-	//console.log("filter annotations on page: ", pageNr);
-	//console.log("annotatations in scope: ", $scope.annotations);
-	annotations = _.filter($scope.annotations, function(ann) {
-	    return _.some(ann.Locations, function(loc) { 
-		//console.log("found: ", loc);
-		return loc.PageNumber == pageNr;
-	    })
-	})
-	//console.log("returning: ", annotations);
-	return annotations
+		//console.log("filter annotations on page: ", pageNr);
+		//console.log("annotatations in scope: ", $scope.annotations);
+		annotations = _.filter($scope.annotations, function(ann) {
+		    return _.some(ann.Locations, function(loc) { 
+				//console.log("found: ", loc);
+				return loc.PageNumber == pageNr;
+		    })
+		})
+		//console.log("returning: ", annotations);
+		return annotations
     }
 
     function clearHighlights() {
-	$("#highlights").html("");
-	document.getElementById("cvPage").width = 0;
-	document.getElementById("cvPage").height = 0;
+		$("#highlights").html("");
+		document.getElementById("cvPage").width = 0;
+		document.getElementById("cvPage").height = 0;
     }
 
     function updateHighlights() {
-	//console.log("updateHighlights is called");
-	anns = $scope.annotationsOnPage($scope.currentPage.number);
-	_.each(anns, function(ann) {
-	    _.each(ann.Locations, function(location) {
-		if (location.PageNumber == $scope.currentPage.number) {
-		    $("#highlights").append(
-			"<canvas class='highlight highlight-transparency' " + 
-			    "style='" + 
-			    "background-color: " + ann.Color + "; " + 
-			    "left: " + location.X1 + "%; " +
-			    "top: " + location.Y1 + "%; " +
-			    "width: " + (location.X2 - location.X1) + "%; " +
-			    "height: " + (location.Y2 - location.Y1) + "%; " +
-			    "'></canvas>");
-		}
-	    });
-	});
+		//console.log("updateHighlights is called");
+		anns = $scope.annotationsOnPage($scope.currentPage.number);
+		_.each(anns, function(ann) {
+		    _.each(ann.Locations, function(location) {
+			if (location.PageNumber == $scope.currentPage.number) {
+			    $("#highlights").append(
+				"<canvas class='highlight highlight-transparency' " + 
+					"id='" + ann.ID + "'" +
+				    "style='" + 
+				    "background-color: " + ann.Color + "; " + 
+				    "left: " + location.X1 + "%; " +
+				    "top: " + location.Y1 + "%; " +
+				    "width: " + (location.X2 - location.X1) + "%; " +
+				    "height: " + (location.Y2 - location.Y1) + "%; " +
+				    "'></canvas>");
+				}
+		    });
+		});
     }
 
 	function loadPage() {
-		clearHighlights();
+		clearHighlight();	// Clear the highlight you were creating
+		clearHighlights();	// Clear all previously created highlights
 		$http({method: 'POST', url: "/service/getPage", data: {documentID: $routeParams.docID, pageNumber: $scope.currentPage.number}}).
 			success(function(data) {
 					console.log(data);
@@ -462,8 +464,9 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
 			// set bottom and right to show "add annotation" box
 			highlight.xMax = Math.max(boxStartX, boxStopX);
 			highlight.yMax = Math.max(boxStartY, boxStopY);
-			$scope.$apply();
 		}
+
+		$scope.$apply();
 
 		console.log(highlight);
 		// TODO: check if highlight is not too large.
@@ -482,7 +485,6 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
 
 		highlight.xMax = 0;
 		highlight.yMax = 0;
-		$scope.$apply();
 	}
 
 
@@ -539,7 +541,6 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
 			success(function(data, status, headers, config) {
 				$scope.annotations.push(data);
 				$scope.showForm = false;
-				clearHighlight();
 				loadPage();
 			}).
 			error(function(data, status, headers, config) {
@@ -555,6 +556,14 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
 	// Shows the login overlay
 	$scope.showLogin = function() {
 		LoginFactory.showLogin();
+	};
+
+	$scope.activateHighlight = function(annotationId) {
+		$('#' + annotationId).addClass('active-highlight');
+	};
+
+	$scope.deactivateHighlight = function() {
+		$('.active-highlight').removeClass('active-highlight');
 	};
 });
 
