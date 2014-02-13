@@ -27,16 +27,16 @@
 	</div>
 	<div class="row trending-columns">
 		<!-- first trending document -->
-		<div ng-repeat="item in documents.items" class="col-lg-4" ng-class-even="'np-row-even'">	  
+		<div ng-repeat="item in trending" class="col-lg-4" ng-class-even="'np-row-even'">
 			<div class="document">
-				<a href="/#/document/{{item.docID}}"><h3>{{item.title}} <span class="label document-type">{{item.nrOfPages}} pages, {{item.type}}</span></h3></a>
+				<a href="/#/document/{{item.Document.ID}}"><h3>{{item.Document.Title}} <span class="label document-type">{{item.Document.PageCount}} pages , {{item.Document.Category}}</span></h3></a>
 				<div class="document-description">
-					<p>{{item.description}}</p>
+					<p>{{item.Document.Summary}}</p>
 				</div>
 				<div class="document-metadata">
-					<span class="source">Source: {{item.source}} ({{item.country}}) <strong>{{item.sourceDate}}</strong></span>
-					<span class="upload">Uploaded on <strong>{{item.uploadDate}}</strong> by <span class="uploader">{{item.uploader}}</span></span>
-					<span class="request" ng-show="item.requester">Information requested by: {{item.requester}}</span>
+					<span class="source">Source: {{item.Document.Source}} ({{item.Document.Country}}) <strong>{{item.OriginalDate}}</strong></span>
+					<span class="upload">Uploaded on <strong>{{item.uploadDate}}</strong> by <span class="uploader">{{item.Document.UploaderUsername}}</span></span>
+					<span class="request" ng-show="item.requester">Information requested by: {{item.Document.FOIRequester}}</span>
 				</div>
 				<!-- <div class="annotation" ng-repeat="annotation in item.annotations">
 					<span class="annotator" style="background-color:#00b7ff;">{{annotation.annotator}}</span> {{annotation.annotation}}

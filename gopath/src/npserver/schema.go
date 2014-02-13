@@ -120,3 +120,10 @@ type Comment struct {
 	CommentText       string        `bson:"commentText"`
 	Comments          []Comment     `bson:"comments"`
 }
+
+type Trending struct {
+	ID          bson.ObjectId `bson:"_id"` // unused.
+	Document    Document      `bson:"document"`
+	Annotations []Annotation  `bson:"annotations"`
+	Score       float32       `bson:"score"`
+}
