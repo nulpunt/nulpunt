@@ -1,11 +1,12 @@
 <div class="modal-header">
-	<h3>Create a new annotation</h3>
+	<h3>Add annotation</h3>
 </div>
 
 <div class="modal-body">
-	TODO: display cropped highlight {{ highlight.x1 }} < testing
-
-	<textarea ng-model="annotation.text" >text</textarea>
+	<!-- TODO: Change this modal to a new annotation box already at the right height in the annotation sidebar -->
+	<div class="form-group">
+		<textarea ng-model="annotation.text" class="form-control" placeholder="Write your annotation here"></textarea>
+	</div>
 </div>
 
 <div class="modal-footer">

@@ -331,6 +331,8 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
 			    $("#highlights").append(
 				"<canvas class='highlight highlight-transparency' " + 
 					"id='" + ann.ID + "'" +
+					"onmouseover=\"microappscope().activateHighlight(\'"+ ann.ID + "\')\"" +
+					"onmouseleave=\"microappscope().deactivateHighlight()\"" +
 				    "style='" + 
 				    "background-color: " + ann.Color + "; " + 
 				    "left: " + location.X1 + "%; " +
@@ -344,16 +346,18 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
     }
 
 	function loadPage() {
+		console.log("loadpage");
 		clearHighlight();	// Clear the highlight you were creating
 		clearHighlights();	// Clear all previously created highlights
 		$http({method: 'POST', url: "/service/getPage", data: {documentID: $routeParams.docID, pageNumber: $scope.currentPage.number}}).
 			success(function(data) {
-					console.log(data);
-					$scope.currentPage.data = data;
-					updateHighlights();
+				console.log("loadpage data");
+				console.log(data);
+				$scope.currentPage.data = data;
+				updateHighlights();
 			}).
 			error(function(error) {
-					console.error('error retrieving page information: ', error);
+				console.error('error retrieving page information: ', error);
 			});
 	}
 
@@ -560,6 +564,7 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
 
 	$scope.activateHighlight = function(annotationId) {
 		$('#' + annotationId).addClass('active-highlight');
+		$('#annotation_' + annotationId).addClass('active-highlight');
 	};
 
 	$scope.deactivateHighlight = function() {
@@ -574,9 +579,8 @@ nulpunt.controller("NewAnnotationModal", function($scope, $modalInstance, highli
 	$scope.documentId = documentId;
 	$scope.pageNr = pageNr;
 
-	// TODO: remove this
 	$scope.annotation = {
-		text: "test",
+		text: "",
 	};
 
 	// save new annotation
@@ -892,6 +896,11 @@ nulpunt.controller("SignInCtrl", function($scope, $rootScope, $modalInstance, Ac
 	$scope.signin = {
 		username: "",
 		password: "",
+	};
+
+	$scope.register = function () {
+		$modalInstance.close();
+		window.location.href = "#/register";
 	};
 
 	$scope.submit = function() {
