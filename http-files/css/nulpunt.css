@@ -55,6 +55,13 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 		padding-right: 0;
 }
 
+.row-padding-bottom {
+	padding-bottom: 10px;
+}
+.row-padding-top {
+	padding-top: 10px;
+}
+
 /*annotation and document related styles*/
 .annotation {
 		background-color: #f7f7f7;
@@ -286,7 +293,7 @@ div.np-tagline p {
 }
 
 ul.features {
-	padding-top: 20px;
+	padding-top: 30px;
     font-size:21px;
     line-height:24px;
 }
@@ -305,6 +312,24 @@ ul.features {
 .btn:hover {
 	background:#222;
 	color:#FFF;
+}
+
+/* DROPDOWN MENU == amplify == */
+.nav .open .btn-dropdown {
+	background-color: #000;
+	border-color: #000;
+}
+.nav .open a.btn-dropdown:hover {
+	background-color: #222;
+	border-color: #000;
+}
+.btn-dropdown .caret,
+.nav a.btn-dropdown:hover .caret {
+	border-top-color: #FFF;
+	border-bottom-color: #FFF;
+}
+.nav .open .dropdown-menu li a.amplify-item:hover {
+	color: black;
 }
 
 .form-control {
