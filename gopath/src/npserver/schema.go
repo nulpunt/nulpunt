@@ -63,6 +63,7 @@ type Document struct {
 	Source       string    `bson:"source"`
 	Country      string    `bson:"country"`
 	Published    bool      `bson:"published"`
+	Score        float32   `bson:"score"`
 }
 
 // type Tag hold the document classification tags
@@ -119,11 +120,4 @@ type Comment struct {
 	CreateDate        time.Time     `bson:"createDate"`
 	CommentText       string        `bson:"commentText"`
 	Comments          []Comment     `bson:"comments"`
-}
-
-type Trending struct {
-	ID          bson.ObjectId `bson:"_id"` // unused.
-	Document    Document      `bson:"document"`
-	Annotations []Annotation  `bson:"annotations"`
-	Score       float32       `bson:"score"`
 }
