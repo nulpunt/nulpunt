@@ -6,8 +6,8 @@ import (
 	"encoding/binary"
 	"fmt"
 	"github.com/GeertJohan/go.incremental"
-	"github.com/GeertJohan/go.leptonica"
-	"github.com/GeertJohan/go.tesseract"
+	// "github.com/GeertJohan/go.leptonica"
+	// "github.com/GeertJohan/go.tesseract"
 	"github.com/nfnt/resize"
 	"image"
 	"image/png"
@@ -183,7 +183,7 @@ func (an *analyser) work() {
 			//++ defer a function that checks if this func was successfull (update with updateId has analyseState "completed")
 			//++ when was not successfull, set state to error, remove any pages with documentId
 
-			tmpDirName := fmt.Sprintf("/tmp/npanalyse-%s-%d-%d", instanceUnique, an.num, jobNum)
+			tmpDirName := fmt.Sprintf("/var/spool/nulpunt/npanalyse-%s-%d-%d", instanceUnique, an.num, jobNum)
 			err = os.Mkdir(tmpDirName, 0774)
 			if err != nil {
 				log.Printf("failed to create tmp dir '%s': %s\n", tmpDirName, err)
@@ -247,12 +247,12 @@ func (an *analyser) work() {
 			}
 			an.Logf("ran pdftoppm for document %s", documentID.Hex())
 
-			tess, err := tesseract.NewTess("/usr/share/tesseract-ocr/tessdata/", tessLanguage)
-			if err != nil {
-				log.Printf("error creating new tesseract instance: %s\n", err)
-				return
-			}
-			defer tess.Close()
+			// tess, err := tesseract.NewTess("/usr/share/tesseract-ocr/tessdata/", tessLanguage)
+			// if err != nil {
+			// 	log.Printf("error creating new tesseract instance: %s\n", err)
+			// 	return
+			// }
+			// defer tess.Close()
 
 			tmpDir, err := os.Open(tmpDirName)
 			if err != nil {
@@ -276,7 +276,7 @@ func (an *analyser) work() {
 			}
 			sort.Strings(fileNames)
 			for _, fileName := range fileNames {
-				success := an.analyseFile(documentID, tess, tmpDirName, fileInfosByName[fileName])
+				success := an.analyseFile(documentID /*tess,*/, tmpDirName, fileInfosByName[fileName])
 				runtime.GC()
 				if !success {
 					return
@@ -298,7 +298,7 @@ func (an *analyser) work() {
 	}
 }
 
-func (an *analyser) analyseFile(documentID bson.ObjectId, tess *tesseract.Tess, tmpDirName string, fileInfo os.FileInfo) bool {
+func (an *analyser) analyseFile(documentID bson.ObjectId /*tess *tesseract.Tess,*/, tmpDirName string, fileInfo os.FileInfo) bool {
 	pageNumberSubmatch := regexpOutputFileName.FindStringSubmatch(fileInfo.Name())
 	pageNumberString := pageNumberSubmatch[1]
 	pageNumberUint64, _ := strconv.ParseUint(pageNumberString, 10, 32)
@@ -332,14 +332,14 @@ func (an *analyser) analyseFile(documentID bson.ObjectId, tess *tesseract.Tess, 
 	outputGridFileHighres.Close()
 	an.Logf("read output png, saved highres. page %d", pageNumber)
 
-	// get bytes from imageBuf and create leptonica pix
-	imageBytes := imageBuf.Bytes()
-	pix, err := leptonica.NewPixReadMem(&imageBytes)
-	if err != nil {
-		log.Printf("error creating new pix from imageBuf: %s\n", err)
-		return false
-	}
-	defer pix.Close()
+	// // get bytes from imageBuf and create leptonica pix
+	// imageBytes := imageBuf.Bytes()
+	// pix, err := leptonica.NewPixReadMem(&imageBytes)
+	// if err != nil {
+	// 	log.Printf("error creating new pix from imageBuf: %s\n", err)
+	// 	return false
+	// }
+	// defer pix.Close()
 
 	// resize for thumbnail
 	if pageNumber == 1 {
@@ -377,50 +377,50 @@ func (an *analyser) analyseFile(documentID bson.ObjectId, tess *tesseract.Tess, 
 	outputGridFileDocviewer.Close()
 	an.Logf("resized page for docviewer %d", pageNumber)
 
-	// hand leptonica pix to tess
-	tess.SetImagePix(pix)
+	// // hand leptonica pix to tess
+	// tess.SetImagePix(pix)
 
 	// create page object
 	page := &pageData{
-		ID:            bson.NewObjectId(),
-		DocumentID:    documentID,
-		PageNumber:    pageNumber,
-		Text:          tess.Text(),
+		ID:         bson.NewObjectId(),
+		DocumentID: documentID,
+		PageNumber: pageNumber,
+		// Text:          tess.Text(),
 		Lines:         make([]*[]*charData, 0),
 		HighresWidth:  sizes.Dx(),
 		HighresHeight: sizes.Dy(),
 	}
 
-	// get boxed text
-	boxText, err := tess.BoxText(0)
-	if err != nil {
-		log.Printf("error retrieving boxText: %s\n", err)
-		return false
-	}
-	// cleanup tess and pix for this page
-	tess.Clear()
-	pix.Close()
-	an.Logf("retrieved boxText for page %d", pageNumber)
+	// // get boxed text
+	// boxText, err := tess.BoxText(0)
+	// if err != nil {
+	// 	log.Printf("error retrieving boxText: %s\n", err)
+	// 	return false
+	// }
+	// // cleanup tess and pix for this page
+	// tess.Clear()
+	// pix.Close()
+	// an.Logf("retrieved boxText for page %d", pageNumber)
 
-	// loop over box text and create lines
-	var line []*charData
-	for _, tessChar := range boxText.Characters {
-		char := &charData{
-			X1: (float32(tessChar.StartX) / float32(page.HighresWidth) * float32(100)),
-			Y1: (float32(tessChar.StartY) / float32(page.HighresHeight) * float32(100)),
-			X2: (float32(tessChar.EndX) / float32(page.HighresWidth) * float32(100)),
-			Y2: (float32(tessChar.EndY) / float32(page.HighresHeight) * float32(100)),
-			C:  string(tessChar.Character),
-		}
-		//TODO: \n won't ever happen with BoxText()
-		// ++ need to mix this information with .Text() information to have whitespace
-		if line == nil || char.C == "\n" {
-			line = make([]*charData, 0)
-			page.Lines = append(page.Lines, &line)
-		}
+	// // loop over box text and create lines
+	// var line []*charData
+	// for _, tessChar := range boxText.Characters {
+	// 	char := &charData{
+	// 		X1: (float32(tessChar.StartX) / float32(page.HighresWidth) * float32(100)),
+	// 		Y1: (float32(tessChar.StartY) / float32(page.HighresHeight) * float32(100)),
+	// 		X2: (float32(tessChar.EndX) / float32(page.HighresWidth) * float32(100)),
+	// 		Y2: (float32(tessChar.EndY) / float32(page.HighresHeight) * float32(100)),
+	// 		C:  string(tessChar.Character),
+	// 	}
+	// 	//TODO: \n won't ever happen with BoxText()
+	// 	// ++ need to mix this information with .Text() information to have whitespace
+	// 	if line == nil || char.C == "\n" {
+	// 		line = make([]*charData, 0)
+	// 		page.Lines = append(page.Lines, &line)
+	// 	}
 
-		line = append(line, char)
-	}
+	// 	line = append(line, char)
+	// }
 
 	err = colPages.Insert(page)
 	if err != nil {

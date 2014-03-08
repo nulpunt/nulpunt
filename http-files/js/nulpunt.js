@@ -10,6 +10,28 @@ var nulpunt = angular.module('nulpunt', [
 	'checklist-model'
 ]);
 
+nulpunt.factory('LoginFactory', function($modal, ClientSessionService) {
+	this.showLogin = function() {
+		var loginModalInstance = $modal.open({
+			templateUrl: 'html/sign-in.html',
+			controller: "SignInCtrl",
+		});
+	}
+
+	this.signOut = function() {
+		//$scope.username = AccountAuthService.getUsername();
+		ClientSessionService.stopSession().then(function() {
+			window.location.href = '/#/';
+			window.location.reload();
+		}, function() {
+			console.error('Could not destroy session. Internet connection lost?');
+			alert('Could not destroy session. Internet connection lost?');
+		});
+	}
+
+	return this;
+});
+
 nulpunt.config(function($routeProvider) {
 	$routeProvider
 	.when('/', {
@@ -111,7 +133,7 @@ nulpunt.controller("MainCtrl", function($scope, $rootScope, AccountAuthService) 
 });
 
 // NavbarCtrl manages the top navigation bar
-nulpunt.controller("NavbarCtrl", function($scope, $rootScope, $location, AccountAuthService) {
+nulpunt.controller("NavbarCtrl", function($scope, $rootScope, $location, LoginFactory, AccountAuthService) {
 	// change account in scope on auth_changed event
 	$rootScope.$on("auth_changed", function() {
 		$scope.account = AccountAuthService.account;
@@ -131,6 +153,8 @@ nulpunt.controller("NavbarCtrl", function($scope, $rootScope, $location, Account
 			return "";
 		}
 	}
+
+	$scope.loginFactory = LoginFactory;
 });
 
 nulpunt.controller("OverviewCtrl", function($scope){
@@ -259,11 +283,13 @@ nulpunt.controller("DocumentsByTagsCtrl", function ($scope, $http, ProfileServic
 	};
 });
 
-nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal) {
+nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal, LoginFactory) {
 	$scope.currentPage = {
 		number: 1,
 		data: {},
 	};
+
+	$scope.loginFactory = LoginFactory;
 
 	$scope.nextPage = function() {
 		$scope.currentPage.number++;
@@ -288,54 +314,61 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal)
 
     // get any annotation that has coordinates at the given pageNr.
     $scope.annotationsOnPage = function(pageNr) {
-	//console.log("filter annotations on page: ", pageNr);
-	//console.log("annotatations in scope: ", $scope.annotations);
-	annotations = _.filter($scope.annotations, function(ann) {
-	    return _.some(ann.Locations, function(loc) { 
-		//console.log("found: ", loc);
-		return loc.PageNumber == pageNr;
-	    })
-	})
-	//console.log("returning: ", annotations);
-	return annotations
+		//console.log("filter annotations on page: ", pageNr);
+		//console.log("annotatations in scope: ", $scope.annotations);
+		annotations = _.filter($scope.annotations, function(ann) {
+		    return _.some(ann.Locations, function(loc) { 
+				//console.log("found: ", loc);
+				return loc.PageNumber == pageNr;
+		    })
+		})
+		//console.log("returning: ", annotations);
+		return annotations
     }
 
     function clearHighlights() {
-	$("#highlights").html("");
-	document.getElementById("cvPage").width = 0;
-	document.getElementById("cvPage").height = 0;
+    	console.log("clearHighlights is called");
+		//$("#highlights").html("");
+		document.getElementById("cvPage").width = 0;
+		document.getElementById("cvPage").height = 0;
     }
 
     function updateHighlights() {
-	//console.log("updateHighlights is called");
-	anns = $scope.annotationsOnPage($scope.currentPage.number);
-	_.each(anns, function(ann) {
-	    _.each(ann.Locations, function(location) {
-		if (location.PageNumber == $scope.currentPage.number) {
-		    $("#highlights").append(
-			"<canvas class='highlight highlight-transparency' " + 
-			    "style='" + 
-			    "background-color: " + ann.Color + "; " + 
-			    "left: " + location.X1 + "%; " +
-			    "top: " + location.Y1 + "%; " +
-			    "width: " + (location.X2 - location.X1) + "%; " +
-			    "height: " + (location.Y2 - location.Y1) + "%; " +
-			    "'></canvas>");
-		}
-	    });
-	});
+		console.log("updateHighlights is called");
+		/*anns = $scope.annotationsOnPage($scope.currentPage.number);
+		_.each(anns, function(ann) {
+		    _.each(ann.Locations, function(location) {
+			if (location.PageNumber == $scope.currentPage.number) {
+			    $("#highlights").append(
+				"<canvas class='highlight highlight-transparency' " + 
+					"id='" + ann.ID + "'" +
+					"onmouseover=\"microappscope().activateHighlight(\'"+ ann.ID + "\')\"" +
+					"onmouseleave=\"microappscope().deactivateHighlight()\"" +
+				    "style='" + 
+				    "background-color: " + ann.Color + "; " + 
+				    "left: " + location.X1 + "%; " +
+				    "top: " + location.Y1 + "%; " +
+				    "width: " + (location.X2 - location.X1) + "%; " +
+				    "height: " + (location.Y2 - location.Y1) + "%; " +
+				    "'></canvas>");
+				}
+		    });
+		});*/
     }
 
 	function loadPage() {
-		clearHighlights();
+		console.log("loadpage");
+		clearHighlight();	// Clear the highlight you were creating
+		clearHighlights();	// Clear all previously created highlights
 		$http({method: 'POST', url: "/service/getPage", data: {documentID: $routeParams.docID, pageNumber: $scope.currentPage.number}}).
 			success(function(data) {
-					console.log(data);
-					$scope.currentPage.data = data;
-					updateHighlights();
+				console.log("loadpage data");
+				console.log(data);
+				$scope.currentPage.data = data;
+				updateHighlights();
 			}).
 			error(function(error) {
-					console.error('error retrieving page information: ', error);
+				console.error('error retrieving page information: ', error);
 			});
 	}
 
@@ -405,6 +438,9 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal)
 		boxStartY = parseInt(e.clientY - pageOffsetY + $(window).scrollTop());
 		// console.log('mouseX: '+boxStartX+' mouseY: '+boxStartY);
 
+		// Hide + button
+		$('#annotation-add-btn').hide();
+
 		// all done
 		isDown = true;
 	}
@@ -427,24 +463,51 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal)
 		// save mouse location
 		boxStopX = parseInt(e.clientX - pageOffsetX);
 		boxStopY = parseInt(e.clientY - pageOffsetY + $(window).scrollTop());
-		// console.log('mouseX: '+boxStopX+' mouseY: '+boxStopY);
 
-		highlight.pagenumber = $scope.currentPage.number;
-		highlight.x1 = boxStartX/pageWidth*100;
-		highlight.x2 = boxStopX/pageWidth*100;
-		highlight.y1 = boxStartY/pageHeight*100;
-		highlight.y2 = boxStopY/pageHeight*100;
+		// Calculate box size
+		boxWidth = Math.abs(boxStopX - boxStartX);
+		boxHeight = Math.abs(boxStopY - boxStartY);
 
-		// TODO: check if highlight is not too small and not too large.
-		// In case of very small highligh (or same xy1 as xy2) remove the highlight all together and set to 0
+		if(boxWidth < 10 || boxHeight < 10) {
+			// clear selection if it's too small
+			clearHighlight();
+		} else {
+			// set hightlight
+			highlight.pagenumber = $scope.currentPage.number;
+			highlight.x1 = boxStartX/pageWidth*100;
+			highlight.x2 = boxStopX/pageWidth*100;
+			highlight.y1 = boxStartY/pageHeight*100;
+			highlight.y2 = boxStopY/pageHeight*100;
+
+			// set bottom and right to show "add annotation" box
+			highlight.xMax = Math.max(boxStartX, boxStopX);
+			highlight.yMax = Math.max(boxStartY, boxStopY);
+		}
+
+		$scope.$apply();
+
+		console.log(highlight);
+		// TODO: check if highlight is not too large.
 		// In case of large highlight, give notification and color red..
 
-		// console.log(highlight);
-		$scope.$apply();
+		// Show + button
+		$('#annotation-add-btn').show();
 
 		// all done
 		isDown = false;
 	}
+
+	function clearHighlight() {
+		highlight.pagenumber = $scope.currentPage.number;
+		highlight.x1 = 0;
+		highlight.x2 = 0;
+		highlight.y1 = 0;
+		highlight.y2 = 0;
+
+		highlight.xMax = 0;
+		highlight.yMax = 0;
+	}
+
 
 	// update highlight on screen with latest info
 	function updateHighlight() {
@@ -499,6 +562,7 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal)
 			success(function(data, status, headers, config) {
 				$scope.annotations.push(data);
 				$scope.showForm = false;
+				loadPage();
 			}).
 			error(function(data, status, headers, config) {
 				console.log("invalid response for AnnotationSubmit:");
@@ -509,6 +573,15 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal)
 			console.log('modal dismissed because: '+info);
 		});
 	};
+
+	$scope.activateHighlight = function(annotationId) {
+		$('#' + annotationId).addClass('active-highlight');
+		$('#annotation_' + annotationId).addClass('active-highlight');
+	};
+
+	$scope.deactivateHighlight = function() {
+		$('.active-highlight').removeClass('active-highlight');
+	};
 });
 
 nulpunt.controller("NewAnnotationModal", function($scope, $modalInstance, highlight, documentId, pageNr) {
@@ -518,9 +591,8 @@ nulpunt.controller("NewAnnotationModal", function($scope, $modalInstance, highli
 	$scope.documentId = documentId;
 	$scope.pageNr = pageNr;
 
-	// TODO: remove this
 	$scope.annotation = {
-		text: "test",
+		text: "",
 	};
 
 	// save new annotation
@@ -853,7 +925,16 @@ nulpunt.controller("SettingsCtrl", function($scope, AccountDataService) {
 });
 
 // SignInCtrl manages user sign-in
-nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService) {
+nulpunt.controller("SignInCtrl", function($scope, $rootScope, $modalInstance, AccountAuthService) {
+	$scope.signin = {
+		username: "",
+		password: "",
+	};
+
+	$scope.register = function () {
+		$modalInstance.close();
+		window.location.href = "#/register";
+	};
 
 	$scope.submit = function() {
 		// reset state on scope
@@ -862,10 +943,11 @@ nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService
 		$scope.error = "";
 
 		// authenticate to server
-		var prom = AccountAuthService.authenticate($scope.username, $scope.password);
+		var prom = AccountAuthService.authenticate($scope.signin.username, $scope.signin.password);
 		prom.then(
 			function() {
 				$scope.success = true;
+				$modalInstance.close();
 				//++ TODO: let user choose to go to dashboard or to go to the page he/she came from?
 				// TODO MARKED FOR REMOVAL
 				// window.location.href = "/#/dashboard";
@@ -881,6 +963,10 @@ nulpunt.controller("SignInCtrl", function($scope, $rootScope, AccountAuthService
 				//++ TODO: need to do some "digest" on $scope ?? or $scope.$apply()? find out what good convention is
 			}
 		);
+	};
+
+	$scope.cancel = function () {
+		$modalInstance.dismiss('cancel');
 	};
 	
 	// watch auth_changed event and set scope if required

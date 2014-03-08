@@ -1,9 +1,9 @@
-<div ng-show="account.username" class="alert alert-success" >
+<!--<div ng-show="account.username" class="alert alert-success" >
 	<strong>Welcome back!</strong><br/>
 	You're logged in as {{account.username}}.
 	<div ng-show="account.admin">
 		<a ng-href="/#/admin/upload"><span class="glyphicon glyphicon-file" ></span> Upload documents</a>
-		<a ng-href="/#/admin/analyse"><span class="glyphicon glyphicon-search" ></span> Ugly hack</a> <!-- remove this when OCR works -->
+		<a ng-href="/#/admin/analyse"><span class="glyphicon glyphicon-search" ></span> Ugly hack</a> <!-- remove this when OCR works ->
 		<a href="/#/admin/process"><span class="glyphicon glyphicon-asterisk" ></span> Process documents</a>
 		<a href="/#/admin/tags"><span class="glyphicon glyphicon-asterisk" ></span> Add/Remove tags</a>
 	</div>
@@ -39,4 +39,41 @@
 			</div>
 		</div>
 	</form>
-</div>
+</div>-->
+
+	<div class="modal-header">
+		<h3>Sign in</h3>
+	</div>
+
+	<div class="modal-body">
+		<div ng-show="error" class="alert alert-error" >
+			<strong>Oops!</strong><br/>
+			{{error}}
+		</div>
+
+		<div ng-show="wrong" class="alert alert-warning" >
+			<strong>Wrong credentials</strong><br/>
+			Please try again.
+		</div>
+
+		<form ng-submit="submit()" class="form-horizontal" role="form">
+		<div class="form-group">
+			<label for="signinUsername" class="col-lg-2 control-label" >Username</label>
+			<div class="col-lg-10">
+				<input type="text" class="form-control" id="signinUsername" placeholder="Username" required ng-model="signin.username" >
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="signinPassword" class="col-lg-2 control-label" >Password</label>
+			<div class="col-lg-10">
+				<input type="password" class="form-control" id="signinPassword" placeholder="Password" required ng-model="signin.password" >
+			</div>
+		</div>
+	</form>
+	</div>
+
+	<div class="modal-footer">
+		<button class="btn btn-primary pull-left" ng-click="register()">Register</button>
+		<button class="btn btn-primary" ng-click="submit()">Sign in</button>
+		<button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+	</div>

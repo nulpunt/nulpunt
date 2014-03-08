@@ -1,26 +1,10 @@
 <style>
 	body {
-		background-color:#EEE;
-	}
-
-	.masthead {
 		background-color:#FFF;
 	}
 
-	.navbar {
-		background-color:#000;
-	}
-
-	.np-logo-image {
-		fill:#FFF;
-	}
-
-	.np-logo-text-background {
-		fill:#FF0;
-	}
-
-	.np-logo-text {
-		fill:#000;
+	.masthead {
+		background-color:#EEE;
 	}
 
 	#np-footer {
@@ -30,11 +14,20 @@
 	.pageView { 
 		position: relative;
 		display: table;
+		background-color: #EEE;
+		padding: 10px 20px;
+		border: 1px solid #AAA;
+		border-radius: 2px;
+	}
+
+	.sticky {
+		position: fixed;
+		top: 0;
 	}
 
 	/*character position css*/
 	.charpos {
-		position: absolute;
+		/*position: absolute;*/
 		display: inline;
 		font-weight: bold;
 		color: rgba(0,0,0,0);
@@ -50,30 +43,76 @@
 	#pageBox {
 		position: relative;
 	}
+
 	#cvPage {
 		width: 100%;
 		height: 100%;
 		position: absolute;
 		top: 0px;
 		left: 0px;
+		cursor: crosshair;
 	}
 	.highlight {
 		position: absolute;
 	}
 
 	.annotation {
-	background-color: white;
-	padding: 10px;
-	margin: 20px;
-	display: block;
+		background-color: #EEE;
+		border: 1px solid #AAA;
+		border-radius: 2px;
+		padding: 10px;
+		margin: 20px 0px;
+	}
+
+	.author-box {
+		width: 100%;
+		height: 36px;
+		margin-bottom: 5px;
+	}
+
+	.author-thumbnail {
+		width: 36px;
+		height: 36px;
+		float: left;
+		margin-right: 5px;
+	}
+
+	.author-box p {
+		margin: 0;
+	}
+
+	.author-name {
+		font-size: 14px;
+		font-weight: bold;
+	}
+
+	.author-date {
+		font-size: 10px;
 	}
 
 	.comment {
-	background-color: #EEE;
-	display: block;
-	margin-left: 20px;
-	margin-right: 20px;
+		background-color: #EEE;
+		padding: 10px;
+		display: block;
+		margin-left: 20px;
+		margin-right: 20px;
+		margin-bottom: 10px;
 	}
+
+	.comment p {
+		margin-bottom: 0;
+	}
+
+	.btn-add-annotation {
+		position: absolute;
+		z-index: 500;
+		background-color: black;
+	}
+
+	.active-highlight {
+		box-shadow: 0px 2px 15px #666666; 
+	}
+
 </style>
 
 <div class="masthead document-viewer">
@@ -91,8 +130,19 @@
 				</div>
 			</div><!-- col-lg-6 -->
 			<div class="col-lg-6">
+				<!--<div class="dropdown">
+					<a data-toggle="dropdown btn btn-default">Amplify <span class="caret"></span></a>
+					<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+						<a ng-href="https://twitter.com/share?url={{twitter.url | urlencode}}&text={{twitter.text | urlencode}}&hashtags=nulpunt" class="btn btn-default" data-lang="en" target="_blank" ><i class="fa fa-twitter"></i> Tweet this document</a>
+					</ul>
+				</div>-->
 				<ul class="nav nav-pills pull-right">
-					<li><a ng-href="https://twitter.com/share?url={{twitter.url | urlencode}}&text={{twitter.text | urlencode}}&hashtags=nulpunt" class="btn btn-default" data-lang="en" target="_blank" ><i class="fa fa-twitter"></i> Tweet this document</a></li>
+					<li class="dropdown">
+				        <a id="drop4" class="btn btn-default btn-dropdown" role="button" data-toggle="dropdown"><span class="glyphicon glyphicon-flash"></span> Amplify <b class="caret"></b></a>
+				        <ul id="menu1" class="dropdown-menu" role="menu" aria-labelledby="drop4">
+				          <li role="presentation"><a ng-href="https://twitter.com/share?url={{twitter.url | urlencode}}&text={{twitter.text | urlencode}}&hashtags=nulpunt" class="amplify-item" data-lang="en" target="_blank" ><i class="fa fa-twitter"></i> Tweet this document</a></li>
+				        </ul>
+				      </li>
 					<li><a class="btn btn-default" ng-href="/download-original/{{document.ID}}/{{document.UploadFilename}}" target="_blank"><i class="fa fa-download"></i> Download original</a></li>
 					<li><a class="btn btn-default" href="/#/documents/">More documents</a></li>
 				</ul>
@@ -103,15 +153,19 @@
 
 <div class="container document-viewer">
 	<!-- <div ng-repeat="page in pages" > -->
-	<div class="row">
-		<div class="pageView col-lg-7">
-			<!-- display current page number -->
-			<div class="row">
-				<h5 class="pull-left">Page {{ currentPage.number }}</h5>
-			</div>
 
+	<div class="row row-padding-bottom" style="text-align: center;">
+		<div ng-hide="account.username" >
+			<!-- we have a highlight but no auth, let user auth -->
+			To annotate or comment, please sign in first. <a class="btn" ng-click="loginFactory.showLogin()">Sign in</a>
+		</div> <!-- ng-hide="account.username" -->
+	</div>
+
+
+	<div class="row">
+		<div class="pageView col-lg-7 stick-to-top">
 			<!-- page navigation -->
-			<div class="row">
+			<div class="row row-padding-bottom">
 				<a class="btn btn-xs col-lg-2" ng-click="prevPage()"><span class="glyphicon glyphicon-chevron-left"></span> Previous page</a>
 				<div class="col-lg-4 col-lg-offset-2">
 					<div style="float: left;" ><input ng-model="currentPage.number" type="number" class="form-control np-document-viewer-pagination" /></div>
@@ -123,11 +177,26 @@
 			<!-- page itself -->
 			<div class="row main pageWrapper">
 				<div id="pageBox" >
-					<canvas id="cvPage" ></canvas>
+					<div ng-show="highlight.yMax && account.username" id="annotation-add-btn" class="btn btn-add-annotation" style="top: {{highlight.yMax}}px; left: {{highlight.xMax}}px; " ng-click="addAnnotation()"><span class="glyphicon glyphicon-plus"></span></div>
+					<canvas ng-show="account.username" id="cvPage" ></canvas>
 					<img ng-src="/docfiles/pages/{{document.ID}}/{{currentPage.number}}.png" class="img-responsive" />
 					<span id="highlights">
-					  <!-- this span gets these canvases, one for each annotation on this page -->
-					  <!-- <canvas id="{annotation.ID}" class="highlight highlight-transparency" style="background-color: green; width:200px; height:20px; top: 50px; left: 100px; "></canvas> -->
+						<!-- this span gets these canvases, one for each annotation on this page -->
+						<!-- <canvas id="{annotation.ID}" class="highlight highlight-transparency" style="background-color: green; width:200px; height:20px; top: 50px; left: 100px; "></canvas> -->
+						<span ng-repeat="annotation in annotationsOnPage(currentPage.number)">
+							<canvas ng-repeat="location in annotation.Locations" 
+								ng-show"location.PageNumber == currentPage.number"
+								ng-mouseover="activateHighlight(annotation.ID)"
+								ng-mouseout="deactivateHighlight()"
+								class="highlight highlight-transparency"
+								style="background-color: {{annotation.Color}}; 
+									left: {{location.X1}}%; 
+									top: {{location.Y1}}%; 
+									width: {{location.X2 - location.X1}}%; 
+									height: {{location.Y2 - location.Y1}}%;"
+								id="{{annotation.ID}}">
+							</canvas>
+						</span>
 					</span>
 				</div>
 				<!-- <div id="lines" class="selectable" >
@@ -140,7 +209,7 @@
 			</div>
 
 			<!-- page navigation -->
-			<div class="row">
+			<div class="row row-padding-top">
 				<a class="btn btn-xs col-lg-2" ng-click="prevPage()"><span class="glyphicon glyphicon-chevron-left"></span> Previous page</a>
 				<div class="col-lg-4 col-lg-offset-2">
 					<div style="float: left;" ><input ng-model="currentPage.number" type="number" class="form-control np-document-viewer-pagination" /></div>
@@ -152,140 +221,56 @@
 
 		</div> <!-- pageView -->
 
-		<!-- Show the login button if not signed in -->
-		<div ng-show="account.username && !highlight.x1" >
-			Please highlight the document to create an annotation.
-		</div>
+		<div class="annotationView col-lg-5">
 
-		<div ng-show="highlight.x1" >
-			<div ng-show="account.username" >
-				<!-- when logged in and having a higlight: show the Annotate-button -->
-				<div class="btn btn-default" ng-click="addAnnotation()">Add a Annotation</div>
-			</div>
-		</div>
+			<h3>Annotations</h3>
+			<p ng-show="account.username">Highlight the document to create an annotation.</p>
 
-		<div ng-hide="account.username" >
-		  <!-- we have a highlight but no auth, let user auth -->
-		  You need to log in before you can add an Annotation. 
-		  
-		  <span ng-hide="showLoginForm1" class="btn btn-default" ng-click="showLoginForm1 = true">Sign In</span>
-		  <span ng-show="showLoginForm1">
-		    <div ng-controller="SignInCtrl">
-		      <div ng-show="error" class="alert alert-error" >
-			<strong>Oops!</strong><br/>
-			{{error}}
-		      </div>
-		      
-		      <div ng-show="wrong" class="alert alert-warning" >
-			<strong>Wrong credentials</strong><br/>
-			Please try again.
-		      </div>
-		      
-		      <form ng-submit="submit()" class="form-horizontal" role="form">
-			<div class="form-group">
-			  <label for="signinUsername" class="col-lg-2 control-label" >Username</label>
-			  <div class="col-lg-2">
-			    <input type="text" class="form-control" id="signinUsername" placeholder="Username" required ng-model="username" >
-			  </div>
+			<div id="annotation_{{annotation.ID}}" class="annotation" ng-repeat="annotation in annotationsOnPage(currentPage.number)" ng-mouseover="activateHighlight(annotation.ID)" ng-mouseleave="deactivateHighlight()">
+				<!-- <p class="np-document-description">{{ annotation.Annotation }}</p> -->
+				<div class="author-box">
+					<div class="author-thumbnail" style="background-color:{{ annotation.Color}}"></div>
+					<p class="author-name"><span style="color:{{ annotation.Color }}">@</span> {{ annotation.AnnotatorUsername }}<br><p>
+					<p class="author-date">{{annotation.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
+				</div>
+				<!-- Use these coordinates to aling the annotation to the highlight --> 
+				<!-- <p>Coordinates: {{ annotation.Locations }}</p> -->
+				<p><strong>{{ annotation.AnnotationText }}</strong></p>
 
-			  <label for="signinPassword" class="col-lg-2 control-label" >Password</label>
-			  <div class="col-lg-2">
-			    <input type="password" class="form-control" id="signinPassword" placeholder="Password" required ng-model="password" >
-			  </div>
-
-			  <div class="col-lg-offset-2 col-lg-2">
-			    <button type="submit" class="btn btn-default">Sign in</button>
-			  </div>
-			  <a class="btn btn-default" href="#/register/">Register for an account</a>
-			</div>
-			
-		      </form>
-		    </div> <!-- SignInCtrl -->
-		  </span> <!-- ng-show="showLoginForm1" -->
-		</div> <!-- ng-hide="account.username" -->
-
-
-		<h3>Annotations</h3>
-		<div  ng-repeat="annotation in annotationsOnPage(currentPage.number)">
-		  <span class="annotation">
-			<!-- <p class="np-document-description">{{ annotation.Annotation }}</p> -->
-			<p>By: {{ annotation.AnnotatorUsername }}</p>
-			<p>Date: {{annotation.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
-			<!-- Use these coordinates to aling the annotation to the highlight --> 
-			<!-- <p>Coordinates: {{ annotation.Locations }}</p> -->
-			<p><strong><span  class="highlight-transparency" style="background-color:{{ annotation.Color }}">{{ annotation.AnnotationText }}</span></strong></p>
-			
-			<div  ng-repeat="comment in annotation.Comments">
-			  <span class="comment">
-				<p>Comment by: {{ comment.CommenterUsername }}</p>
-				<p>Date: {{ comment.CreateDate | date:'dd MMMM yyyy, HH:m' }}</p>				
-				<p><strong><span class="highlight-transparency" style="background-color:{{ comment.Color }}">{{ comment.CommentText }}</span></strong></p>
-				</span>
-			</div>
-
-			<!-- Show the login button if not signed in -->
-			<div ng-hide="account.username">
-				You need to log in before you can post comments. 
-				<span ng-hide="showLoginForm2" class="btn btn-default" ng-click="showLoginForm2 = true">Sign In</span>
-				<span ng-show="showLoginForm2">
-				  <div ng-controller="SignInCtrl">
-				    <div ng-show="error" class="alert alert-error" >
-				      <strong>Oops!</strong><br/>
-				      {{error}}
-				    </div>
-				    
-				    <div ng-show="wrong" class="alert alert-warning" >
-				      <strong>Wrong credentials</strong><br/>
-				      Please try again.
-				    </div>
-				    
-				    <form ng-submit="submit()" class="form-horizontal" role="form">
-				      <div class="form-group">
-					<label for="signinUsername" class="col-lg-2 control-label" >Username</label>
-					<div class="col-lg-2">
-					  <input type="text" class="form-control" id="signinUsername" placeholder="Username" required ng-model="username" >
-					</div>
-					
-					<label for="signinPassword" class="col-lg-2 control-label" >Password</label>
-					<div class="col-lg-2">
-					  <input type="password" class="form-control" id="signinPassword" placeholder="Password" required ng-model="password" >
-					</div>
-					
-					<div class="col-lg-offset-2 col-lg-2">
-					  <button type="submit" class="btn btn-default">Sign in</button>
-					</div>
-					<a class="btn btn-default" href="#/register/">Register for an account</a>
-				      </div>
-				      
-				    </form>
-				  </div> <!-- SignInCtrl -->
-				</span> <!-- ng-show="showLoginForm2" -->
-		  	</div> <!-- ng-hide="account.username" -->
-
-			<div ng-show="account.username">
-				<!-- when logged, in, show the Comment-button -->
-				<div ng-controller="CommentSubmitCtrl">
-					<!-- when logged in and press the comment-button, show the form -->
-					<div ng-hide="showForm" class="btn btn-default" ng-click="showForm=true">Add a Comment</div>
-					<form ng_show="showForm" ng-submit="submit()" role="form" class="form-horizontal">
-						<div class="form-group">
-							<label class="col-md-2 control-label">Your comment</label>
-							<div class="col-md-2">
-								<textarea class="form-control" id="comment-text" placeholder="Comment text" ng-model="commentText"></textarea>
-							</div>
-					<!--	</div>
-						<div class="form-group"> -->
-							<div class="col-md-offset-2 col-md-2">
-								<button type="submit" class="btn btn-default">Publish</button>
-							</div>
+				<div ng-repeat="comment in annotation.Comments">
+					<span class="comment">
+						<div class="author-box">
+							<div class="author-thumbnail" style="background-color:{{ comment.Color}}"></div>
+							<p class="author-name"><span style="color:{{ comment.Color }}">@</span> {{ comment.CommenterUsername }}<br><p>
+							<p class="author-date">{{comment.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
 						</div>
-					</form>
-				</div> <!-- CommentSubmitCtrl -->
-			</div> <!-- ng_show="account.username -->
-			</span>
+						<p><strong>{{ comment.CommentText }}</strong></p>
+					</span>
+				</div>
+				
+				<div ng-show="account.username">
+					<!-- TODO: Always show the Comment-button, but if the user is not logged in,
+					prompt the log in modal with an explanatory message -->
+					<div ng-controller="CommentSubmitCtrl">
+						<!-- when logged in and press the comment-button, show the form -->
+						<div ng-hide="showForm" class="btn btn-default" ng-click="showForm=true">Add a Comment</div>
+						<form ng-show="showForm" ng-submit="submit()" role="form" class="form-horizontal">
+							<div class="form-group">
+								<div class="col-md-9">
+									<textarea class="form-control" id="comment-text" placeholder="Comment text" ng-model="commentText"></textarea>
+								</div>
+						
+								<div class="col-md-3">
+									<button type="submit" class="btn btn-default">Publish</button>
+								</div>
+							</div>
+						</form>
+					</div> <!-- CommentSubmitCtrl -->
+				</div> <!-- ng_show="account.username -->
+			</div> <!-- annotation in annotations -->
+
 		</div> <!-- annotation in annotations -->
 		<br><hr>
-			
 
 	</div><!-- row -->
 </div><!-- container -->
@@ -293,4 +278,9 @@
 <script>
 	// Disable image dragging, interferes with selection etc
 	$('img').mousedown(function(){return false});
+
+	// Ugly hack to allow mouse events from highlights to access the 'activateHighlight' logic
+	function microappscope(){
+    	return angular.element($("#pageBox")).scope();
+	}
 </script>
