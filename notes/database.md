@@ -85,15 +85,6 @@ Just insert the tag-string into other collections where needed.
  - `commentText` (string)
  - `comments` ([]comment) *recursion, disabled for first version??* (JANUARI/FEBRUARI)
 
-### trending
- - `_id` (bson.ObjectId) 
- - `document` Document, the whole document record. /set unique index on document.Id
- - `annotations` []Annotation, the relevant annotations, according to the trending-algorithm,
-   		 	       use this only for displaying. Not for adding/removing comments. 
-			       Use the Annotation-records directly for that. 
- - `score` (float32) higher means more trending
-
-
 ## GridFS
 We're using GridFS to store files.
 
