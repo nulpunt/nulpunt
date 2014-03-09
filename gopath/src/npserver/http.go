@@ -93,7 +93,7 @@ func initHTTPServer() {
 	// trending-collection, available to everyone without login.
 	serviceRouter.Methods("GET").Path("/get-trending").HandlerFunc(getTrendingHandlerFunc)
 
-	// update-trending updates the trending collection. 
+	// update-trending updates the trending collection.
 	// TODO: take out after one run, it's not needed anymore
 	rootRouter.Methods("GET").Path("/update-trending").HandlerFunc(updateTrendingHandlerFunc)
 
