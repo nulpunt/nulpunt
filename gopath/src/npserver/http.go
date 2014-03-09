@@ -92,8 +92,9 @@ func initHTTPServer() {
 	// get-trending delivers the data structures to build a page with the current contents of the
 	// trending-collection, available to everyone without login.
 	serviceRouter.Methods("GET").Path("/get-trending").HandlerFunc(getTrendingHandlerFunc)
-	// update-trending updates the trending collection.
-	// TODO: use cron or an internal thread to trigger the update.
+
+	// update-trending updates the trending collection. 
+	// TODO: take out after one run, it's not needed anymore
 	rootRouter.Methods("GET").Path("/update-trending").HandlerFunc(updateTrendingHandlerFunc)
 
 	// 404 when /service/session/admin/* was not found
