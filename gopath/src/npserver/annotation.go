@@ -37,6 +37,15 @@ func getAnnotations(selection interface{}) ([]Annotation, error) {
 	return annotations, nil
 }
 
+func getLatestAnnotation(selection interface{}) (*Annotation, error) {
+	ann := &Annotation{}
+	err := colAnnotations.Find(selection).Sort("-createDate").One(ann)
+	if err != nil {
+		return nil, err
+	}
+	return ann, nil
+}
+
 // insertAnnotation inserts a new annotation in the DB.
 // Annotation must be created with newAnnotation
 func insertAnnotation(annotation *Annotation) error {

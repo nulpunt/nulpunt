@@ -71,6 +71,13 @@ func addAnnotationHandler(rw http.ResponseWriter, req *http.Request) {
 	}
 	rw.WriteHeader(200)
 	rw.Write(j)
+
+	// update trending score: (latest annotation wins)
+	// Notice: To speed things up, we don't fetch the whole document and it's annotations from the database.
+	// If the formula changes, change it everywhere.
+	score := dateToTrending(annot.CreateDate)
+	_ = updateDocumentScore(annot.DocumentID, score)
+
 	return
 }
 

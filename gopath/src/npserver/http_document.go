@@ -11,6 +11,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 // type Document struct is defined in document.go
@@ -383,6 +384,15 @@ func updateDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 			log.Printf("\n\nJSON unmarshal error %#v\n", err)
 			http.Error(rw, "JSON unmarshal error", http.StatusBadRequest) // 400
 			return
+		}
+
+		// if score == nil and published = true, it means it is new.
+		// We set the uploadDate to time.now (as a time of publication)
+		// and set the score to the uploadDate.
+		// Once the score is set, future updates won't affect uploadDate anymore.
+		if doc.Score == 0 && doc.Published == true {
+			doc.UploadDate = time.Now()
+			doc.Score = dateToTrending(doc.UploadDate)
 		}
 
 		log.Printf("\n\nDocument to update is: %#v\n", *doc)

@@ -39,6 +39,10 @@ func getDocuments(selection interface{}) ([]Document, error) {
 	return docs, nil
 }
 
+func getDocumentsCursor(selection interface{}) *mgo.Query {
+	return colDocuments.Find(selection)
+}
+
 // insertDocument inserts a new document in the DB. Or updates an existing one.
 // Document must have a valid ID, eg from newDocument
 func insertDocument(doc *Document) error {

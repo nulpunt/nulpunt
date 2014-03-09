@@ -63,6 +63,7 @@ type Document struct {
 	Source       string    `bson:"source"`
 	Country      string    `bson:"country"`
 	Published    bool      `bson:"published"`
+	Score        float32   `bson:"score"`
 }
 
 // type Tag hold the document classification tags

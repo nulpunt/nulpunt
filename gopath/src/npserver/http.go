@@ -48,7 +48,6 @@ func initHTTPServer() {
 	serviceRouter.Methods("POST").Path("/getPage").HandlerFunc(getPageHandlerFunc)
 	serviceRouter.Methods("GET").Path("/getDocuments").HandlerFunc(getDocumentsHandler)
 	serviceRouter.Methods("GET").Path("/getDocumentList").HandlerFunc(getDocumentListHandler)
-
 	// create sessionPathRouter for /service/session/*
 	sessionPathRouter := rootRouter.PathPrefix("/service/session/").Subrouter()
 
@@ -89,6 +88,14 @@ func initHTTPServer() {
 	adminRouter.Methods("POST").Path("/updateDocument").HandlerFunc(updateDocumentHandler)
 	adminRouter.Methods("POST").Path("/insertDocument").HandlerFunc(insertDocumentHandler)
 	adminRouter.Methods("POST").Path("/deleteDocument").HandlerFunc(deleteDocumentHandler)
+	// Trending:
+	// get-trending delivers the data structures to build a page with the current contents of the
+	// trending-collection, available to everyone without login.
+	serviceRouter.Methods("GET").Path("/get-trending").HandlerFunc(getTrendingHandlerFunc)
+
+	// update-trending updates the trending collection.
+	// TODO: take out after one run, it's not needed anymore
+	rootRouter.Methods("GET").Path("/update-trending").HandlerFunc(updateTrendingHandlerFunc)
 
 	// 404 when /service/session/admin/* was not found
 	adminRouter.PathPrefix("/").Handler(http.NotFoundHandler())
