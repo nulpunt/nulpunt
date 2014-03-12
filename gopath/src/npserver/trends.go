@@ -9,8 +9,9 @@ import (
 
 // getTrending gets some trending based upon the specified selection.
 // Limits to at most limit documents
-func getTrendingDocs(selection interface{}, limit int) ([]Document, error) {
+func getTrendingDocs(limit int) ([]Document, error) {
 	docs := []Document{}
+	selection := bson.M{"published": true}
 	err := colDocuments.Find(selection).Sort("-score").Limit(limit).All(&docs)
 	if err != nil {
 		return nil, err

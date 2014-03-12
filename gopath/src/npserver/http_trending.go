@@ -11,7 +11,7 @@ import (
 
 func getTrendingHandlerFunc(rw http.ResponseWriter, req *http.Request) {
 	log.Printf("GetTrendingHandler called\n")
-	docs, err := getTrendingDocs(nil, 9)
+	docs, err := getTrendingDocs(9)
 	if err != nil {
 		log.Printf("error getting trending documents %#v\n", err)
 		http.Error(rw, "error", http.StatusInternalServerError)

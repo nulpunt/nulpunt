@@ -34,26 +34,28 @@
 					<p>{{item.Document.Summary}}</p>
 				</div>
 				<div class="document-metadata">
-					<span class="source">Source: {{item.Document.Source}} ({{item.Document.Country}}) <strong>{{item.OriginalDate}}</strong></span>
-					<span class="upload">Uploaded on <strong>{{item.uploadDate}}</strong> by <span class="uploader">{{item.Document.UploaderUsername}}</span></span>
+					<span class="source">Source: {{item.Document.Source}} ({{item.Document.Country}}) <strong>{{item.Document.OriginalDate}}</strong></span>
+					<span class="upload">Uploaded on <strong>{{item.Document.UploadDate}}</strong> by <span class="uploader">{{item.Document.UploaderUsername}}</span></span>
 					<span class="request" ng-show="item.requester">Information requested by: {{item.Document.FOIRequester}}</span>
 				</div>
 				<div class="annotation" ng-repeat="annotation in item.Annotations">
-					<span class="annotator" style="background-color:#00b7ff;">{{annotation.AnnotatorUsername}}</span> {{annotation.AnnotationText}}
+					Annotation by <span class="annotator" style="background-color:#00b7ff;">{{annotation.AnnotatorUsername}}</span>: {{annotation.AnnotationText}}
 					<div class="row utilities" >
 						<div class="lg-col-12">
-							<span class="comment-date">{{annotation.annotationDate | date:'dd MMMM yyyy, hh:mm'}}</span>
-							<ul class="list-unstyled list-inline pull-right">
+							<span class="comment-date">{{annotation.CreateDate | date:'dd MMMM yyyy, hh:mm'}}</span>
+
+<!--							<ul class="list-unstyled list-inline pull-right">
 								<li> <span class="glyphicon glyphicon-flash"></span></li>
 								<li><span class="glyphicon glyphicon-star"></span></li>
 								<li><span class="glyphicon glyphicon-comment"></span></li>
-							</ul>
+							</ul> -->
 						</div>					  
 					</div>
 				</div>
 				<div class="tags">
-					<span ng-repeat="tag in item.tags" class="label label-default">
-						<span class="glyphicon glyphicon-tag"></span> {{tag.title}}</span>
+				  <p>{{ }}</p>
+					<span ng-repeat="tag in item.Document.Tags" class="label label-default">
+						<span class="glyphicon glyphicon-tag"></span> {{tag}}</span>
 				</div>
 			</div>
 		</div>
