@@ -12,7 +12,7 @@ This only works when the source is available to the machine executing the binary
 Use `go get` for the package and `go install` for the tool.
 ```
 go get github.com/GeertJohan/go.rice
-go install github.com/GeertJohan/go.rice/rice
+go get github.com/GeertJohan/go.rice/rice
 ```
 
 ### Package usage
@@ -98,3 +98,4 @@ You will find package documentation at [godoc.org/github.com/GeertJohan/go.rice]
 
  [license]: https://github.com/GeertJohan/go.rice/blob/master/LICENSE
  [godoc]: http://godoc.org/github.com/GeertJohan/go.rice
+ 
