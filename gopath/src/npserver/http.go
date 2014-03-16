@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/GeertJohan/go.rice"
 	"github.com/gorilla/mux"
 	"log"
@@ -17,6 +18,10 @@ func initHTTPServer() {
 	if err != nil {
 		log.Fatalf("cannot find rice box. error: %s\n", err)
 	}
+	if flags.Verbose {
+		fmt.Printf("box http-files is appended: %t\n", boxHTTPFiles.IsAppended())
+	}
+
 	fileServer := http.FileServer(boxHTTPFiles.HTTPBox())
 
 	// rootRouter is directly linked to the http server.

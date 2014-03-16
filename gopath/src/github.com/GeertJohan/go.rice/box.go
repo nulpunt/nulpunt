@@ -26,6 +26,12 @@ func findBox(name string) (*Box, error) {
 		name: name,
 	}
 
+	// no support for absolute paths since gopath can be different on different machines.
+	// therefore, required box must be located relative to package requiring it.
+	if filepath.IsAbs(name) {
+		return nil, errors.New("given name/path is aboslute")
+	}
+
 	// find if box is embedded
 	if embed := embedded.EmbeddedBoxes[name]; embed != nil {
 		b.embed = embed
@@ -33,15 +39,10 @@ func findBox(name string) (*Box, error) {
 	}
 
 	// find if box is appended
-	if appendd := appendedBoxes[name]; appendd != nil {
+	appendedBoxName := strings.Replace(name, `/`, `-`, -1)
+	if appendd := appendedBoxes[appendedBoxName]; appendd != nil {
 		b.appendd = appendd
 		return b, nil
-	}
-
-	// when given name is an absolute path, set it as absolute path.
-	// otherwise calculate absolute path from caller source location
-	if filepath.IsAbs(name) {
-		return nil, errors.New("given name/path is aboslute")
 	}
 
 	// resolve absolute directory path
@@ -214,7 +215,7 @@ func (b *Box) Open(name string) (*File, error) {
 	return &File{realF: file}, nil
 }
 
-// Bytes returns the content of the file with given name as []byte
+// Bytes returns the content of the file with given name as []byte.
 func (b *Box) Bytes(name string) ([]byte, error) {
 	// check if box is embedded
 	if b.IsEmbedded() {
@@ -263,7 +264,17 @@ func (b *Box) Bytes(name string) ([]byte, error) {
 	return bts, nil
 }
 
-// String returns the content of the file with given name as string
+// MustBytes returns the content of the file with given name as []byte.
+// panic's on error.
+func (b *Box) MustBytes(name string) []byte {
+	bts, err := b.Bytes(name)
+	if err != nil {
+		panic(err)
+	}
+	return bts
+}
+
+// String returns the content of the file with given name as string.
 func (b *Box) String(name string) (string, error) {
 	// check if box is embedded
 	if b.IsEmbedded() {
@@ -298,4 +309,14 @@ func (b *Box) String(name string) (string, error) {
 	}
 	// return result as string
 	return string(bts), nil
+}
+
+// MustString returns the content of the file with given name as string.
+// panic's on error.
+func (b *Box) MustString(name string) string {
+	str, err := b.String(name)
+	if err != nil {
+		panic(err)
+	}
+	return str
 }
