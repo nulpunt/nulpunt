@@ -3,6 +3,9 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
+	"fmt"
+	"image"
+	"image/png"
 	"labix.org/v2/mgo/bson"
 	"log"
 	"net/http"
@@ -39,19 +42,77 @@ func addAnnotationHandler(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// Set every other field to things we control.
-	annot.ID = bson.NewObjectId()
-	annot.AnnotatorUsername = acc.Username
-	annot.Color = acc.Color
-	annot.CreateDate = time.Now()
-	annot.Comments = []Comment{}
-
 	// Normalize the coordinates: X1,Y1 at top left, X2,Y2 as bottom right.
 	for i, coord := range annot.Locations {
 		coord.X1, coord.X2 = min(coord.X1, coord.X2), max(coord.X1, coord.X2)
 		coord.Y1, coord.Y2 = min(coord.Y1, coord.Y2), max(coord.Y1, coord.Y2)
 		annot.Locations[i] = coord // set it, as range gives a copy.
 	}
+
+	if len(annot.Locations) == 0 {
+		// There must be a highlight
+		log.Printf("There are no highlights for doc: %s\n", annot.DocumentID.Hex())
+		http.Error(rw, "unexpected error 0", http.StatusInternalServerError)
+		return
+	}
+
+	location := annot.Locations[0]
+
+	// get the main image to crop
+	fileName := fmt.Sprintf("docviewer-pages/%s-%d.png", annot.DocumentID.Hex(), location.PageNumber)
+	file, err := gridFS.Open(fileName)
+	if err != nil {
+		log.Printf("error looking up files in gridFS (%s): %s\n", fileName, err)
+		http.Error(rw, "unexpected error 2", http.StatusInternalServerError)
+		return
+	}
+
+	img, format, err := image.Decode(file)
+	file.Close() // close file before handling decoding errors
+	if err != nil {
+		log.Printf("error decoding image (%s): %s\n", fileName, err)
+		http.Error(rw, "unexpected error 3", http.StatusInternalServerError)
+	}
+
+	log.Printf("format is %v\n", format)
+
+	// determine the crops bounds in pixels
+	bounds := img.Bounds().Canon()
+	x1 := int(location.X1/100.0*float32(bounds.Dx())) + bounds.Min.X
+	y1 := int(location.Y1/100.0*float32(bounds.Dy())) + bounds.Min.Y
+	x2 := int(location.X2/100.0*float32(bounds.Dx())) + bounds.Min.X
+	y2 := int(location.Y2/100.0*float32(bounds.Dy())) + bounds.Min.Y
+	rect := image.Rect(x1, y1, x2, y2)
+
+	log.Printf("rect is: %#v\n", rect)
+	crop := img.(*image.RGBA64).SubImage(rect)
+
+	gridfile, err := gridFS.Create("")
+	if err != nil {
+		log.Printf("error creating gridFS: %s\n", err)
+		http.Error(rw, "unexpected error 4", http.StatusInternalServerError)
+		return
+	}
+
+	gridfile.SetContentType("image/" + format)
+	err = png.Encode(gridfile, crop)
+	if err != nil {
+		log.Printf("error encoding crop to gridfs: %s\n", err)
+		http.Error(rw, "unexpected error 5", http.StatusInternalServerError)
+		return
+	}
+	cropId := gridfile.Id().(bson.ObjectId)
+	gridfile.Close()
+
+	log.Printf("gridfile is: %#v\n", gridfile)
+
+	// Set every other field to things we control.
+	annot.ID = bson.NewObjectId()
+	annot.AnnotatorUsername = acc.Username
+	annot.Color = acc.Color
+	annot.CreateDate = time.Now()
+	annot.Comments = []Comment{}
+	annot.CropId = cropId
 
 	log.Printf("\n\nAnnotation to insert is: %#v\n", *annot)
 
