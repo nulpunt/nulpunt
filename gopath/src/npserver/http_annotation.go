@@ -2,10 +2,10 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"fmt"
 	"image"
 	"image/png"
+	"io/ioutil"
 	"labix.org/v2/mgo/bson"
 	"log"
 	"net/http"
