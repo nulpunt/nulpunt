@@ -539,3 +539,34 @@ func thumbnailImageHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	}
 	// all done :)
 }
+
+func cropImageHandlerFunc(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	urlVars := mux.Vars(r)
+	cropIDHex := urlVars["cropIDHex"]
+	if !bson.IsObjectIdHex(cropIDHex) {
+		http.NotFound(w, r)
+		return
+	}
+	cropID := bson.ObjectIdHex(cropIDHex)
+
+	file, err := gridFS.OpenId(cropID)
+	if err != nil {
+		if err == mgo.ErrNotFound {
+			http.NotFound(w, r)
+			return
+		}
+		log.Printf("error looking up files in gridFS (%s): %s\n", cropIDHex, err)
+		http.Error(w, "error", http.StatusInternalServerError)
+		return
+	}
+	defer file.Close()
+
+	w.Header().Set("Content-Type", file.ContentType())
+	_, err = io.Copy(w, file)
+	if err != nil {
+		log.Printf("error writing png file (%s) to http client: %s\n", cropIDHex, err)
+		return
+	}
+	// all done :)
+}

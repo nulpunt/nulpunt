@@ -39,6 +39,7 @@
 					<span class="request" ng-show="item.requester">Information requested by: {{item.Document.FOIRequester}}</span>
 				</div>
 				<div class="annotation" ng-repeat="annotation in item.Annotations">
+				  Highlight: <img src="/crop/{{annotation.CropId}}"><br>
 					Annotation by <span class="annotator" style="background-color:#00b7ff;">{{annotation.AnnotatorUsername}}</span>: {{annotation.AnnotationText}}
 					<div class="row utilities" >
 						<div class="lg-col-12">
