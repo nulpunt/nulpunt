@@ -118,12 +118,8 @@
 					<div class="row">
 						<h1>{{ document.Title }}</h1>
 					</div>
-					<div class="row">
-						<div class="col-lg-6 align-left">
-							<div class="document-description">
-								<p>{{item.Document.Summary}}</p>
-							</div>
-						</div>
+					<div class="row align-left">
+						<div class="col-lg-6 document-description">{{item.Document.Summary}}</div>
 						<div class="col-lg-6">
 							<div class="document-metadata">
 								<span class="source">Source: {{document.Source}}  ({{ document.Country }}) on <strong>{{document.OriginalDate | date:'dd MMMM yyyy, hh:mm'}}</strong></span>

@@ -12,6 +12,8 @@
          }
     });
 
+// Angular
+
 var nulpunt = angular.module('nulpunt', [
 	// imported modules
 	// please keep this list sorted
