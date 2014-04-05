@@ -557,9 +557,24 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
 		$('.active-highlight').removeClass('active-highlight');
 	};
 
+    $scope.shareTwitter = function () {
+        $window.open('https://twitter.com/share?url='+encodeURIComponent($scope.twitter.url)+'&text='+encodeURIComponent($scope.twitter.text)+'&hashtags=nulpunt','das','location=no,links=no,scrollbars=no,toolbar=no,width=750,height=300');
+    }
 	$scope.shareDiaspora = function () {
 		$window.open('http://sharetodiaspora.github.io/?url='+encodeURIComponent($scope.twitter.url)+'&title='+encodeURIComponent($scope.twitter.text),'das','location=no,links=no,scrollbars=no,toolbar=no,width=620,height=550');
 	}
+    $scope.shareGooglePlus = function () {
+        $window.open('https://plus.google.com/share?url='+encodeURIComponent($scope.twitter.url)+'&title=title&text=text&message=message','das','location=no,links=no,scrollbars=no,toolbar=no,width=520,height=500');
+    }
+    $scope.shareReddit = function () {
+        $window.open('http://www.reddit.com/submit?url='+encodeURIComponent($scope.twitter.url)+'&title='+encodeURIComponent($scope.twitter.text),'das','location=no,links=no,scrollbars=no,toolbar=no,width=850,height=550');
+    }
+    $scope.shareVK = function () {
+        $window.open('https://vk.com/share.php?url='+encodeURIComponent($scope.twitter.url)+'&title='+encodeURIComponent($scope.twitter.text),'das','location=no,links=no,scrollbars=no,toolbar=no,width=550,height=375');
+    }
+    $scope.shareLinkedIn = function () {
+        $window.open('http://www.linkedin.com/shareArticle?mini=true&url='+encodeURIComponent($scope.twitter.url)+'&title='+encodeURIComponent($scope.twitter.text),'das','location=no,links=no,scrollbars=no,toolbar=no,width=600,height=500');
+    }
 });
 
 nulpunt.controller("NewAnnotationModal", function($scope, $modalInstance, highlight, documentId, pageNr) {

@@ -140,8 +140,14 @@
 					<li class="dropdown">
 				        <a id="drop4" class="btn btn-default btn-dropdown" role="button" data-toggle="dropdown"><span class="glyphicon glyphicon-flash"></span> Amplify <b class="caret"></b></a>
 				        <ul id="menu1" class="dropdown-menu" role="menu" aria-labelledby="drop4">
-				          <li role="presentation"><a ng-href="https://twitter.com/share?url={{twitter.url | urlencode}}&text={{twitter.text | urlencode}}&hashtags=nulpunt" class="amplify-item" data-lang="en" target="_blank" ><i class="fa fa-twitter"></i> Tweet this document</a></li>
-				          <li role="presentation"><a ng-click="shareDiaspora()" href="" class="amplify-item"><img src="img/diaspora.ico" style="border: 0px solid;" /> Share on Diaspora</a></li>
+                            <li role="presentation" class="dropdown-header">Amplify through:</li>
+                            <li role="presentation" class="divider"></li>
+                            <li role="presentation"><a ng-click="shareDiaspora()" href="" class="amplify-item">Diaspora</a></li>
+                            <li role="presentation"><a ng-click="shareGooglePlus()" href="" class="amplify-item">Google+</a></li>
+                            <li role="presentation"><a ng-click="shareLinkedIn()" href="" class="amplify-item">LinkedIn</a></li>
+                            <li role="presentation"><a ng-click="shareReddit()" href="" class="amplify-item">Reddit</a></li>
+				            <li role="presentation"><a ng-click="shareTwitter()" href="" class="amplify-item">Twitter</a></li>
+                            <li role="presentation"><a ng-click="shareVK()" href="" class="amplify-item">VK</a></li>
 				        </ul>
 				      </li>
 					<li><a class="btn btn-default" ng-href="/download-original/{{document.ID}}/{{document.UploadFilename}}" target="_blank"><i class="fa fa-download"></i> Download original</a></li>
