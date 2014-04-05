@@ -253,7 +253,7 @@
 					</div>
 					<!-- Use these coordinates to aling the annotation to the highlight --> 
 					<!-- <p>Coordinates: {{ annotation.Locations }}</p> -->
-					<p><strong>{{ annotation.AnnotationText }}</strong></p>
+					<p>{{ annotation.AnnotationText }}</p>
 	
 					<div ng-repeat="comment in annotation.Comments">
 						<span class="comment">
@@ -262,7 +262,7 @@
 								<p class="author-name"><span style="color:{{ comment.Color }}">@</span> {{ comment.CommenterUsername }}<br><p>
 								<p class="author-date">{{comment.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
 							</div>
-							<p><strong>{{ comment.CommentText }}</strong></p>
+							<p>{{ comment.CommentText }}</p>
 						</span>
 					</div>
 					
