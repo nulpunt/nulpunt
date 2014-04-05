@@ -84,10 +84,10 @@ margin-bottom: 20px;
 		font-size: 1.35em;line-height: 1;
 }
 
-.source, .upload, .request {
+.source, .upload, .request, .uploader, .date-document-source, .annotator-metadata, .tags-metadata {
 		display: block;
-		font-size: 11px;
-		line-height:13px;
+		font-size: 12px;
+		line-height:14px;
 }
 
 .label-default {
@@ -142,6 +142,9 @@ p.intro {
 }
 .metadata-doc{
 	margin: 20px 0;
+}
+.annotator-metadata{
+	margin-bottom: 20px;
 }
 .align-left{
 	margin-left: -30px;
@@ -242,10 +245,22 @@ div.np-tagline p {
 	display: block;
 	float: left;
 	padding: 3px 5px;
-	background-color: #d9d9d9;
+	background-color: #000;
 	margin-right: 5px;
 	margin-bottom: 5px;
 	border-radius: 4px;
+}
+.np-document-tag-small {
+	display: block;
+	float: left;
+	padding: 2px 5px;
+	background-color: #000000;
+	margin-right: 5px;
+	margin-bottom: 5px;
+	border-radius: 3px;
+	color: white;
+	font-size: 10px;
+	letter-spacing: 0.5px;
 }
 .np-open-document {
 	float: right;
@@ -264,6 +279,9 @@ div.np-tagline p {
 .np-remove-padding-lr {
 	padding-left: 0;
 	padding-right: 0;
+}
+.nav-pills {
+margin-left: -6px;
 }
 
 .nav-tabs {

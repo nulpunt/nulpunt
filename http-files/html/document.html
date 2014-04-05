@@ -122,16 +122,31 @@
 						<div class="col-lg-6 document-description">{{item.Document.Summary}}</div>
 						<div class="col-lg-6">
 							<div class="document-metadata">
-								<span class="source">Source: {{document.Source}}  ({{ document.Country }}) on <strong>{{document.OriginalDate | date:'dd MMMM yyyy, hh:mm'}}</strong></span>
-								<span class="upload">Uploaded on <strong>{{document.UploadDate | date:'dd MMMM yyyy, hh:mm'}}</strong> by <span class="uploader">{{document.UploaderUsername}}</span></span>
+								<span class="date-document-source">Date: <strong>{{document.OriginalDate | date:'dd MMMM yyyy, hh:mm'}}</strong></span>
+								<span class="source">Source: {{document.Source}},  ({{ document.Country }}) </span>
+								<span class="upload">Uploaded on <strong>{{document.UploadDate | date:'dd MMMM yyyy, hh:mm'}}</strong></span>
+								<span class="uploader">Uploaded by <span style="color:{{ document.UploaderUsername.Color }}">@</span><strong>{{document.UploaderUsername}}</strong></span>
 								<span class="request" ng-show="item.requester">Requested by: {{document.FOIRequester }}</span>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="col-lg-4 col-lg-offset-1">
+					<div class="annotator-metadata">
+						<div>
+							Annotating this document
+						</div>
+						<div>
+							<span class="author-name" ng-repeat="annotation in annotationsOnPage(currentPage.number)"><span style="color:{{ annotation.Color }}">@</span>{{ annotation.AnnotatorUsername }} </span>
+						</div>
+					</div>
 					<div class="tags-metadata">
-						<span ng-repeat="tag in document.Tags.sort()" class="np-document-tag"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</span>
+						<div>
+							Tags
+						</div>
+						<div>
+							<span ng-repeat="tag in document.Tags.sort()" class="np-document-tag-small"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</span>
+						</div>
 					</div>
 				</div>
 			</div>
