@@ -78,8 +78,7 @@ func initHTTPServer() {
 	sessionRouter.Methods("POST").Path("/add-comment").HandlerFunc(addCommentHandler)
 
 	sessionRouter.Methods("GET").Path("/get-profile").HandlerFunc(getProfileHandler)
-	// Users can't make profiles yet. BLOCK em.
-	// sessionRouter.Methods("POST").Path("/update-profile").HandlerFunc(updateProfileHandler)
+	sessionRouter.Methods("POST").Path("/update-profile").HandlerFunc(updateProfileHandler)
 
 	sessionRouter.Path("/get-documents-by-tags").HandlerFunc(getDocumentsByTagsHandler)
 

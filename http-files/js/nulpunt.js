@@ -74,7 +74,7 @@ nulpunt.config(function($routeProvider) {
 		templateUrl: '/html/search.html',
 		controller: "SearchCtrl"
 	})
-	.when('/profile/:username', {
+	.when('/profile', {
 		templateUrl: '/html/profile.html',
 		controller: "ProfileCtrl"
 	})
@@ -668,69 +668,51 @@ nulpunt.controller("SearchCtrl", function($scope, $routeParams) {
 	$scope.mySearch = $routeParams.searchValue.replace(/[+]/g, ' ');
 });
 
-// ProfileCtrl retrieves a users profile and prepares data for display by profile.html
+
+// ProfileCtrl
 nulpunt.controller("ProfileCtrl", function($scope, $http, $routeParams) {
+	$scope.done = false;
+	$scope.error = "";
 	// load the users' profile
 	$http({
 		method: "GET", 
 		url: "/service/session/get-profile",
-		data: {
-			username: $routeParams.username,
-		},
 	}).
 	success(function(data) {
 		console.log(data);
+		// UGLY HACK: 
+		// Each user has only one profile, yet  we create an array.
+		// This is so that the inbox.html template can use a ng-repeat
+		// That makes the dependencies between that and this controller clear to Angular.
 		$scope.profile = data.profile;
+		$scope.profiles = [ data.profile ];
 	}).
 	error(function(error) {	
 		console.log('error retrieving profile ', error);
 		$scope.error = error;
 	});
+
+	// save the updated document
+    //console.log("submitting new profile to service");
+	$scope.submit = function() {
+		$scope.done = false;
+		$scope.error = "";
+		$http({
+			method: 'POST', 
+			url: "/service/session/update-profile",
+			data: $scope.profile
+		}).
+		success(function(data, status, headers, config) {
+			console.log(data)
+			$scope.done = true
+		}).
+		error(function(data, status, headers, config) {
+			console.log("error updateProfile");
+ 			console.log(data, status, headers);
+ 			$scope.error = data;
+ 		});
+	}
 });
-
-// original ProfileCtrl, required in some places where it shouldn't be included
-// nulpunt.controller("ProfileCtrl", function($scope, $http, $routeParams) {
-// 	$scope.done = false;
-// 	$scope.error = "";
-// 	// load the users' profile
-// 	$http({
-// 		method: "GET", 
-// 		url: "/service/session/get-profile",
-// 	}).
-// 	success(function(data) {
-// 		console.log(data);
-// 		// UGLY HACK: 
-// 		// Each user has only one profile, yet  we create an array.
-// 		// This is so that the inbox.html template can use a ng-repeat
-// 		// That makes the dependencies between that and this controller clear to Angular.
-// 		$scope.profile = data.profile;
-// 		$scope.profiles = [ data.profile ];
-// 	}).
-// 	error(function(error) {	
-// 		console.log('error retrieving profile ', error);
-// 		$scope.error = error;
-// 	});
-
-// 	// save the updated document
-// 	$scope.submit = function() {
-// 		$scope.done = false;
-// 		$scope.error = "";
-// 		$http({
-// 			method: 'POST', 
-// 			url: "/service/session/update-profile",
-// 			data: $scope.profile
-// 		}).
-// 		success(function(data, status, headers, config) {
-// 			console.log(data)
-// 			$scope.done = true
-// 		}).
-// 		error(function(data, status, headers, config) {
-// 			console.log("error updateProfile");
-// 			console.log(data, status, headers);
-// 			$scope.error = data;
-// 		});
-// 	}
-// });
 
 // NotFoundCtrl prepares information for the not-found.html page
 nulpunt.controller('NotFoundCtrl', function($scope, $location) {
