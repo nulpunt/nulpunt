@@ -688,6 +688,7 @@ nulpunt.controller("SearchCtrl", function($scope, $routeParams) {
 nulpunt.controller("ProfileCtrl", function($scope, $http, $routeParams) {
 	$scope.done = false;
 	$scope.error = "";
+    $scope.selectedTags = [];
 	// load the users' profile
 	$http({
 		method: "GET", 
@@ -697,21 +698,55 @@ nulpunt.controller("ProfileCtrl", function($scope, $http, $routeParams) {
 		console.log(data);
 		// UGLY HACK: 
 		// Each user has only one profile, yet  we create an array.
-		// This is so that the inbox.html template can use a ng-repeat
+		// This is so that the profile.html template can use a ng-repeat
 		// That makes the dependencies between that and this controller clear to Angular.
+	        // It solves the race condition between get-profile and get-tags
 		$scope.profile = data.profile;
 		$scope.profiles = [ data.profile ];
+        $.each(data.profile.Tags, function(index, tag) {
+            $scope.selectedTags.push(tag);
+        });
 	}).
 	error(function(error) {	
 		console.log('error retrieving profile ', error);
 		$scope.error = error;
 	});
 
+    $scope.isSelectedTag = function(tags, tag) {
+        if(tags == undefined) {
+            return false;
+        }
+        var index = tags.indexOf(tag);
+        if (index == -1) {
+            return "np-notselected";
+        }
+        else {
+            return "np-selected";
+        }
+    }
+
+    $scope.toggleTag = function(tags, tag) {
+        var index = tags.indexOf(tag);
+        console.log(index);
+        console.log(tags);
+        if (index > -1) {
+            // Found it, remove from selectedTags
+            tags.splice(index, 1);
+            $(this).closest('input[type=checkbox]').prop('checked', false);
+        }
+        else {
+            // Add it
+            tags.push(tag);
+            $(this).closest('input[type=checkbox]').prop('checked', true);
+        }
+    }
+
 	// save the updated document
     //console.log("submitting new profile to service");
 	$scope.submit = function() {
 		$scope.done = false;
 		$scope.error = "";
+        $scope.profile.Tags = $scope.selectedTags;
 		$http({
 			method: 'POST', 
 			url: "/service/session/update-profile",
