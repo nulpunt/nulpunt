@@ -1,6 +1,6 @@
 <style>
 	body {
-		background-color:#FFF;
+		background-color:#EEE;
 	}
 	#np-footer {
 		border-top: 1px solid #DDD;
@@ -10,9 +10,10 @@
 		position: relative;
 		display: table;
 		background-color: #EEE;
-		padding: 10px 20px;
+		padding: 10px 25px;
 		border: 1px solid #AAA;
 		border-radius: 2px;
+		overflow: hidden;
 	}
 
 	.sticky {
@@ -52,7 +53,7 @@
 	}
 
 	.annotation {
-		background-color: #EEE;
+		background-color: #FFF;
 		border: 1px solid #AAA;
 		border-radius: 2px;
 		padding: 10px;
@@ -86,7 +87,7 @@
 	}
 
 	.comment {
-		background-color: #EEE;
+		background-color: #FFF;
 		padding: 10px;
 		display: block;
 		margin-left: 20px;
@@ -118,7 +119,7 @@
 					<div class="row">
 						<h1>{{ document.Title }}</h1>
 					</div>
-					<div class="row align-left">
+					<div class="row col-leftedge">
 						<div class="col-lg-6 document-description">{{item.Document.Summary}}</div>
 						<div class="col-lg-6">
 							<div class="document-metadata">
@@ -194,17 +195,6 @@
 
 <div class="container document-viewer">
 	<!-- <div ng-repeat="page in pages" > -->
-
-	<div class="row row-padding-top row-padding-bottom" style="text-align: center;">
-		<div class="col-lg-7">
-			<div ng-hide="account.username" >
-				<!-- we have a highlight but no auth, let user auth -->
-				<a ng-click="loginFactory.showLogin()">To annotate or comment, please sign in first.</a>
-			</div>
-		</div> <!-- ng-hide="account.username" -->
-	</div>
-
-
 	<div class="row">
 		<div class="pageView col-lg-7 stick-to-top">
 						<!-- page itself -->
@@ -242,54 +232,61 @@
 			</div>
 		</div> <!-- pageView -->
 
-		<div class="annotationView col-lg-4 col-lg-offset-1">
-
+		<div class="col-lg-4 col-lg-offset-1">
+			<div>
 			<h3>Annotations</h3>
-			<p ng-show="account.username">Highlight the document to create an annotation.</p>
-
-			<div id="annotation_{{annotation.ID}}" class="annotation" ng-repeat="annotation in annotationsOnPage(currentPage.number)" ng-mouseover="activateHighlight(annotation.ID)" ng-mouseleave="deactivateHighlight()">
-				<!-- <p class="np-document-description">{{ annotation.Annotation }}</p> -->
-				<div class="author-box">
-					<div class="author-thumbnail" style="background-color:{{ annotation.Color}}"></div>
-					<p class="author-name"><span style="color:{{ annotation.Color }}">@</span> {{ annotation.AnnotatorUsername }}<br><p>
-					<p class="author-date">{{annotation.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
+				<div class="annotate-alert">
+						<div ng-hide="account.username" >
+							<!-- we have a highlight but no auth, let user auth -->
+							<a ng-click="loginFactory.showLogin()">To annotate or comment, please sign in first.</a>
+						</div> <!-- ng-hide="account.username" -->
 				</div>
-				<!-- Use these coordinates to aling the annotation to the highlight --> 
-				<!-- <p>Coordinates: {{ annotation.Locations }}</p> -->
-				<p><strong>{{ annotation.AnnotationText }}</strong></p>
-
-				<div ng-repeat="comment in annotation.Comments">
-					<span class="comment">
-						<div class="author-box">
-							<div class="author-thumbnail" style="background-color:{{ comment.Color}}"></div>
-							<p class="author-name"><span style="color:{{ comment.Color }}">@</span> {{ comment.CommenterUsername }}<br><p>
-							<p class="author-date">{{comment.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
-						</div>
-						<p><strong>{{ comment.CommentText }}</strong></p>
-					</span>
-				</div>
-				
-				<div ng-show="account.username">
-					<!-- TODO: Always show the Comment-button, but if the user is not logged in,
-					prompt the log in modal with an explanatory message -->
-					<div ng-controller="CommentSubmitCtrl">
-						<!-- when logged in and press the comment-button, show the form -->
-						<div ng-hide="showForm" class="btn btn-default" ng-click="showForm=true">Add a Comment</div>
-						<form ng-show="showForm" ng-submit="submit()" role="form" class="form-horizontal">
-							<div class="form-group">
-								<div class="col-md-9">
-									<textarea class="form-control" id="comment-text" placeholder="Comment text" ng-model="commentText"></textarea>
-								</div>
-						
-								<div class="col-md-3">
-									<button type="submit" class="btn btn-default">Publish</button>
-								</div>
+				<p ng-show="account.username">Highlight the document to create an annotation.</p>
+			</div>
+			<div class="annotationView">
+				<div id="annotation_{{annotation.ID}}" class="annotation" ng-repeat="annotation in annotationsOnPage(currentPage.number)" ng-mouseover="activateHighlight(annotation.ID)" ng-mouseleave="deactivateHighlight()">
+					<!-- <p class="np-document-description">{{ annotation.Annotation }}</p> -->
+					<div class="author-box">
+						<div class="author-thumbnail" style="background-color:{{ annotation.Color}}"></div>
+						<p class="author-name"><span style="color:{{ annotation.Color }}">@</span> {{ annotation.AnnotatorUsername }}<br><p>
+						<p class="author-date">{{annotation.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
+					</div>
+					<!-- Use these coordinates to aling the annotation to the highlight --> 
+					<!-- <p>Coordinates: {{ annotation.Locations }}</p> -->
+					<p><strong>{{ annotation.AnnotationText }}</strong></p>
+	
+					<div ng-repeat="comment in annotation.Comments">
+						<span class="comment">
+							<div class="author-box">
+								<div class="author-thumbnail" style="background-color:{{ comment.Color}}"></div>
+								<p class="author-name"><span style="color:{{ comment.Color }}">@</span> {{ comment.CommenterUsername }}<br><p>
+								<p class="author-date">{{comment.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
 							</div>
-						</form>
-					</div> <!-- CommentSubmitCtrl -->
-				</div> <!-- ng_show="account.username -->
-			</div> <!-- annotation in annotations -->
-
+							<p><strong>{{ comment.CommentText }}</strong></p>
+						</span>
+					</div>
+					
+					<div ng-show="account.username">
+						<!-- TODO: Always show the Comment-button, but if the user is not logged in,
+						prompt the log in modal with an explanatory message -->
+						<div ng-controller="CommentSubmitCtrl">
+							<!-- when logged in and press the comment-button, show the form -->
+							<div ng-hide="showForm" class="btn btn-default" ng-click="showForm=true">Add a Comment</div>
+							<form ng-show="showForm" ng-submit="submit()" role="form" class="form-horizontal">
+								<div class="form-group">
+									<div class="col-md-9">
+										<textarea class="form-control" id="comment-text" placeholder="Comment text" ng-model="commentText"></textarea>
+									</div>
+							
+									<div class="col-md-3">
+										<button type="submit" class="btn btn-default">Publish</button>
+									</div>
+								</div>
+							</form>
+						</div> <!-- CommentSubmitCtrl -->
+					</div> <!-- ng_show="account.username -->
+				</div> <!-- annotation in annotations -->
+			</div>
 		</div> <!-- annotation in annotations -->
 		<br><hr>
 

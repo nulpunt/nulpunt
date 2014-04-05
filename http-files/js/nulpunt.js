@@ -1,14 +1,20 @@
 //fix subnav bar
     $(window).bind('scroll', function() {
-    	var metaDataDocHeight = $('.metadata-doc').height();
+    	var metaDataDocHeight = $('.metadata-doc').height() + 10;
     	var docViewHeightCompensate = $('.subnav').height() + 15;
+    	var annotationViewHeight = $('.pageView').height() - 37;
          if ($(window).scrollTop() > metaDataDocHeight) {
              $('.subnav').addClass('fixed-subnav');
+             //$('.container.document-viewer.ng-scope').addClass('fixed-docview');
              $('.container.document-viewer.ng-scope').css({'margin-top': docViewHeightCompensate});
+             $('.annotationView').css({'height': annotationViewHeight,'overflow-x': 'hidden', 'overflow-y': 'scroll'});
+
          }
          else {
              $('.subnav').removeClass('fixed-subnav');
+             //$('.container.document-viewer.ng-scope').removeClass('fixed-docview');
              $('.container.document-viewer.ng-scope').removeAttr('style');
+             $('.annotationView').removeAttr('style');
          }
     });
 
