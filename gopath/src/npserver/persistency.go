@@ -14,8 +14,8 @@ var (
 	colDocuments   *mgo.Collection
 	colPages       *mgo.Collection
 	colAnnotations *mgo.Collection
-	// colComments *mgo.Collection
-	gridFS *mgo.GridFS
+	colTrending    *mgo.Collection
+	gridFS         *mgo.GridFS
 )
 
 // initPersistency sets up database connection and initializes col* variables
@@ -99,5 +99,8 @@ func initPersistency() {
 
 	// get "Annotations" collection
 	colAnnotations = dbNulpunt.C("annotations")
+
+	// get "trending" collection
+	colTrending = dbNulpunt.C("trending")
 
 }

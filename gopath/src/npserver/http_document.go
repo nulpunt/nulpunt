@@ -11,6 +11,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 // type Document struct is defined in document.go
@@ -385,6 +386,15 @@ func updateDocumentHandler(rw http.ResponseWriter, req *http.Request) {
 			return
 		}
 
+		// if score == nil and published = true, it means it is new.
+		// We set the uploadDate to time.now (as a time of publication)
+		// and set the score to the uploadDate.
+		// Once the score is set, future updates won't affect uploadDate anymore.
+		if doc.Score == 0 && doc.Published == true {
+			doc.UploadDate = time.Now()
+			doc.Score = dateToTrending(doc.UploadDate)
+		}
+
 		log.Printf("\n\nDocument to update is: %#v\n", *doc)
 		err = upsertDocument(doc.ID, doc)
 		if err != nil {
@@ -525,6 +535,37 @@ func thumbnailImageHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	_, err = io.Copy(w, file)
 	if err != nil {
 		log.Printf("error writing png file (%s) to http client: %s\n", fileName, err)
+		return
+	}
+	// all done :)
+}
+
+func cropImageHandlerFunc(w http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+	urlVars := mux.Vars(r)
+	cropIDHex := urlVars["cropIDHex"]
+	if !bson.IsObjectIdHex(cropIDHex) {
+		http.NotFound(w, r)
+		return
+	}
+	cropID := bson.ObjectIdHex(cropIDHex)
+
+	file, err := gridFS.OpenId(cropID)
+	if err != nil {
+		if err == mgo.ErrNotFound {
+			http.NotFound(w, r)
+			return
+		}
+		log.Printf("error looking up files in gridFS (%s): %s\n", cropIDHex, err)
+		http.Error(w, "error", http.StatusInternalServerError)
+		return
+	}
+	defer file.Close()
+
+	w.Header().Set("Content-Type", file.ContentType())
+	_, err = io.Copy(w, file)
+	if err != nil {
+		log.Printf("error writing png file (%s) to http client: %s\n", cropIDHex, err)
 		return
 	}
 	// all done :)

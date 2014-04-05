@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/GeertJohan/go.rice"
 	"github.com/gorilla/mux"
 	"log"
@@ -17,6 +18,10 @@ func initHTTPServer() {
 	if err != nil {
 		log.Fatalf("cannot find rice box. error: %s\n", err)
 	}
+	if flags.Verbose {
+		fmt.Printf("box http-files is appended: %t\n", boxHTTPFiles.IsAppended())
+	}
+
 	fileServer := http.FileServer(boxHTTPFiles.HTTPBox())
 
 	// rootRouter is directly linked to the http server.
@@ -32,6 +37,7 @@ func initHTTPServer() {
 	rootRouter.Methods("GET").PathPrefix("/js/").Handler(fileServer)
 	rootRouter.Methods("GET").PathPrefix("/img/").Handler(fileServer)
 	rootRouter.Methods("GET").Path("/download-original/{documentIDHex}/{filename:.*}").HandlerFunc(downloadOriginalHandlerFunc)
+	rootRouter.Methods("GET").Path("/crop/{cropIDHex}").HandlerFunc(cropImageHandlerFunc)
 
 	// serve document files on /docfiles/
 	docfilesRouter := rootRouter.PathPrefix("/docfiles/").Subrouter()
@@ -48,7 +54,6 @@ func initHTTPServer() {
 	serviceRouter.Methods("POST").Path("/getPage").HandlerFunc(getPageHandlerFunc)
 	serviceRouter.Methods("GET").Path("/getDocuments").HandlerFunc(getDocumentsHandler)
 	serviceRouter.Methods("GET").Path("/getDocumentList").HandlerFunc(getDocumentListHandler)
-
 	// create sessionPathRouter for /service/session/*
 	sessionPathRouter := rootRouter.PathPrefix("/service/session/").Subrouter()
 
@@ -89,6 +94,14 @@ func initHTTPServer() {
 	adminRouter.Methods("POST").Path("/updateDocument").HandlerFunc(updateDocumentHandler)
 	adminRouter.Methods("POST").Path("/insertDocument").HandlerFunc(insertDocumentHandler)
 	adminRouter.Methods("POST").Path("/deleteDocument").HandlerFunc(deleteDocumentHandler)
+	// Trending:
+	// get-trending delivers the data structures to build a page with the current contents of the
+	// trending-collection, available to everyone without login.
+	serviceRouter.Methods("GET").Path("/get-trending").HandlerFunc(getTrendingHandlerFunc)
+
+	// update-trending updates the trending collection.
+	// TODO: take out after one run, it's not needed anymore
+	rootRouter.Methods("GET").Path("/update-trending").HandlerFunc(updateTrendingHandlerFunc)
 
 	// 404 when /service/session/admin/* was not found
 	adminRouter.PathPrefix("/").Handler(http.NotFoundHandler())

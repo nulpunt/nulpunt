@@ -63,6 +63,7 @@ type Document struct {
 	Source       string    `bson:"source"`
 	Country      string    `bson:"country"`
 	Published    bool      `bson:"published"`
+	Score        float32   `bson:"score"`
 }
 
 // type Tag hold the document classification tags
@@ -101,6 +102,7 @@ type Annotation struct {
 	CreateDate        time.Time     `bson:"createDate"`
 	AnnotationText    string        `bson:"annotationText"`
 	Locations         []Location    `bson:"locations"`
+	CropId            bson.ObjectId `bson:"cropId"` // ID in GridFS of the cropped image
 	Comments          []Comment     `bson:"comments"`
 }
 
