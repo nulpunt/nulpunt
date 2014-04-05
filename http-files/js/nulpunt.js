@@ -1,17 +1,3 @@
-//fix subnav bar
-    $(window).bind('scroll', function() {
-    	var metaDataDocHeight = $('.metadata-doc').height();
-    	var docViewHeightCompensate = $('.subnav').height() + 15;
-         if ($(window).scrollTop() > metaDataDocHeight) {
-             $('.subnav').addClass('fixed-subnav');
-             $('.container.document-viewer.ng-scope').css({'margin-top': docViewHeightCompensate});
-         }
-         else {
-             $('.subnav').removeClass('fixed-subnav');
-             $('.container.document-viewer.ng-scope').removeAttr('style');
-         }
-    });
-
 var nulpunt = angular.module('nulpunt', [
 	// imported modules
 	// please keep this list sorted
@@ -1141,4 +1127,3 @@ nulpunt.filter('bytes', function() {
 nulpunt.filter('urlencode', function() {
 	return window.escape;
 });
-

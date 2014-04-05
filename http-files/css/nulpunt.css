@@ -35,11 +35,8 @@ a:link, a:visited, a:active {
 	   color: #000;
 	   text-decoration: none;
 }
-a{
-	color:#000;
-}
 a:hover {
-	color:#999;
+	color:#222;
 }
 
 /*heading styles*/
@@ -52,11 +49,6 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 	letter-spacing: -0.03em;
 }
 
-h1, h2, h3 {
-margin-top: 0px;
-margin-bottom: 20px;
-}
-
 /*bootstrap overrides*/
 .container { 
 		padding-left: 0;
@@ -64,10 +56,10 @@ margin-bottom: 20px;
 }
 
 .row-padding-bottom {
-	padding-bottom: 20px;
+	padding-bottom: 10px;
 }
 .row-padding-top {
-	padding-top: 20px; 
+	padding-top: 10px;
 }
 
 /*annotation and document related styles*/
@@ -113,62 +105,33 @@ p.intro {
 
 .navbar {
 	margin-bottom:0px;
-	border: 0px !important;
 }
 
 .navbar-brand {	
-		padding: 5px 15px;
-		height:50px;
+		padding: 10px 15px;
+		height:60px;
 }
 .navbar .btn {
-	margin-top: 8px;
+	margin-top: 13px;
 }
-.fixed {
-	position: fixed !important;
-	width: 100%;
-	top: 0px;
-}
-.fixed-subnav {
-	position: fixed !important;
-	width: 100%;
-	background-color: #FFF;
-	top:50px;
-	z-index: 100;
-}
+
 .masthead {
-        background: #FFF;
-        z-index: 1020;
-        margin: 50px 0 15px 0;
-}
-.metadata-doc{
-	margin: 20px 0;
-}
-.align-left{
-	margin-left: -15px;
-}
-.masthead-bottom{
-	    -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
+        background: #eee;
+        -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
         -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
         box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
-        padding: 10px 0px;
-}
-.nav>li>a {
-	position: relative;
-	display: block;
-	padding: 5px 10px;
-	margin-left: 5px;
-}
-.btn{
-	font-size: 12px;
-	padding: 6px;
+        margin-bottom: 15px;
+        z-index: 1020;
+        margin-left: 0;
+        margin-right: 0;
+        padding-bottom: 15px;
 }
 .navbar-static-top {
-        /*-webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
+        -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
         -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
-        box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);*/
+        box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
         margin-bottom: 0px;
         z-index: 1050;
-        background-color: black;
 }
 .document h3 {
 	font:14px Arial,sans-serif;font-weight: bold;
@@ -189,7 +152,6 @@ p.intro {
 
 .np-main-content {
 	margin-bottom: 120px;
-	background-color: #EEE;
 }
 
 div.np-tagline {
@@ -342,9 +304,8 @@ ul.features {
 	-webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
     -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
     box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
-    border-radius:3px;
+    border-radius:4px;
     text-shadow:none;
-    padding: 5px 10px;
 }
 
 .nav > li > a:hover,
@@ -374,9 +335,9 @@ ul.features {
 .form-control {
 	height:40px;
 	border:0;
-	-webkit-box-shadow: -1px -1px 1px 1px rgba(0, 0, 0, 0.2);
-	-moz-box-shadow: -1px -1px 1px 1px rgba(0, 0, 0, 0.2);
-	box-shadow: -1px -1px 1px 1px rgba(0, 0, 0, 0.2);
+	-webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
+	-moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
+	box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
 }
 
 .form-group {
@@ -404,7 +365,6 @@ a.custom-tweet-button {
 
 .masthead.document-viewer {
 	padding-top:15px;
-	margin-top: 30px;
 }
 
 /* Temporary: navbar menu height fix */
@@ -413,17 +373,13 @@ a.custom-tweet-button {
 	padding-bottom: 20px;
 }
 
-.pagenumber-position {
-margin-top: 6px;
-font-size: 10pt;
-}
 
 .np-document-viewer-pagination {
 	font-size:12px;
 	height:auto;
 	padding:1px 5px;
 	line-height:1.5;
-	width: 3em;
+	width: 5em;
 }
 
 .np-logo-text-background {
