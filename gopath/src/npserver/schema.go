@@ -36,9 +36,13 @@ type AccountDetail struct {
 
 // type Profile holds the profile properties
 type Profile struct {
-	ID       bson.ObjectId `bson:"_id"`
-	Username string        `bson:"username"`
-	Tags     []string      `bson:"tags"` // contains tag.Tag
+	ID       	bson.ObjectId `bson:"_id"`
+	Username 	string        `bson:"username"`
+	Tags     	[]string      `bson:"tags"` // contains tag.Tag
+	PublicName	string		  `bson:"publicName"`
+	Website		string	      `bson:"website"`
+	Bio			string		  `bson:"bio"`
+	Location	string		  `bson:"location"`
 }
 
 // type Document holds the document properties
