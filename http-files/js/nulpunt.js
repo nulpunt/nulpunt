@@ -697,9 +697,10 @@ nulpunt.controller("ProfileCtrl", function($scope, $http, $routeParams) {
 		console.log(data);
 		// UGLY HACK: 
 		// Each user has only one profile, yet  we create an array.
-		// This is so that the inbox.html template can use a ng-repeat
+		// This is so that the profile.html template can use a ng-repeat
 		// That makes the dependencies between that and this controller clear to Angular.
-		$scope.profile = data.profile;
+	        // It solves the race condition between get-profile and get-tags
+		//$scope.profile = data.profile;
 		$scope.profiles = [ data.profile ];
 	}).
 	error(function(error) {	
