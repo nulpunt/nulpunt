@@ -42,7 +42,7 @@
 </div>-->
 
 	<div class="modal-header">
-		<h3>Sign in</h3>
+		<h3>LOG IN</h3>
 	</div>
 
 	<div class="modal-body">
@@ -58,22 +58,19 @@
 
 		<form ng-submit="submit()" class="form-horizontal" role="form">
 		<div class="form-group">
-			<label for="signinUsername" class="col-lg-2 control-label" >Username</label>
-			<div class="col-lg-10">
+			<div class="col-lg-5" id="username-field">
 				<input type="text" class="form-control" id="signinUsername" placeholder="Username" required ng-model="signin.username" >
 			</div>
-		</div>
-		<div class="form-group">
-			<label for="signinPassword" class="col-lg-2 control-label" >Password</label>
-			<div class="col-lg-10">
+			<div class="col-lg-5" id="password-field">
 				<input type="password" class="form-control" id="signinPassword" placeholder="Password" required ng-model="signin.password" >
 			</div>
+			<button class="btn" id="signinbutton" ng-click="submit()">LOG IN</button>
 		</div>
 	</form>
 	</div>
 
 	<div class="modal-footer">
-		<button class="btn btn-primary pull-left" ng-click="register()">Register</button>
-		<button class="btn btn-primary" ng-click="submit()">Sign in</button>
-		<button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+		<h1 class="SUnewto">NEW TO</h1> <h1 id="nulpuntSUbox">0.</h1><h1 class="SUnewto">? SIGN UP HERE</h1>
+		<button class="btn" id="signupbutton" ng-click="register()">SIGN UP</button>
+		
 	</div>

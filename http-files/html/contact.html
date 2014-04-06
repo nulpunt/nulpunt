@@ -5,19 +5,29 @@
 				<h1>Towards a democracy without secrets.</h1>
 				<p class="intro">0. is an online platform for gathering government documents, and documents relevant to policy making. 0. works towards making documents available for annotation and sharing through social media in order to follow and control government.</p>
 			</div>
-			<div class="col-lg-6">
-				<h1>New to 0.? <a ng-class="getClass('/register')"><a href="/#/register">Register here</a></h1>
-				<ul class="list-unstyled features">
-					<li><span class="glyphicon glyphicon-align-left"></span> Highlight documents</li>
-					<li><span class="glyphicon glyphicon-pencil"></span> Annotate documents</li>
-					<li><span class="glyphicon glyphicon-flash"></span> Amplify annotations</li>
-				</ul>
+			<div class="col-lg-3 col-lg-offset-3">
+				<div>
+					<a ng-hide="account.username" ng-class="getClass('/register')" class="btn pull-right" href="/#/register">Create an account</a>
+					<h1 ng-hide="account.username" class="uppercase signup-text">New to 0.?</h1>					
+				</div>
+				<div>
+					<ul class="list-unstyled features">
+						<li><span class="glyphicon glyphicon-align-left"></span> Highlight</li>
+						<li><span class="glyphicon glyphicon-pencil"></span> Annotate</li>
+						<li><span class="glyphicon glyphicon-flash"></span> Amplify</li>
+					</ul>
+				</div>
+				<!--<ul class="list-unstyled features">
+					<li><span class="glyphicon glyphicon-align-left"></span> Highlight</li>
+					<li><span class="glyphicon glyphicon-pencil"></span> Annotate</li>
+					<li><span class="glyphicon glyphicon-flash"></span> Amplify</li>
+				</ul>-->
 			</div>
 		</div>
 	</div>
 </div>
 
-<div class="container">
+<div class="container paddingAfterLogin">
 	<h1>Contact</h1>
 	<p>
 		For general questions, suggestions and press enquiries contact Renée In der Maur:<br />

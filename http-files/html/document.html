@@ -1,6 +1,6 @@
 <style>
 	body {
-		background-color:#FFF;
+		background-color:#EEE;
 	}
 
 	.masthead {
@@ -15,9 +15,10 @@
 		position: relative;
 		display: table;
 		background-color: #EEE;
-		padding: 10px 20px;
+		padding: 10px 25px;
 		border: 1px solid #AAA;
 		border-radius: 2px;
+		overflow: hidden;
 	}
 
 	.sticky {
@@ -57,11 +58,12 @@
 	}
 
 	.annotation {
-		background-color: #EEE;
+		background-color: #FFF;
 		border: 1px solid #AAA;
 		border-radius: 2px;
 		padding: 10px;
 		margin: 20px 0px;
+		overflow: hidden;
 	}
 
 	.author-box {
@@ -91,7 +93,7 @@
 	}
 
 	.comment {
-		background-color: #EEE;
+		background-color: #FFF;
 		padding: 10px;
 		display: block;
 		margin-left: 20px;
@@ -115,8 +117,9 @@
 
 </style>
 
-<div class="masthead document-viewer">
+<div class="masthead document-viewer"> 
 	<div class="container">
+<<<<<<< HEAD
 		<div class="row">
 			<div class="col-lg-6">
 				<h1>{{ document.Title }}</h1>
@@ -124,10 +127,49 @@
 					<span class="source">Source: {{document.Source}}  ({{ document.Country }}) on <strong>{{document.OriginalDate | date:'dd MMMM yyyy, hh:mm'}}</strong></span>
 					<span class="upload">Uploaded on <strong>{{document.UploadDate | date:'dd MMMM yyyy, hh:mm'}}</strong> by <span class="uploader">{{document.UploaderUsername}}</span></span>
 					<span class="request" ng-show="item.requester">Requested by: {{document.FOIRequester }}</span>
-					<div class="tags-metadata">
-						<span ng-repeat="tag in document.Tags.sort()" class="np-document-tag"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</span>
+=======
+		<div class="metadata-doc">
+			<div class="row">
+				<div class="col-lg-7">
+					<div class="row">
+						<h1>{{ document.Title }}</h1>
+					</div>
+					<div class="row col-leftedge">
+						<div class="col-lg-6 document-description intro">{{document.Summary}}</div>
+						<div class="col-lg-6">
+							<div class="document-metadata">
+								<span class="date-document-source">Date: <strong>{{document.OriginalDate | date:'dd MMMM yyyy, hh:mm'}}</strong></span>
+								<span class="source">Source: {{document.Source}},  ({{ document.Country }}) </span>
+								<span class="upload">Uploaded on <strong>{{document.UploadDate | date:'dd MMMM yyyy, hh:mm'}}</strong></span>
+								<span class="uploader">Uploaded by <span style="color:{{ document.UploaderUsername.Color }}">@</span><strong>{{document.UploaderUsername}}</strong></span>
+								<span class="request" ng-show="item.requester">Requested by: {{document.FOIRequester }}</span>
+							</div>
+						</div>
 					</div>
 				</div>
+				<div class="col-lg-4 col-lg-offset-1">
+					<div class="annotator-metadata">
+						<div>
+							Annotating this document
+						</div>
+						<div>
+							<span class="author-name" ng-repeat="annotation in annotationsOnPage(currentPage.number)"><span style="color:{{ annotation.Color }}">@</span>{{ annotation.AnnotatorUsername }} </span>
+						</div>
+					</div>
+>>>>>>> Merge-Ritchy
+					<div class="tags-metadata">
+						<div>
+							Tags
+						</div>
+						<div>
+							<span ng-repeat="tag in document.Tags.sort()" class="np-document-tag-small"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</span>
+						</div>
+					</div>
+				</div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> Merge-Ritchy
 			</div><!-- col-lg-6 -->
 			<div class="col-lg-6">
 				<!--<div class="dropdown">
@@ -136,6 +178,7 @@
 						<a ng-href="https://twitter.com/share?url={{twitter.url | urlencode}}&text={{twitter.text | urlencode}}&hashtags=nulpunt" class="btn btn-default" data-lang="en" target="_blank" ><i class="fa fa-twitter"></i> Tweet this document</a>
 					</ul>
 				</div>-->
+<<<<<<< HEAD
 				<ul class="nav nav-pills pull-right">
 					<li><span class="btn" ng-click="bookmark(document.ID)">Bookmark</span></li>
 					<li class="dropdown">
@@ -154,13 +197,63 @@
 					<li><a class="btn btn-default" ng-href="/download-original/{{document.ID}}/{{document.UploadFilename}}" target="_blank"><i class="fa fa-download"></i> Download original</a></li>
 					<li><a class="btn btn-default" href="/#/documents/">More documents</a></li>
 				</ul>
+=======
+>>>>>>> Merge-Ritchy
 			</div>
 		</div> <!-- row -->
 	</div> <!-- container -->
+<<<<<<< HEAD
+=======
+	<div class="subnav">
+		<div class="masthead-bottom">
+			<div class="container">
+			<div class="row">
+				<div class="col-lg-7">
+					<div class="row">
+						<a class="btn col-lg-2" ng-click="prevPage()"><span class="glyphicon glyphicon-chevron-left"></span> Previous page</a>
+						<div class="col-lg-4 col-lg-offset-3 pagenumber-position">
+							<div style="float: left;">Page </div>
+							<div style="float: left; margin-left: 10px;"><input ng-model="currentPage.number" class="form-control np-document-viewer-pagination" /></div>
+							<div style="float: left; margin-left: 10px;"> of {{document.PageCount}}</div>
+						</div>
+						<a class="btn col-lg-2 col-lg-offset-1" ng-click="nextPage()">Next page <span class="glyphicon glyphicon-chevron-right"></span></a>
+					</div> 
+				</div>
+				<div class="col-lg-4 col-lg-offset-1">
+					<!--<div class="dropdown">
+						<a data-toggle="dropdown btn btn-default">Amplify <span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+							<a ng-href="https://twitter.com/share?url={{twitter.url | urlencode}}&text={{twitter.text | urlencode}}&hashtags=nulpunt" class="btn btn-default" data-lang="en" target="_blank" ><i class="fa fa-twitter"></i> Tweet this document</a>
+						</ul>
+					</div>-->
+					<ul class="nav nav-pills">
+						<li class="dropdown">
+					        <a id="drop4" class="btn btn-dropdown" role="button" data-toggle="dropdown"><span class="glyphicon glyphicon-flash"></span> Amplify <b class="caret"></b></a>
+					        <ul id="menu1" class="dropdown-menu" role="menu" aria-labelledby="drop4">
+	                            <li role="presentation" class="dropdown-header">Amplify through:</li>
+	                            <li role="presentation" class="divider"></li>
+	                            <li role="presentation"><a ng-click="shareDiaspora()" href="" class="amplify-item">Diaspora</a></li>
+	                            <li role="presentation"><a ng-click="shareGooglePlus()" href="" class="amplify-item">Google+</a></li>
+	                            <li role="presentation"><a ng-click="shareLinkedIn()" href="" class="amplify-item">LinkedIn</a></li>
+	                            <li role="presentation"><a ng-click="shareReddit()" href="" class="amplify-item">Reddit</a></li>
+					            <li role="presentation"><a ng-click="shareTwitter()" href="" class="amplify-item">Twitter</a></li>
+	                            <li role="presentation"><a ng-click="shareVK()" href="" class="amplify-item">VK</a></li>
+					        </ul>
+					      </li>
+						<li><a class="btn" ng-href="/download-original/{{document.ID}}/{{document.UploadFilename}}" target="_blank"><i class="fa fa-download"></i> Download original</a></li>
+						<li><a class="btn" href="/#/documents/">More documents</a></li>
+					</ul>
+				</div>
+			</div>
+		</div> <!-- container -->
+		</div>
+	</div>
+>>>>>>> Merge-Ritchy
 </div> <!-- masthead document-viewer -->
 
 <div class="container document-viewer">
 	<!-- <div ng-repeat="page in pages" > -->
+<<<<<<< HEAD
 
 	<div class="row row-padding-bottom" style="text-align: center;">
 		<div ng-hide="account.username" class="pull-right" >
@@ -170,6 +263,8 @@
 	</div>
 
 
+=======
+>>>>>>> Merge-Ritchy
 	<div class="row">
 		<div class="pageView col-lg-7 stick-to-top">
 			<!-- page navigation -->
@@ -229,54 +324,66 @@
 
 		</div> <!-- pageView -->
 
+<<<<<<< HEAD
 		<div class="annotationView col-lg-5">
 
+=======
+		<div class="col-lg-4 col-lg-offset-1">
+			<div>
+>>>>>>> Merge-Ritchy
 			<h3>Annotations</h3>
-			<p ng-show="account.username">Highlight the document to create an annotation.</p>
-
-			<div id="annotation_{{annotation.ID}}" class="annotation" ng-repeat="annotation in annotationsOnPage(currentPage.number)" ng-mouseover="activateHighlight(annotation.ID)" ng-mouseleave="deactivateHighlight()">
-				<!-- <p class="np-document-description">{{ annotation.Annotation }}</p> -->
-				<div class="author-box">
-					<div class="author-thumbnail" style="background-color:{{ annotation.Color}}"></div>
-					<p class="author-name"><span style="color:{{ annotation.Color }}">@</span> {{ annotation.AnnotatorUsername }}<br><p>
-					<p class="author-date">{{annotation.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
+				<div class="annotate-alert">
+						<div ng-hide="account.username" >
+							<!-- we have a highlight but no auth, let user auth -->
+							To annotate or comment, please sign in first. <a class="btn annotateview-signin" ng-click="loginFactory.showLogin()">Sign in</a>
+						</div> <!-- ng-hide="account.username" -->
 				</div>
-				<!-- Use these coordinates to aling the annotation to the highlight --> 
-				<!-- <p>Coordinates: {{ annotation.Locations }}</p> -->
-				<p><strong>{{ annotation.AnnotationText }}</strong></p>
-
-				<div ng-repeat="comment in annotation.Comments">
-					<span class="comment">
-						<div class="author-box">
-							<div class="author-thumbnail" style="background-color:{{ comment.Color}}"></div>
-							<p class="author-name"><span style="color:{{ comment.Color }}">@</span> {{ comment.CommenterUsername }}<br><p>
-							<p class="author-date">{{comment.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
-						</div>
-						<p><strong>{{ comment.CommentText }}</strong></p>
-					</span>
-				</div>
-				
-				<div ng-show="account.username">
-					<!-- TODO: Always show the Comment-button, but if the user is not logged in,
-					prompt the log in modal with an explanatory message -->
-					<div ng-controller="CommentSubmitCtrl">
-						<!-- when logged in and press the comment-button, show the form -->
-						<div ng-hide="showForm" class="btn btn-default" ng-click="showForm=true">Add a Comment</div>
-						<form ng-show="showForm" ng-submit="submit()" role="form" class="form-horizontal">
-							<div class="form-group">
-								<div class="col-md-9">
-									<textarea class="form-control" id="comment-text" placeholder="Comment text" ng-model="commentText"></textarea>
-								</div>
-						
-								<div class="col-md-3">
-									<button type="submit" class="btn btn-default">Publish</button>
-								</div>
+				<p ng-show="account.username">Highlight the document on the left to create an annotation.</p>
+			</div>
+			<div class="annotationView">
+				<div id="annotation_{{annotation.ID}}" class="annotation" ng-repeat="annotation in annotationsOnPage(currentPage.number)" ng-mouseover="activateHighlight(annotation.ID)" ng-mouseleave="deactivateHighlight()">
+					<!-- <p class="np-document-description">{{ annotation.Annotation }}</p> -->
+					<div class="author-box">
+						<div class="author-thumbnail" style="background-color:{{ annotation.Color}}"></div>
+						<p class="author-name"><span style="color:{{ annotation.Color }}">@</span> {{ annotation.AnnotatorUsername }}<br><p>
+						<p class="author-date">{{annotation.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
+					</div>
+					<!-- Use these coordinates to aling the annotation to the highlight --> 
+					<!-- <p>Coordinates: {{ annotation.Locations }}</p> -->
+					<p>{{ annotation.AnnotationText }}</p>
+	
+					<div ng-repeat="comment in annotation.Comments">
+						<span class="comment">
+							<div class="author-box">
+								<div class="author-thumbnail" style="background-color:{{ comment.Color}}"></div>
+								<p class="author-name"><span style="color:{{ comment.Color }}">@</span> {{ comment.CommenterUsername }}<br><p>
+								<p class="author-date">{{comment.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
 							</div>
-						</form>
-					</div> <!-- CommentSubmitCtrl -->
-				</div> <!-- ng_show="account.username -->
-			</div> <!-- annotation in annotations -->
-
+							<p>{{ comment.CommentText }}</p>
+						</span>
+					</div>
+					
+					<div ng-show="account.username">
+						<!-- TODO: Always show the Comment-button, but if the user is not logged in,
+						prompt the log in modal with an explanatory message -->
+						<div ng-controller="CommentSubmitCtrl">
+							<!-- when logged in and press the comment-button, show the form -->
+							<div ng-hide="showForm" class="btn" ng-click="showForm=true">Add a Comment</div>
+							<form ng-show="showForm" ng-submit="submit()" role="form" class="form-horizontal">
+								<div class="form-group">
+									<div class="col-md-9">
+										<textarea class="form-control" id="comment-text" placeholder="Comment text" ng-model="commentText"></textarea>
+									</div>
+							
+									<div class="col-md-3">
+										<button type="submit" class="btn">Publish</button>
+									</div>
+								</div>
+							</form>
+						</div> <!-- CommentSubmitCtrl -->
+					</div> <!-- ng_show="account.username -->
+				</div> <!-- annotation in annotations -->
+			</div>
 		</div> <!-- annotation in annotations -->
 		<br><hr>
 
