@@ -8,7 +8,6 @@
              //$('.container.document-viewer.ng-scope').addClass('fixed-docview');
              $('.container.document-viewer.ng-scope').css({'margin-top': docViewHeightCompensate});
              $('.annotationView').css({'height': annotationViewHeight,'overflow-x': 'hidden', 'overflow-y': 'scroll'});
-
          }
          else {
              $('.subnav').removeClass('fixed-subnav');
