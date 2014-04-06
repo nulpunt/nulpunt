@@ -83,8 +83,11 @@ margin-bottom: 20px;
 /*annotation and document related styles*/
 .annotation {
 		background-color: #FFF;
-		padding: 14px 14px 0 14px;
+		padding: 14px;
 		font-size: 12px; 
+}
+.annotateview-signin {
+margin-bottom: 4px;
 }
 
 .utilities ul li {
@@ -552,7 +555,7 @@ font-size: 10pt;
 
 .trending-item {
 	margin-top: 20px;
-	margin-bottom: 20px;
+	margin-bottom: 40px;
 }
 
 .modal-dialog {

@@ -50,7 +50,7 @@
 						<span class="date-document-source">Date <strong>{{item.Document.OriginalDate | date:'dd MMMM yyyy'}}</strong></span>
 						<span class="source">Source {{item.Document.Source}} ({{item.Document.Country}}) </span>
 						<span class="upload">Uploaded on <strong>{{item.Document.UploadDate | date:'dd MMMM yyyy'}}</strong></span>
-						<span class="uploader">Uploaded by <strong>{{item.Document.UploaderUsername}}</strong></span>
+						<span class="uploader">Uploaded by <span style="color:{{item.Document.UploaderUsername.Color}}">@</span><strong>{{item.Document.UploaderUsername}}</strong></span>
 						<span class="request" ng-show="item.requester">Information requested by: {{item.Document.FOIRequester}}</span>
 					</div>
 					<div class="tags">
@@ -64,7 +64,7 @@
 				<div class="annotation col-lg-8" ng-repeat="annotation in item.Annotations">
 					<div class="col-lg-1"></div>
 					<div class="col-lg-10"><img src="/crop/{{annotation.CropId}}">
-						Annotation by <span class="annotator" style="background-color:#00b7ff;">{{annotation.AnnotatorUsername}}</span>: {{annotation.AnnotationText}}
+						Annotation by <span style="color:{{ annotation.Color }}">@</span>{{annotation.AnnotatorUsername}}: {{annotation.AnnotationText}}
 						<div class="row utilities" >
 							<div class="lg-col-12">
 								<span class="comment-date">{{annotation.CreateDate | date:'dd MMMM yyyy, hh:mm'}}</span>
