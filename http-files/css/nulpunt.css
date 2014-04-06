@@ -631,3 +631,6 @@ small {
 	letter-spacing: 0.2px;
 	font-size: 12px;
 }
+.paddingAfterLogin{
+	padding-top: 25px;
+}
