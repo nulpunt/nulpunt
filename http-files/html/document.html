@@ -186,7 +186,7 @@
 					</div>-->
 					<ul class="nav nav-pills">
 						<li class="dropdown">
-					        <a id="drop4" class="btn btn-default btn-dropdown" role="button" data-toggle="dropdown"><span class="glyphicon glyphicon-flash"></span> Amplify <b class="caret"></b></a>
+					        <a id="drop4" class="btn btn-dropdown" role="button" data-toggle="dropdown"><span class="glyphicon glyphicon-flash"></span> Amplify <b class="caret"></b></a>
 					        <ul id="menu1" class="dropdown-menu" role="menu" aria-labelledby="drop4">
 	                            <li role="presentation" class="dropdown-header">Amplify through:</li>
 	                            <li role="presentation" class="divider"></li>
@@ -198,8 +198,8 @@
 	                            <li role="presentation"><a ng-click="shareVK()" href="" class="amplify-item">VK</a></li>
 					        </ul>
 					      </li>
-						<li><a class="btn btn-default" ng-href="/download-original/{{document.ID}}/{{document.UploadFilename}}" target="_blank"><i class="fa fa-download"></i> Download original</a></li>
-						<li><a class="btn btn-default" href="/#/documents/">More documents</a></li>
+						<li><a class="btn" ng-href="/download-original/{{document.ID}}/{{document.UploadFilename}}" target="_blank"><i class="fa fa-download"></i> Download original</a></li>
+						<li><a class="btn" href="/#/documents/">More documents</a></li>
 					</ul>
 				</div>
 			</div>
@@ -286,7 +286,7 @@
 						prompt the log in modal with an explanatory message -->
 						<div ng-controller="CommentSubmitCtrl">
 							<!-- when logged in and press the comment-button, show the form -->
-							<div ng-hide="showForm" class="btn btn-default" ng-click="showForm=true">Add a Comment</div>
+							<div ng-hide="showForm" class="btn" ng-click="showForm=true">Add a Comment</div>
 							<form ng-show="showForm" ng-submit="submit()" role="form" class="form-horizontal">
 								<div class="form-group">
 									<div class="col-md-9">
@@ -294,7 +294,7 @@
 									</div>
 							
 									<div class="col-md-3">
-										<button type="submit" class="btn btn-default">Publish</button>
+										<button type="submit" class="btn">Publish</button>
 									</div>
 								</div>
 							</form>

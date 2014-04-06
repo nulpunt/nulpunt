@@ -2,12 +2,22 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-6">
-				<h1 class="uppercase">Democracy without secrets.</h1>
+				<h1 class="uppercase">Towards a democracy without secrets.</h1>
 				<p class="intro">0. is an online platform for gathering government and policy documents. 0. makes documents available for annotation and sharing through social media in order to follow and control government.</p>
 			</div>
-			<div class="col-lg-6">
-				<a ng-class="getClass('/register')" class="btn pull-right uppercase" href="/#/register">Sign up</a>
-				<h1 ng-hide="account.username" class="pull-right uppercase signup-text">New to 0.? Sign up here</h1>
+				
+			<div class="col-lg-3 col-lg-offset-3">
+				<div>
+					<a ng-hide="account.username" ng-class="getClass('/register')" class="btn pull-right" href="/#/register">Register here</a>
+					<h1 ng-hide="account.username" class="uppercase signup-text">New to 0.?</h1>					
+				</div>
+				<div>
+					<ul class="list-unstyled features">
+						<li><span class="glyphicon glyphicon-align-left"></span> Highlight</li>
+						<li><span class="glyphicon glyphicon-pencil"></span> Annotate</li>
+						<li><span class="glyphicon glyphicon-flash"></span> Amplify</li>
+					</ul>
+				</div>
 				<!--<ul class="list-unstyled features">
 					<li><span class="glyphicon glyphicon-align-left"></span> Highlight</li>
 					<li><span class="glyphicon glyphicon-pencil"></span> Annotate</li>
