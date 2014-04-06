@@ -37,6 +37,7 @@ func initHTTPServer() {
 	rootRouter.Methods("GET").PathPrefix("/js/").Handler(fileServer)
 	rootRouter.Methods("GET").PathPrefix("/img/").Handler(fileServer)
 	rootRouter.Methods("GET").Path("/download-original/{documentIDHex}/{filename:.*}").HandlerFunc(downloadOriginalHandlerFunc)
+	rootRouter.Methods("GET").Path("/crop/{cropIDHex}").HandlerFunc(cropImageHandlerFunc)
 
 	// serve document files on /docfiles/
 	docfilesRouter := rootRouter.PathPrefix("/docfiles/").Subrouter()
@@ -77,10 +78,13 @@ func initHTTPServer() {
 	sessionRouter.Methods("POST").Path("/add-comment").HandlerFunc(addCommentHandler)
 
 	sessionRouter.Methods("GET").Path("/get-profile").HandlerFunc(getProfileHandler)
-	// Users can't make profiles yet. BLOCK em.
-	// sessionRouter.Methods("POST").Path("/update-profile").HandlerFunc(updateProfileHandler)
+	sessionRouter.Methods("POST").Path("/update-profile").HandlerFunc(updateProfileHandler)
 
 	sessionRouter.Path("/get-documents-by-tags").HandlerFunc(getDocumentsByTagsHandler)
+
+	sessionRouter.Methods("GET").Path("/get-bookmarks").HandlerFunc(getBookmarksHandler)
+	sessionRouter.Methods("POST").Path("/add-bookmark").HandlerFunc(addBookmarkHandler)
+	//sessionRouter.Methods("POST").Path("/delete-bookmark").HandlerFunc(deleteBookmarkHandler)
 
 	// register /service/session/admin/* handlers
 	adminRouter := sessionRouter.PathPrefix("/admin/").Subrouter()

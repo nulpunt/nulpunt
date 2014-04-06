@@ -36,9 +36,20 @@ type AccountDetail struct {
 
 // type Profile holds the profile properties
 type Profile struct {
-	ID       bson.ObjectId `bson:"_id"`
-	Username string        `bson:"username"`
-	Tags     []string      `bson:"tags"` // contains tag.Tag
+	ID         bson.ObjectId `bson:"_id"`
+	Username   string        `bson:"username"`
+	Tags       []string      `bson:"tags"` // contains tag.Tag
+	PublicName string        `bson:"publicName"`
+	Website    string        `bson:"website"`
+	Bio        string        `bson:"bio"`
+	Location   string        `bson:"location"`
+}
+
+// type Bookmark holds the users preferred documents
+type Bookmark struct {
+	ID          bson.ObjectId   `bson:"_id"`
+	Username    string          `bson:"username"`
+	DocumentIDs []bson.ObjectId `bson:"documentIds"`
 }
 
 // type Document holds the document properties
@@ -102,6 +113,7 @@ type Annotation struct {
 	CreateDate        time.Time     `bson:"createDate"`
 	AnnotationText    string        `bson:"annotationText"`
 	Locations         []Location    `bson:"locations"`
+	CropId            bson.ObjectId `bson:"cropId"` // ID in GridFS of the cropped image
 	Comments          []Comment     `bson:"comments"`
 }
 

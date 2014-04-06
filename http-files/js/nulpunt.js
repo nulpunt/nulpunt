@@ -74,9 +74,13 @@ nulpunt.config(function($routeProvider) {
 		templateUrl: '/html/search.html',
 		controller: "SearchCtrl"
 	})
-	.when('/profile/:username', {
+	.when('/profile', {
 		templateUrl: '/html/profile.html',
 		controller: "ProfileCtrl"
+	})
+	.when('/bookmarks', {
+		templateUrl: '/html/bookmarks.html',
+		controller: "BookmarksCtrl"
 	})
 	.when('/settings', {
 		templateUrl: '/html/settings.html',
@@ -557,8 +561,42 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
 		$('.active-highlight').removeClass('active-highlight');
 	};
 
+    $scope.shareTwitter = function () {
+        $window.open('https://twitter.com/share?url='+encodeURIComponent($scope.twitter.url)+'&text='+encodeURIComponent($scope.twitter.text)+'&hashtags=nulpunt','das','location=no,links=no,scrollbars=no,toolbar=no,width=750,height=300');
+    }
 	$scope.shareDiaspora = function () {
 		$window.open('http://sharetodiaspora.github.io/?url='+encodeURIComponent($scope.twitter.url)+'&title='+encodeURIComponent($scope.twitter.text),'das','location=no,links=no,scrollbars=no,toolbar=no,width=620,height=550');
+	}
+    $scope.shareGooglePlus = function () {
+        $window.open('https://plus.google.com/share?url='+encodeURIComponent($scope.twitter.url)+'&title=title&text=text&message=message','das','location=no,links=no,scrollbars=no,toolbar=no,width=520,height=500');
+    }
+    $scope.shareReddit = function () {
+        $window.open('http://www.reddit.com/submit?url='+encodeURIComponent($scope.twitter.url)+'&title='+encodeURIComponent($scope.twitter.text),'das','location=no,links=no,scrollbars=no,toolbar=no,width=850,height=550');
+    }
+    $scope.shareVK = function () {
+        $window.open('https://vk.com/share.php?url='+encodeURIComponent($scope.twitter.url)+'&title='+encodeURIComponent($scope.twitter.text),'das','location=no,links=no,scrollbars=no,toolbar=no,width=550,height=375');
+    }
+    $scope.shareLinkedIn = function () {
+        $window.open('http://www.linkedin.com/shareArticle?mini=true&url='+encodeURIComponent($scope.twitter.url)+'&title='+encodeURIComponent($scope.twitter.text),'das','location=no,links=no,scrollbars=no,toolbar=no,width=600,height=500');
+    }
+
+    // add a bookmark
+	$scope.bookmark = function(documentId) {
+	    console.log("adding documentId to bookmarks");
+	    $http({
+		method: 'POST', 
+		url: "/service/session/add-bookmark",
+		data: { "DocumentID": documentId },
+		}).
+		success(function(data, status, headers, config) {
+		    console.log(data)
+		    $scope.done = true
+		}).
+		error(function(data, status, headers, config) {
+		    console.log("error addBookmark");
+ 		    console.log(data, status, headers);
+ 		    $scope.error = data;
+ 		});
 	}
 });
 
@@ -668,69 +706,105 @@ nulpunt.controller("SearchCtrl", function($scope, $routeParams) {
 	$scope.mySearch = $routeParams.searchValue.replace(/[+]/g, ' ');
 });
 
-// ProfileCtrl retrieves a users profile and prepares data for display by profile.html
+// ProfileCtrl
 nulpunt.controller("ProfileCtrl", function($scope, $http, $routeParams) {
+	$scope.done = false;
+	$scope.error = "";
+    $scope.selectedTags = [];
 	// load the users' profile
 	$http({
 		method: "GET", 
 		url: "/service/session/get-profile",
-		data: {
-			username: $routeParams.username,
-		},
 	}).
 	success(function(data) {
 		console.log(data);
+		// UGLY HACK: 
+		// Each user has only one profile, yet  we create an array.
+		// This is so that the profile.html template can use a ng-repeat
+		// That makes the dependencies between that and this controller clear to Angular.
+	        // It solves the race condition between get-profile and get-tags
 		$scope.profile = data.profile;
+		$scope.profiles = [ data.profile ];
+        $.each(data.profile.Tags, function(index, tag) {
+            $scope.selectedTags.push(tag);
+        });
 	}).
 	error(function(error) {	
 		console.log('error retrieving profile ', error);
 		$scope.error = error;
 	});
+
+    $scope.isSelectedTag = function(tags, tag) {
+        if(tags == undefined) {
+            return false;
+        }
+        var index = tags.indexOf(tag);
+        if (index == -1) {
+            return "np-notselected";
+        }
+        else {
+            return "np-selected";
+        }
+    }
+
+    $scope.toggleTag = function(tags, tag) {
+        var index = tags.indexOf(tag);
+        console.log(index);
+        console.log(tags);
+        if (index > -1) {
+            // Found it, remove from selectedTags
+            tags.splice(index, 1);
+            $(this).closest('input[type=checkbox]').prop('checked', false);
+        }
+        else {
+            // Add it
+            tags.push(tag);
+            $(this).closest('input[type=checkbox]').prop('checked', true);
+        }
+    }
+
+	// save the updated document
+    //console.log("submitting new profile to service");
+	$scope.submit = function() {
+		$scope.done = false;
+		$scope.error = "";
+        $scope.profile.Tags = $scope.selectedTags;
+		$http({
+			method: 'POST', 
+			url: "/service/session/update-profile",
+			data: $scope.profile
+		}).
+		success(function(data, status, headers, config) {
+			console.log(data)
+			$scope.done = true
+		}).
+		error(function(data, status, headers, config) {
+			console.log("error updateProfile");
+ 			console.log(data, status, headers);
+ 			$scope.error = data;
+ 		});
+	}
 });
 
-// original ProfileCtrl, required in some places where it shouldn't be included
-// nulpunt.controller("ProfileCtrl", function($scope, $http, $routeParams) {
-// 	$scope.done = false;
-// 	$scope.error = "";
-// 	// load the users' profile
-// 	$http({
-// 		method: "GET", 
-// 		url: "/service/session/get-profile",
-// 	}).
-// 	success(function(data) {
-// 		console.log(data);
-// 		// UGLY HACK: 
-// 		// Each user has only one profile, yet  we create an array.
-// 		// This is so that the inbox.html template can use a ng-repeat
-// 		// That makes the dependencies between that and this controller clear to Angular.
-// 		$scope.profile = data.profile;
-// 		$scope.profiles = [ data.profile ];
-// 	}).
-// 	error(function(error) {	
-// 		console.log('error retrieving profile ', error);
-// 		$scope.error = error;
-// 	});
+// BookmarksCtrl
+nulpunt.controller("BookmarksCtrl", function($scope, $http) {
+	$scope.done = false;
+	$scope.error = "";
+	// load the users' bookmarks
+	$http({
+		method: "GET", 
+		url: "/service/session/get-bookmarks",
+	}).
+	success(function(data) {
+	    console.log(data);
+	    $scope.bookmarks = data.bookmarks;
+	}).
+	error(function(error) {	
+		console.log('error retrieving bookmark ', error);
+		$scope.error = error;
+	});
+});
 
-// 	// save the updated document
-// 	$scope.submit = function() {
-// 		$scope.done = false;
-// 		$scope.error = "";
-// 		$http({
-// 			method: 'POST', 
-// 			url: "/service/session/update-profile",
-// 			data: $scope.profile
-// 		}).
-// 		success(function(data, status, headers, config) {
-// 			console.log(data)
-// 			$scope.done = true
-// 		}).
-// 		error(function(data, status, headers, config) {
-// 			console.log("error updateProfile");
-// 			console.log(data, status, headers);
-// 			$scope.error = data;
-// 		});
-// 	}
-// });
 
 // NotFoundCtrl prepares information for the not-found.html page
 nulpunt.controller('NotFoundCtrl', function($scope, $location) {
