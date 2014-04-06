@@ -556,6 +556,7 @@ font-size: 10pt;
 .trending-item {
 	margin-top: 20px;
 	margin-bottom: 40px;
+	margin-right: 0px;
 }
 
 .modal-dialog {
