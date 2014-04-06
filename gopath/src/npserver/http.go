@@ -82,6 +82,10 @@ func initHTTPServer() {
 
 	sessionRouter.Path("/get-documents-by-tags").HandlerFunc(getDocumentsByTagsHandler)
 
+	sessionRouter.Methods("GET").Path("/get-bookmarks").HandlerFunc(getBookmarksHandler)
+	sessionRouter.Methods("POST").Path("/add-bookmark").HandlerFunc(addBookmarkHandler)
+	//sessionRouter.Methods("POST").Path("/delete-bookmark").HandlerFunc(deleteBookmarkHandler)
+
 	// register /service/session/admin/* handlers
 	adminRouter := sessionRouter.PathPrefix("/admin/").Subrouter()
 	adminRouter.Path("/upload").HandlerFunc(adminUpload)
