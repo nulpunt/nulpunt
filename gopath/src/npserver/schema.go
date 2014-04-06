@@ -45,6 +45,13 @@ type Profile struct {
 	Location   string        `bson:"location"`
 }
 
+// type Bookmark holds the users preferred documents
+type Bookmark struct {
+	ID          bson.ObjectId   `bson:"_id"`
+	Username    string          `bson:"username"`
+	DocumentIDs []bson.ObjectId `bson:"documentIds"`
+}
+
 // type Document holds the document properties
 type Document struct {
 	ID                 bson.ObjectId `bson:"_id"`

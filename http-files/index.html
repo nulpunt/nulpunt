@@ -69,6 +69,8 @@
 				
 				<div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
 					<div class="container">
+					  <a class="btn" href="/#/profile">Profile</a>
+					  <a class="btn" href="/#/bookmarks">Show Bookmarks</a>
 						<a ng-hide="account.username" class="btn pull-right" ng-click="loginFactory.showLogin()">Sign in</a>
 						<a ng-show="account.username" class="btn pull-right" ng-click="loginFactory.signOut()">Sign out</a>
 					</div>

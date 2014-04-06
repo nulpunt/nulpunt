@@ -7,9 +7,9 @@ import (
 
 // package-wide shared variables pointing to collections in mongodb
 var (
-	colAccounts *mgo.Collection
-	colProfiles *mgo.Collection
-	// colUploads     *mgo.Collection
+	colAccounts    *mgo.Collection
+	colProfiles    *mgo.Collection
+	colBookmarks   *mgo.Collection
 	colTags        *mgo.Collection
 	colDocuments   *mgo.Collection
 	colPages       *mgo.Collection
@@ -64,6 +64,18 @@ func initPersistency() {
 	})
 	if err != nil {
 		log.Fatalf("fatal error when ensuring index on profiles.username: %s\n", err)
+	}
+
+	// get "bookmarks" collection
+	colBookmarks = dbNulpunt.C("bookmarks")
+
+	// ensure that key "username" is unique for collection "bookmarks".
+	err = colBookmarks.EnsureIndex(mgo.Index{
+		Key:    []string{"username"},
+		Unique: true,
+	})
+	if err != nil {
+		log.Fatalf("fatal error when ensuring index on bookmarks.username: %s\n", err)
 	}
 
 	// get "tags" collection

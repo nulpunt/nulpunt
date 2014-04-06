@@ -78,6 +78,10 @@ nulpunt.config(function($routeProvider) {
 		templateUrl: '/html/profile.html',
 		controller: "ProfileCtrl"
 	})
+	.when('/bookmarks', {
+		templateUrl: '/html/bookmarks.html',
+		controller: "BookmarksCtrl"
+	})
 	.when('/settings', {
 		templateUrl: '/html/settings.html',
 		controller: "SettingsCtrl"
@@ -575,6 +579,25 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
     $scope.shareLinkedIn = function () {
         $window.open('http://www.linkedin.com/shareArticle?mini=true&url='+encodeURIComponent($scope.twitter.url)+'&title='+encodeURIComponent($scope.twitter.text),'das','location=no,links=no,scrollbars=no,toolbar=no,width=600,height=500');
     }
+
+    // add a bookmark
+	$scope.bookmark = function(documentId) {
+	    console.log("adding documentId to bookmarks");
+	    $http({
+		method: 'POST', 
+		url: "/service/session/add-bookmark",
+		data: { "DocumentID": documentId },
+		}).
+		success(function(data, status, headers, config) {
+		    console.log(data)
+		    $scope.done = true
+		}).
+		error(function(data, status, headers, config) {
+		    console.log("error addBookmark");
+ 		    console.log(data, status, headers);
+ 		    $scope.error = data;
+ 		});
+	}
 });
 
 nulpunt.controller("NewAnnotationModal", function($scope, $modalInstance, highlight, documentId, pageNr) {
@@ -683,7 +706,6 @@ nulpunt.controller("SearchCtrl", function($scope, $routeParams) {
 	$scope.mySearch = $routeParams.searchValue.replace(/[+]/g, ' ');
 });
 
-
 // ProfileCtrl
 nulpunt.controller("ProfileCtrl", function($scope, $http, $routeParams) {
 	$scope.done = false;
@@ -763,6 +785,26 @@ nulpunt.controller("ProfileCtrl", function($scope, $http, $routeParams) {
  		});
 	}
 });
+
+// BookmarksCtrl
+nulpunt.controller("BookmarksCtrl", function($scope, $http) {
+	$scope.done = false;
+	$scope.error = "";
+	// load the users' bookmarks
+	$http({
+		method: "GET", 
+		url: "/service/session/get-bookmarks",
+	}).
+	success(function(data) {
+	    console.log(data);
+	    $scope.bookmarks = data.bookmarks;
+	}).
+	error(function(error) {	
+		console.log('error retrieving bookmark ', error);
+		$scope.error = error;
+	});
+});
+
 
 // NotFoundCtrl prepares information for the not-found.html page
 nulpunt.controller('NotFoundCtrl', function($scope, $location) {
