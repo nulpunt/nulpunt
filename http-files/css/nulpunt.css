@@ -187,7 +187,7 @@ margin-bottom: 4px;
 	margin-bottom: 20px;
 }
 .annotate-alert{
-	margin-top: -10px;
+	margin-top: -5px;
 }
 .annotationView {
 	border-top: 1px solid #AAA;
@@ -506,6 +506,7 @@ a.custom-tweet-button {
 }
 .container.document-viewer.ng-scope {
 	margin-top: 0px;
+	margin-bottom: 60px;
 }
 
 /* footer styling */

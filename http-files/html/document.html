@@ -257,7 +257,7 @@
 							To annotate or comment, please sign in first. <a class="btn annotateview-signin" ng-click="loginFactory.showLogin()">Sign in</a>
 						</div> <!-- ng-hide="account.username" -->
 				</div>
-				<p ng-show="account.username">Highlight the document to create an annotation.</p>
+				<p ng-show="account.username">Highlight the document on the left to create an annotation.</p>
 			</div>
 			<div class="annotationView">
 				<div id="annotation_{{annotation.ID}}" class="annotation" ng-repeat="annotation in annotationsOnPage(currentPage.number)" ng-mouseover="activateHighlight(annotation.ID)" ng-mouseleave="deactivateHighlight()">
