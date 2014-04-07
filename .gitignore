@@ -17,15 +17,13 @@
 .DS_Store
 
 *.rice-box.go
-<<<<<<< HEAD
+
 .idea
-=======
-<<<<<<< HEAD
+
 test.txt
 
 
 michael@nulpunt
-=======
+
 .idea
->>>>>>> cd7e9a0d54651a1f439e23bea6081ca88875fb29
->>>>>>> Merge-Ritchy
+
