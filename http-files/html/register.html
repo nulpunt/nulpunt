@@ -1,12 +1,13 @@
 <div class="container register-page">
 	<div ng-show="done" class="alert" >
-		<strong>Welcome to 0.</strong><br/>
-		Your account '{{username}}' was successfully registered.
+		<h1>Welcome to 0.</h1><br/>
+		Your account '{{username}}' was successfully registered.<br/>
+		You can now sign in to annotate and comment <a class="btn annotateview-signin" ng-click="loginFactory.showLogin()">Sign in</a>
 		<!--  You can now sign in. -->
 	</div>
 
 	<div ng-show="error" class="alert alert-error" >
-		<strong>Sorry, something went wrong.</strong><br/>
+		<h1>Sorry, something went wrong.</h1><br/>
 		Please refresh the page.<br/>
 		{{error}}
 	</div>

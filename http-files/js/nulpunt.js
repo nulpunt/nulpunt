@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 //fix subnav bar
     $(window).bind('scroll', function() {
     	var metaDataDocHeight = $('.metadata-doc').height() + 10;
@@ -20,8 +18,6 @@
     }); 
 
 // Angular
-
->>>>>>> Merge-Ritchy
 var nulpunt = angular.module('nulpunt', [
 	// imported modules
 	// please keep this list sorted

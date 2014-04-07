@@ -4,7 +4,7 @@
 	}
 
 	.masthead {
-		background-color:#EEE;
+		background-color:#FFF;
 	}
 
 	#np-footer {
@@ -19,6 +19,8 @@
 		border: 1px solid #AAA;
 		border-radius: 2px;
 		overflow: hidden;
+		min-height: 400px;
+		width: 100%;
 	}
 
 	.sticky {
@@ -119,22 +121,13 @@
 
 <div class="masthead document-viewer"> 
 	<div class="container">
-<<<<<<< HEAD
-		<div class="row">
-			<div class="col-lg-6">
-				<h1>{{ document.Title }}</h1>
-				<div class="document-metadata">
-					<span class="source">Source: {{document.Source}}  ({{ document.Country }}) on <strong>{{document.OriginalDate | date:'dd MMMM yyyy, hh:mm'}}</strong></span>
-					<span class="upload">Uploaded on <strong>{{document.UploadDate | date:'dd MMMM yyyy, hh:mm'}}</strong> by <span class="uploader">{{document.UploaderUsername}}</span></span>
-					<span class="request" ng-show="item.requester">Requested by: {{document.FOIRequester }}</span>
-=======
 		<div class="metadata-doc">
 			<div class="row">
 				<div class="col-lg-7">
+					
+					<h1>{{ document.Title }}</h1>
+					
 					<div class="row">
-						<h1>{{ document.Title }}</h1>
-					</div>
-					<div class="row col-leftedge">
 						<div class="col-lg-6 document-description intro">{{document.Summary}}</div>
 						<div class="col-lg-6">
 							<div class="document-metadata">
@@ -156,7 +149,6 @@
 							<span class="author-name" ng-repeat="annotation in annotationsOnPage(currentPage.number)"><span style="color:{{ annotation.Color }}">@</span>{{ annotation.AnnotatorUsername }} </span>
 						</div>
 					</div>
->>>>>>> Merge-Ritchy
 					<div class="tags-metadata">
 						<div>
 							Tags
@@ -166,50 +158,15 @@
 						</div>
 					</div>
 				</div>
-<<<<<<< HEAD
-=======
-
->>>>>>> Merge-Ritchy
 			</div><!-- col-lg-6 -->
-			<div class="col-lg-6">
-				<!--<div class="dropdown">
-					<a data-toggle="dropdown btn btn-default">Amplify <span class="caret"></span></a>
-					<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-						<a ng-href="https://twitter.com/share?url={{twitter.url | urlencode}}&text={{twitter.text | urlencode}}&hashtags=nulpunt" class="btn btn-default" data-lang="en" target="_blank" ><i class="fa fa-twitter"></i> Tweet this document</a>
-					</ul>
-				</div>-->
-<<<<<<< HEAD
-				<ul class="nav nav-pills pull-right">
-					<li><span class="btn" ng-click="bookmark(document.ID)">Bookmark</span></li>
-					<li class="dropdown">
-				        <a id="drop4" class="btn btn-default btn-dropdown" role="button" data-toggle="dropdown"><span class="glyphicon glyphicon-flash"></span> Amplify <b class="caret"></b></a>
-				        <ul id="menu1" class="dropdown-menu" role="menu" aria-labelledby="drop4">
-                            <li role="presentation" class="dropdown-header">Amplify through:</li>
-                            <li role="presentation" class="divider"></li>
-                            <li role="presentation"><a ng-click="shareDiaspora()" href="" class="amplify-item">Diaspora</a></li>
-                            <li role="presentation"><a ng-click="shareGooglePlus()" href="" class="amplify-item">Google+</a></li>
-                            <li role="presentation"><a ng-click="shareLinkedIn()" href="" class="amplify-item">LinkedIn</a></li>
-                            <li role="presentation"><a ng-click="shareReddit()" href="" class="amplify-item">Reddit</a></li>
-				            <li role="presentation"><a ng-click="shareTwitter()" href="" class="amplify-item">Twitter</a></li>
-                            <li role="presentation"><a ng-click="shareVK()" href="" class="amplify-item">VK</a></li>
-				        </ul>
-				      </li>
-					<li><a class="btn btn-default" ng-href="/download-original/{{document.ID}}/{{document.UploadFilename}}" target="_blank"><i class="fa fa-download"></i> Download original</a></li>
-					<li><a class="btn btn-default" href="/#/documents/">More documents</a></li>
-				</ul>
-=======
->>>>>>> Merge-Ritchy
-			</div>
 		</div> <!-- row -->
 	</div> <!-- container -->
-<<<<<<< HEAD
-=======
 	<div class="subnav">
 		<div class="masthead-bottom">
 			<div class="container">
 			<div class="row">
 				<div class="col-lg-7">
-					<div class="row">
+					
 						<a class="btn col-lg-2" ng-click="prevPage()"><span class="glyphicon glyphicon-chevron-left"></span> Previous page</a>
 						<div class="col-lg-4 col-lg-offset-3 pagenumber-position">
 							<div style="float: left;">Page </div>
@@ -217,16 +174,17 @@
 							<div style="float: left; margin-left: 10px;"> of {{document.PageCount}}</div>
 						</div>
 						<a class="btn col-lg-2 col-lg-offset-1" ng-click="nextPage()">Next page <span class="glyphicon glyphicon-chevron-right"></span></a>
-					</div> 
+					
 				</div>
-				<div class="col-lg-4 col-lg-offset-1">
+				<div class="col-lg-5">
 					<!--<div class="dropdown">
 						<a data-toggle="dropdown btn btn-default">Amplify <span class="caret"></span></a>
 						<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
 							<a ng-href="https://twitter.com/share?url={{twitter.url | urlencode}}&text={{twitter.text | urlencode}}&hashtags=nulpunt" class="btn btn-default" data-lang="en" target="_blank" ><i class="fa fa-twitter"></i> Tweet this document</a>
 						</ul>
 					</div>-->
-					<ul class="nav nav-pills">
+					<ul class="nav nav-pills pull-right">
+						<li><span class="btn" ng-click="bookmark(document.ID)">Bookmark</span></li>
 						<li class="dropdown">
 					        <a id="drop4" class="btn btn-dropdown" role="button" data-toggle="dropdown"><span class="glyphicon glyphicon-flash"></span> Amplify <b class="caret"></b></a>
 					        <ul id="menu1" class="dropdown-menu" role="menu" aria-labelledby="drop4">
@@ -248,89 +206,50 @@
 		</div> <!-- container -->
 		</div>
 	</div>
->>>>>>> Merge-Ritchy
 </div> <!-- masthead document-viewer -->
 
 <div class="container document-viewer">
 	<!-- <div ng-repeat="page in pages" > -->
-<<<<<<< HEAD
-
-	<div class="row row-padding-bottom" style="text-align: center;">
-		<div ng-hide="account.username" class="pull-right" >
-			<!-- we have a highlight but no auth, let user auth -->
-			To annotate or comment, please sign in first. <a class="btn" ng-click="loginFactory.showLogin()">Sign in</a>
-		</div> <!-- ng-hide="account.username" -->
-	</div>
-
-
-=======
->>>>>>> Merge-Ritchy
 	<div class="row">
-		<div class="pageView col-lg-7 stick-to-top">
-			<!-- page navigation -->
-			<div class="row row-padding-bottom">
-				<a class="btn btn-xs col-lg-2" ng-click="prevPage()"><span class="glyphicon glyphicon-chevron-left"></span> Previous page</a>
-				<div class="col-lg-4 col-lg-offset-2">
-					<div style="float: left;" ><input ng-model="currentPage.number" type="number" class="form-control np-document-viewer-pagination" /></div>
-					<div style="float: left; margin-left: 8px;" >of {{document.PageCount}}</div>
-				</div>
-				<a class="btn btn-xs col-lg-2 col-lg-offset-2" ng-click="nextPage()">Next page <span class="glyphicon glyphicon-chevron-right"></span></a>
-			</div>
-
+		<div class="pageView-NavbarScrollEnable col-lg-7 stick-to-top">
+			<div class="pageView">
 			<!-- page itself -->
-			<div class="row main pageWrapper">
-				<div id="pageBox" >
-					<div ng-show="highlight.yMax && account.username" id="annotation-add-btn" class="btn btn-add-annotation" style="top: {{highlight.yMax}}px; left: {{highlight.xMax}}px; " ng-click="addAnnotation()"><span class="glyphicon glyphicon-plus"></span></div>
-					<canvas ng-show="account.username" id="cvPage" ></canvas>
-					<img ng-src="/docfiles/pages/{{document.ID}}/{{currentPage.number}}.png" class="img-responsive" />
-					<span id="highlights">
-						<!-- this span gets these canvases, one for each annotation on this page -->
-						<!-- <canvas id="{annotation.ID}" class="highlight highlight-transparency" style="background-color: green; width:200px; height:20px; top: 50px; left: 100px; "></canvas> -->
-						<span ng-repeat="annotation in annotationsOnPage(currentPage.number)">
-							<canvas ng-repeat="location in annotation.Locations" 
-								ng-show"location.PageNumber == currentPage.number"
-								ng-mouseover="activateHighlight(annotation.ID)"
-								ng-mouseout="deactivateHighlight()"
-								class="highlight highlight-transparency"
-								style="background-color: {{annotation.Color}}; 
-									left: {{location.X1}}%; 
-									top: {{location.Y1}}%; 
-									width: {{location.X2 - location.X1}}%; 
-									height: {{location.Y2 - location.Y1}}%;"
-								id="{{annotation.ID}}">
-							</canvas>
+				<div class="row main pageWrapper">
+					<div id="pageBox" >
+						<div ng-show="highlight.yMax && account.username" id="annotation-add-btn" class="btn btn-add-annotation" style="top: {{highlight.yMax}}px; left: {{highlight.xMax}}px; " ng-click="addAnnotation()"><span class="glyphicon glyphicon-plus"></span></div>
+						<canvas ng-show="account.username" id="cvPage" ></canvas>
+						<img ng-src="/docfiles/pages/{{document.ID}}/{{currentPage.number}}.png" class="img-responsive" />
+						<span id="highlights">
+							<!-- this span gets these canvases, one for each annotation on this page -->
+							<!-- <canvas id="{annotation.ID}" class="highlight highlight-transparency" style="background-color: green; width:200px; height:20px; top: 50px; left: 100px; "></canvas> -->
+							<span ng-repeat="annotation in annotationsOnPage(currentPage.number)">
+								<canvas ng-repeat="location in annotation.Locations" 
+									ng-show"location.PageNumber == currentPage.number"
+									ng-mouseover="activateHighlight(annotation.ID)"
+									ng-mouseout="deactivateHighlight()"
+									class="highlight highlight-transparency"
+									style="background-color: {{annotation.Color}}; 
+										left: {{location.X1}}%; 
+										top: {{location.Y1}}%; 
+										width: {{location.X2 - location.X1}}%; 
+										height: {{location.Y2 - location.Y1}}%;"
+									id="{{annotation.ID}}">
+								</canvas>
+							</span>
 						</span>
-					</span>
-				</div>
-				<!-- <div id="lines" class="selectable" >
-					<div class="line" ng-repeat="line in currentPage.data.Lines">
-						<div ng-repeat="character in line"
-								class="charpos charpos-{{character.C}}" style="bottom: {{character.Y1}}%; left: {{character.X1}}%;"
-								>{{character.C}}</div>
 					</div>
-				</div> -->
-			</div>
-
-			<!-- page navigation -->
-			<div class="row row-padding-top">
-				<a class="btn btn-xs col-lg-2" ng-click="prevPage()"><span class="glyphicon glyphicon-chevron-left"></span> Previous page</a>
-				<div class="col-lg-4 col-lg-offset-2">
-					<div style="float: left;" ><input ng-model="currentPage.number" type="number" class="form-control np-document-viewer-pagination" /></div>
-					<div style="float: left; margin-left: 8px;" >of {{document.PageCount}}</div>
+					<!-- <div id="lines" class="selectable" >
+						<div class="line" ng-repeat="line in currentPage.data.Lines">
+							<div ng-repeat="character in line"
+									class="charpos charpos-{{character.C}}" style="bottom: {{character.Y1}}%; left: {{character.X1}}%;"
+									>{{character.C}}</div>
+						</div>
+					</div> -->
 				</div>
-				<a class="btn btn-xs col-lg-2 col-lg-offset-2" ng-click="nextPage()">Next page <span class="glyphicon glyphicon-chevron-right"></span></a>
-			</div>
-
-
-		</div> <!-- pageView -->
-
-<<<<<<< HEAD
-		<div class="annotationView col-lg-5">
-
-=======
+			</div> <!-- pageView -->
+		</div>
 		<div class="col-lg-4 col-lg-offset-1">
 			<div>
->>>>>>> Merge-Ritchy
 			<h3>Annotations</h3>
 				<div class="annotate-alert">
 						<div ng-hide="account.username" >
