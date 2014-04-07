@@ -98,6 +98,10 @@ nulpunt.config(function($routeProvider) {
 		templateUrl: '/html/profile.html',
 		controller: "ProfileCtrl"
 	})
+	.when('/inbox', {
+		templateUrl: '/html/inbox.html',
+		controller: "InboxCtrl"
+	})
 	.when('/bookmarks', {
 		templateUrl: '/html/bookmarks.html',
 		controller: "BookmarksCtrl"
@@ -876,34 +880,6 @@ nulpunt.controller("RegisterCtrl", function($scope, $rootScope, $http) {
 	};
 });
 
-// SettingsCtrl fetches and stores settings
-nulpunt.controller("SettingsCtrl", function($scope, AccountDataService) {
-	// TODO: fix
-	// get settings from server
-	var settingsPromise = AccountDataService.getObject("settings");
-	settingsPromise.then(
-	function(data) { // success
-		$scope.settings.testA = data.a;
-		$scope.settings.testB = data.b;
-	}, 
-	function(error) { // error
-		console.error(error);
-	});
-
-	// saveSettings function
-	$scope.saveSettings = function() {
-		var data = {
-			a: $scope.settings.testA,
-			b: $scope.settings.testB,
-		};
-		var donePromise = AccountDataService.setObject("settings", data);
-		donePromise.then(function() {
-			console.log('saved');
-		}, function(error) {
-			console.error(error);
-		})
-	}
-});
 
 // SignInCtrl manages user sign-in
 nulpunt.controller("SignInCtrl", function($scope, $rootScope, $modalInstance, AccountAuthService) {
