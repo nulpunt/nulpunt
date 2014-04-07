@@ -11,6 +11,7 @@
 		<link href="css/nulpunt.css" rel="stylesheet" >
 		<link rel="stylesheet" href="css/font-awesome.min.css">
 		<link rel="stylesheet" href="css/jquery.minicolors.css">
+		<link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:700italic,700|Roboto:300,500,300italic,500italic' rel='stylesheet' type='text/css'>
 
 		<script src="js/jquery.min.js" ></script>
 		<script>
@@ -52,7 +53,8 @@
 	<div id="np-wrap">
 		<div ng-controller="NavbarCtrl">
 		  
-		  <div class="navbar navbar-static-top">
+		  <div class="navbar navbar-static-top fixed navbar-line">
+
 				<!-- brand and toggle get grouped for better mobile display -->
 				<div class="navbar-header">
 					<!-- navigation dropdown button -->
@@ -69,10 +71,12 @@
 				
 				<div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
 					<div class="container">
-					  <a class="btn" href="/#/profile">Profile</a>
-					  <a class="btn" href="/#/bookmarks">Show Bookmarks</a>
-						<a ng-hide="account.username" class="btn pull-right" ng-click="loginFactory.showLogin()">Sign in</a>
-						<a ng-show="account.username" class="btn pull-right" ng-click="loginFactory.signOut()">Sign out</a>
+						
+						  <a class="btn menu-top" ng-show="account.username" href="/#/profile">Profile</a>
+						  <a class="btn menu-top" ng-show="account.username" href="/#/bookmarks">Show Bookmarks</a>
+							<a ng-hide="account.username" class="btn pull-right" ng-click="loginFactory.showLogin()">Sign in</a>
+							<a ng-show="account.username" class="btn pull-right" ng-click="loginFactory.signOut()">Sign out</a>
+						
 					</div>
 				</div>
 			</div> <!-- navbar static top -->
@@ -84,16 +88,16 @@
 		<!-- admin buttons -->	
 		<div ng-show="account.admin">
 			 <a ng-href="/#/admin/upload"><span class="glyphicon glyphicon-file" ></span> Upload documents</a>
-			 <a ng-href="/#/admin/analyse"><span class="glyphicon glyphicon-search" ></span> Ugly hack</a> <!-- remove this when OCR works -->
+			 <a ng-href="/#/admin/analyse"><span class="glyphicon glyphicon-search" ></span> Search draft</a> <!-- remove this when OCR works -->
 			 <a href="/#/admin/process"><span class="glyphicon glyphicon-asterisk" ></span> Process documents</a>
 			 <a href="/#/admin/tags"><span class="glyphicon glyphicon-asterisk" ></span> Add/Remove tags</a>
 			 <!-- <a href="/update-trending"><span class="glyphicon glyphicon-asterisk" ></span> Update Trending</a> -->
 		</div>
 	</div><!-- np-wrap -->
 
-	<footer id="np-footer" class="navbar">
+	<footer id="np-footer" class="">
 		<div class="navbar-header navbar-right">
-			<a class="navbar-brand" href="/#/"><img id="np-logo" src="img/np-logo.svg"></a>
+			<a class="navbar-brand-small" href="/#/"><img class="np-logo-small" src="img/np-logo.png"></a>
 		</div>
 		<div class="container">
 			<ul class="nav navbar-nav navbar-left">

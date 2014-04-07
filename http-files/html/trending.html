@@ -2,63 +2,78 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-6">
-				<h1>Towards a democracy without secrets.</h1>
+				<h1 class="uppercase">Towards a democracy without secrets.</h1>
 				<p class="intro">0. is an online platform for gathering government and policy documents. 0. makes documents available for annotation and sharing through social media in order to follow and control government.</p>
 			</div>
-			<div class="col-lg-6">
-				<h1 ng-hide="account.username" class="pull-right">New to 0.? <a ng-class="getClass('/register')" class="btn" href="/#/register">Sign up here</a></h1>
-				<ul class="list-unstyled features">
+				
+			<div class="col-lg-3 col-lg-offset-3">
+				<div>
+					<a ng-hide="account.username" ng-class="getClass('/register')" class="btn pull-right" href="/#/register">Create an account</a>
+					<h1 ng-hide="account.username" class="uppercase signup-text">New to 0.?</h1>					
+				</div>
+				<div>
+					<ul class="list-unstyled features" ng-hide="account.username">
+						<li><span class="glyphicon glyphicon-align-left"></span> Highlight</li>
+						<li><span class="glyphicon glyphicon-pencil"></span> Annotate</li>
+						<li><span class="glyphicon glyphicon-flash"></span> Amplify</li>
+					</ul>
+				</div>
+				<!--<ul class="list-unstyled features">
 					<li><span class="glyphicon glyphicon-align-left"></span> Highlight</li>
 					<li><span class="glyphicon glyphicon-pencil"></span> Annotate</li>
 					<li><span class="glyphicon glyphicon-flash"></span> Amplify</li>
-				</ul>
+				</ul>-->
 			</div>
 		</div>
 	</div>
 </div>
-
 <div class="container trending">
 	<!-- trending template -->
 	<div class="row">
 		<div class="col-lg-12">
-			<a class="btn pull-right" href="/#/documents/">More documents</a>
-			<h1>Current</h1>
+			<!--<a class="btn pull-right" href="/#/documents/">More documents</a>-->
+			<h1 class="uppercase">Current</h1>
 		</div>
 	</div>
-	<div class="row trending-columns">
-		<!-- first trending document -->
-		<div ng-repeat="item in trending" class="col-lg-4" ng-class-even="'np-row-even'">
-			<div class="document">
-				<a href="/#/document/{{item.Document.ID}}"><h3>{{item.Document.Title}} <span class="label document-type">{{item.Document.PageCount}} pages , {{item.Document.Category}}</span></h3></a>
-				<div class="document-description">
-					<p>{{item.Document.Summary}}</p>
-				</div>
-				<div class="document-metadata">
-					<span class="source">Source: {{item.Document.Source}} ({{item.Document.Country}}) <strong>{{item.Document.OriginalDate}}</strong></span>
-					<span class="upload">Uploaded on <strong>{{item.Document.UploadDate}}</strong> by <span class="uploader">{{item.Document.UploaderUsername}}</span></span>
-					<span class="request" ng-show="item.requester">Information requested by: {{item.Document.FOIRequester}}</span>
-				</div>
-				<div class="annotation" ng-repeat="annotation in item.Annotations">
-				  Highlight: <img src="/crop/{{annotation.CropId}}"><br>
-					Annotation by <span class="annotator" style="background-color:#00b7ff;">{{annotation.AnnotatorUsername}}</span>: {{annotation.AnnotationText}}
-					<div class="row utilities" >
-						<div class="lg-col-12">
-							<span class="comment-date">{{annotation.CreateDate | date:'dd MMMM yyyy, hh:mm'}}</span>
-
-<!--							<ul class="list-unstyled list-inline pull-right">
-								<li> <span class="glyphicon glyphicon-flash"></span></li>
-								<li><span class="glyphicon glyphicon-star"></span></li>
-								<li><span class="glyphicon glyphicon-comment"></span></li>
-							</ul> -->
-						</div>					  
+	<div class="container">
+		<div class="trending-columns">
+			<!-- first trending document --> 
+			<div ng-repeat="item in trending" class="row trending-item">
+				
+				<div class="col-lg-4 trending-art">
+					<div class="col-lg-3 img-thumbnail"></div>
+					<div class="col-lg-9">
+						<a href="/#/document/{{item.Document.ID}}"><h3>{{item.Document.Title}} <!--<span class="label document-type">{{item.Document.PageCount}} pages , {{item.Document.Category}}</span>--></h3></a>
+						<!--<div class="document-description">
+							<p>{{item.Document.Summary}}</p>
+						</div>-->
+						<div class="document-metadata">
+							<span class="date-document-source">Date <strong>{{item.Document.OriginalDate | date:'dd MMMM yyyy'}}</strong></span>
+							<span class="source">Source: {{item.Document.Source}}, ({{item.Document.Country}}) </span>
+							<span class="upload">Uploaded on <strong>{{item.Document.UploadDate | date:'dd MMMM yyyy'}}</strong></span>
+							<span class="uploader">Uploaded by <span style="color:{{item.Document.UploaderUsername.Color}}">@</span><strong>{{item.Document.UploaderUsername}}</strong></span>
+							<span class="request" ng-show="item.requester">Information requested by: {{item.Document.FOIRequester}}</span>
+						</div>
+						<div class="tags">
+						  <div>{{ }}</div>
+							<span ng-repeat="tag in item.Document.Tags" class="label label-default">
+								<span class="glyphicon glyphicon-tag"></span> {{tag}}</span>
+						</div>
 					</div>
 				</div>
-				<div class="tags">
-				  <p>{{ }}</p>
-					<span ng-repeat="tag in item.Document.Tags" class="label label-default">
-						<span class="glyphicon glyphicon-tag"></span> {{tag}}</span>
-				</div>
-			</div>
+				
+				<div class="annotation col-lg-8" ng-repeat="annotation in item.Annotations">
+					<div class="col-lg-1">
+						<div class="author-thumbnail" style="background-color:{{document.UploaderUsername.Color}} !important"></div>
+					</div>
+					<div class="col-lg-11">
+						<p class="author-name">Annotation by <span style="color:{{ annotation.Color }}">@</span> {{ annotation.AnnotatorUsername }}<br><p>
+						<p class="author-date">{{annotation.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
+						<div class="row"><img src="/crop/{{annotation.CropId}}"></div>
+						<div class="intro col-lg-11">{{annotation.AnnotationText}}</div>
+					</div>
+				</div>	
+			</div>	
 		</div>
-	</div>
+	</div>		
 </div>

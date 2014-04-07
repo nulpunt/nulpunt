@@ -5,19 +5,29 @@
 				<h1>Towards a democracy without secrets.</h1>
 				<p class="intro">0. is an online platform for gathering government documents, and documents relevant to policy making. 0. works towards making documents available for annotation and sharing through social media in order to follow and control government.</p>
 			</div>
-			<div class="col-lg-6">
-				<h1>New to 0.? <a ng-class="getClass('/register')"><a href="/#/register">Register here</a></h1>
-				<ul class="list-unstyled features">
-					<li><span class="glyphicon glyphicon-align-left"></span> Highlight documents</li>
-					<li><span class="glyphicon glyphicon-pencil"></span> Annotate documents</li>
-					<li><span class="glyphicon glyphicon-flash"></span> Amplify annotations</li>
-				</ul>
+			<div class="col-lg-3 col-lg-offset-3">
+				<div>
+					<a ng-hide="account.username" ng-class="getClass('/register')" class="btn pull-right" href="/#/register">Create an account</a>
+					<h1 ng-hide="account.username" class="uppercase signup-text">New to 0.?</h1>					
+				</div>
+				<div>
+					<ul class="list-unstyled features">
+						<li><span class="glyphicon glyphicon-align-left"></span> Highlight</li>
+						<li><span class="glyphicon glyphicon-pencil"></span> Annotate</li>
+						<li><span class="glyphicon glyphicon-flash"></span> Amplify</li>
+					</ul>
+				</div>
+				<!--<ul class="list-unstyled features">
+					<li><span class="glyphicon glyphicon-align-left"></span> Highlight</li>
+					<li><span class="glyphicon glyphicon-pencil"></span> Annotate</li>
+					<li><span class="glyphicon glyphicon-flash"></span> Amplify</li>
+				</ul>-->
 			</div>
 		</div>
 	</div>
 </div>
 
-<div class="container">
+<div class="container paddingAfterLogin">
 	<h1>Colophon</h1>
 	<p>0. is a project by Jonas Staal and Metahaven (Vinca Kruk & Daniel van der Velden)</p>
 
@@ -31,12 +41,12 @@
 				<li><strong>Technical Development:</strong> Guido Witmond, Matijs Eijkemans, Thomas van Lankveld</li>
 				<li><strong>Content Development:</strong> Daniel Hesselbein, Sasha Ojeda Mendoza</li>
 				<li><strong>System Operator / Server Administrator:</strong> Patrick Godschalk</li>
-				<li><strong>Front-End Development:</strong> Michele Colombrino</li>
+				<li><strong>Front-End Development:</strong> Michele Colombrino, Michael Höhne, Ritchy Höhne, Timo Nijssen</li>
 				<li><strong>Design:</strong> Metahaven (Michael Oswell, Daniel van der Velden, Vinca Kruk, Rasmus Svensson)</li>
 			</ul>
 		</div>
  
-		<div class="col-lg-5">
+		<div class="col-lg-offset-1 col-lg-5">
 			<h3>Partners</h3>
 			<ul class="list-unstyled">
 				<li><a href="https://www.bigwobber.nl/" title="Brenno de Winter" target="_blank">Brenno de Winter</a></li>
