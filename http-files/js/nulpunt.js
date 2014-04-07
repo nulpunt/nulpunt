@@ -614,12 +614,12 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
 		}).
 		success(function(data, status, headers, config) {
 		    console.log(data)
-		    $scope.done = true
+		    alert("Bookmark added")
 		}).
 		error(function(data, status, headers, config) {
 		    console.log("error addBookmark");
  		    console.log(data, status, headers);
- 		    $scope.error = data;
+ 		    alert("Sorry, could not add bookmark")
  		});
 	}
 });
