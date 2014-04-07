@@ -2,7 +2,7 @@
     $(window).bind('scroll', function() {
     	var metaDataDocHeight = $('.metadata-doc').height() + 10;
     	var docViewHeightCompensate = $('.subnav').height() + 15;
-    	var annotationViewHeight = $('.pageView').height() - 35;
+    	var annotationViewHeight = $('.pageView').height() - 40;
          if ($(window).scrollTop() > metaDataDocHeight) {
              $('.subnav').addClass('fixed-subnav');
              //$('.container.document-viewer.ng-scope').addClass('fixed-docview');

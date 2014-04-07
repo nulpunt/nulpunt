@@ -1,84 +1,97 @@
-<div class="container">
+<div class="container paddingAfterLogin">
     <div class="row">
-        <h1>Edit your profile</h1>
-    </div>
-
-    <div ng-show="done" class="alert alert-success" >
-        <strong>Your profile is updated!</strong><br/>
-    </div>
-
-    <div ng-show="error" class="alert alert-danger" >
-        <strong>Oops!</strong><br/>
-        {{error}}
-    </div>
-
-    <div ng-repeat="profile in profiles">
-        <form ng-submit="submit()" role="form" class="form-horizontal">
-            <div class="form-group">
-                <h3>Public profile</h3>
-                <p>These settings are optional, but are visible to everyone!</p>
-            </div>
-
-            <div class="form-group">
-                <label class="col-md-2 control-label" for="PublicName">
-                    Public Name
-                </label>
-                <div class="col-md-10">
-                    <input class="form-control" type="text" id="PublicName" ng-model="profile.PublicName" ng-value="profile.PublicName">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-md-2 control-label" for="Location">
-                    Location
-                </label>
-                <div class="col-md-10">
-                    <input class="form-control" type="text" id="Location" ng-model="profile.Location" ng-value="profile.Location" placeholder="e.g. Amsterdam, NL">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-md-2 control-label" for="Website">
-                    Website
-                </label>
-                <div class="col-md-10">
-                    <input class="form-control" type="text" id="Website" ng-model="profile.Website" ng-value="profile.Website">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-md-2 control-label" for="Bio">
-                    About me <br/><small>Here you can share a short bio about yourself</small>
-                </label>
-                <div class="col-md-10">
-                    <textarea class="form-control" rows="5" id="Bio" ng-model="profile.Bio">
-                        {{profile.Bio}}
-                    </textarea>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <h3>Subscribe to tags</h3>
-                <p>Click on the tags you are interested in to subscribe to them.</p>
-            </div>
-
-            <div class="form-group">
-                <div class="col-xs-12" ng-controller="AdminTagsCtrl">
-                    <ul class="list-unstyled">
-                        <li class="np-document-tag" ng-class="isSelectedTag(selectedTags, tag.Tag)" ng-repeat="tag in tags">
-                            <div class="TagSearchButton"  ng-click="toggleTag(selectedTags, tag.Tag)">
-                                <span class="glyphicon glyphicon-tag"></span> {{tag.Tag}}
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="col-xs-12">
-                    <button type="submit" class="btn btn-default">Save</button>
-                </div>
-            </div>
-        </form>
-    </div>
+	    <div class="col-lg-8">	
+	    	<div class="row">
+			    <div>
+			        <h1>Edit your profile</h1>
+			    </div>
+			
+			    <div ng-show="done" class="alert alert-success col-lg-8" >
+			        <h1>Your profile is updated!</h1>
+			    </div>
+			
+			    <div ng-show="error" class="alert alert-danger" >
+			        <h1>Oops!</h1><br/>
+			        {{error}}
+			    </div>
+			</div>
+			<div class="indent">
+			    <div ng-repeat="profile in profiles">
+			        <form ng-submit="submit()" role="form" class="form-horizontal">
+			            <div class="form-group">
+			                <h3>Public profile</h3>
+			                <p>These settings are optional, but are visible to everyone!</p>
+			            </div>
+			
+			            <div class="form-group">
+			                <label class="col-md-2 control-label" for="PublicName">
+			                    Public Name
+			                </label>
+			                <div class="col-md-6">
+			                    <input class="form-control" type="text" id="PublicName" ng-model="profile.PublicName" ng-value="profile.PublicName">
+			                </div>
+			            </div>
+			
+			            <div class="form-group">
+			                <label class="col-md-2 control-label" for="Location">
+			                    Location
+			                </label>
+			                <div class="col-md-6">
+			                    <input class="form-control" type="text" id="Location" ng-model="profile.Location" ng-value="profile.Location" placeholder="e.g. Amsterdam, NL">
+			                </div>
+			            </div>
+			
+			            <div class="form-group">
+			                <label class="col-md-2 control-label" for="Website">
+			                    Website
+			                </label>
+			                <div class="col-md-6">
+			                    <input class="form-control" type="text" id="Website" ng-model="profile.Website" ng-value="profile.Website">
+			                </div>
+			            </div>
+			
+			            <div class="form-group">
+			                <label class="col-md-2 control-label" for="Bio">
+			                    About me <br/><small>Here you can share a short bio about yourself</small>
+			                </label>
+			                <div class="col-md-6">
+			                    <textarea class="form-control" rows="5" id="Bio" ng-model="profile.Bio">
+			                        {{profile.Bio}}
+			                    </textarea>
+			                </div>
+			            </div>
+			
+			            <div class="form-group">
+			                <h3>Subscribe to tags</h3>
+			                <p>Click on the tags you are interested in to subscribe to them.</p>
+			            </div>
+			
+			            <div class="form-group">
+			            	<div class="row">
+				                <div class="col-lg-8" ng-controller="AdminTagsCtrl">
+				                    <ul class="list-unstyled">
+				                        <li class="np-document-tag" ng-class="isSelectedTag(selectedTags, tag.Tag)" ng-repeat="tag in tags">
+				                            <div class="TagSearchButton"  ng-click="toggleTag(selectedTags, tag.Tag)">
+				                                <span class="glyphicon glyphicon-tag"></span> {{tag.Tag}}
+				                            </div>
+				                        </li>
+				                    </ul>
+				                </div>
+				            </div>
+			            </div>
+			
+			            <div class="form-group">
+			            	<div class="row">
+				            	<div class="col-lg-12">
+					                <div class="submit-profile"> 
+					                    <button type="submit" class="btn col-lg-8">Save</button>
+					                </div>
+				                </div>
+				            </div>    
+			            </div>
+			        </form>
+			    </div>
+			</div>
+		</div>
+	</div>
 </div>
