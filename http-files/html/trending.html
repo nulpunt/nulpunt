@@ -39,7 +39,7 @@
 		<!-- first trending document --> 
 		<div ng-repeat="item in trending" class="row trending-item">
 			
-			<div class="col-lg-4">
+			<div class="col-lg-4 trending-art">
 				<div class="col-lg-3 img-thumbnail"></div>
 				<div class="col-lg-9">
 					<a href="/#/document/{{item.Document.ID}}"><h3>{{item.Document.Title}} <!--<span class="label document-type">{{item.Document.PageCount}} pages , {{item.Document.Category}}</span>--></h3></a>
@@ -61,24 +61,18 @@
 				</div>
 			</div>
 			
-				<div class="annotation col-lg-8" ng-repeat="annotation in item.Annotations">
-					<!--<div class="col-lg-2"></div>-->
-					<div class="col-lg-10"><img src="/crop/{{annotation.CropId}}">
-						Annotation by <span style="color:{{ annotation.Color }}">@</span>{{annotation.AnnotatorUsername}}: {{annotation.AnnotationText}}
-						<div class="row utilities" >
-							<div class="lg-col-12">
-								<span class="comment-date">{{annotation.CreateDate | date:'dd MMMM yyyy, hh:mm'}}</span>
-		
-		<!--							<ul class="list-unstyled list-inline pull-right">
-										<li> <span class="glyphicon glyphicon-flash"></span></li>
-										<li><span class="glyphicon glyphicon-star"></span></li>
-										<li><span class="glyphicon glyphicon-comment"></span></li>
-									</ul> -->
-							</div>	
-						</div>				  
-					</div>
+			<div class="annotation col-lg-8" ng-repeat="annotation in item.Annotations">
+				<div class="col-lg-1">
+					<div class="author-thumbnail" style="background-color:#888"></div>
 				</div>
-			
-		</div>
-	</div>
+				<div class="col-lg-11">
+					<p class="author-name">Annotation by <span style="color:{{ annotation.Color }}">@</span> {{ annotation.AnnotatorUsername }}<br><p>
+					<p class="author-date">{{annotation.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
+					<div class="row"><img src="/crop/{{annotation.CropId}}"></div>
+					<div class="intro col-lg-11">{{annotation.AnnotationText}}</div>
+				</div>
+			</div>	
+		</div>	
+		
+	</div>		
 </div>

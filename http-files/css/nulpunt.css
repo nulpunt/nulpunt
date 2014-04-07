@@ -49,6 +49,10 @@ a:hover {
 	color:#222;
 }
 
+p {
+	margin: 0 0 5px;
+}
+
 /*heading styles*/
 h1 {
 	font-size: 30px;
@@ -640,4 +644,22 @@ padding-top: 3px;
 }
 .align-left {
 margin-left: -30px;
+}
+.author-thumbnail {
+	width: 36px;
+	height: 36px;
+	float: left;
+	margin-right: 5px;
+}
+.author-name {
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.author-date {
+	font-size: 10px;
+}
+.trending-art {
+	background-color: #DDD;
+	padding: 10px;
 }
