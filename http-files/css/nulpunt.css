@@ -650,6 +650,7 @@ margin-left: -30px;
 	height: 36px;
 	float: left;
 	margin-right: 5px;
+	background-color:#888;
 }
 .author-name {
 	font-size: 14px;
@@ -661,5 +662,8 @@ margin-left: -30px;
 }
 .trending-art {
 	background-color: #DDD;
-	padding: 10px;
+	padding: 12px 10px 15px 12px;
+}
+.trending-columns {
+margin-left: 15px;
 }

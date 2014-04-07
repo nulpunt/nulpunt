@@ -35,44 +35,45 @@
 			<h1 class="uppercase">Current</h1>
 		</div>
 	</div>
-	<div class="container trending-columns">
-		<!-- first trending document --> 
-		<div ng-repeat="item in trending" class="row trending-item">
-			
-			<div class="col-lg-4 trending-art">
-				<div class="col-lg-3 img-thumbnail"></div>
-				<div class="col-lg-9">
-					<a href="/#/document/{{item.Document.ID}}"><h3>{{item.Document.Title}} <!--<span class="label document-type">{{item.Document.PageCount}} pages , {{item.Document.Category}}</span>--></h3></a>
-					<!--<div class="document-description">
-						<p>{{item.Document.Summary}}</p>
-					</div>-->
-					<div class="document-metadata">
-						<span class="date-document-source">Date <strong>{{item.Document.OriginalDate | date:'dd MMMM yyyy'}}</strong></span>
-						<span class="source">Source: {{item.Document.Source}}, ({{item.Document.Country}}) </span>
-						<span class="upload">Uploaded on <strong>{{item.Document.UploadDate | date:'dd MMMM yyyy'}}</strong></span>
-						<span class="uploader">Uploaded by <span style="color:{{item.Document.UploaderUsername.Color}}">@</span><strong>{{item.Document.UploaderUsername}}</strong></span>
-						<span class="request" ng-show="item.requester">Information requested by: {{item.Document.FOIRequester}}</span>
+	<div class="container">
+		<div class="trending-columns">
+			<!-- first trending document --> 
+			<div ng-repeat="item in trending" class="row trending-item">
+				
+				<div class="col-lg-4 trending-art">
+					<div class="col-lg-3 img-thumbnail"></div>
+					<div class="col-lg-9">
+						<a href="/#/document/{{item.Document.ID}}"><h3>{{item.Document.Title}} <!--<span class="label document-type">{{item.Document.PageCount}} pages , {{item.Document.Category}}</span>--></h3></a>
+						<!--<div class="document-description">
+							<p>{{item.Document.Summary}}</p>
+						</div>-->
+						<div class="document-metadata">
+							<span class="date-document-source">Date <strong>{{item.Document.OriginalDate | date:'dd MMMM yyyy'}}</strong></span>
+							<span class="source">Source: {{item.Document.Source}}, ({{item.Document.Country}}) </span>
+							<span class="upload">Uploaded on <strong>{{item.Document.UploadDate | date:'dd MMMM yyyy'}}</strong></span>
+							<span class="uploader">Uploaded by <span style="color:{{item.Document.UploaderUsername.Color}}">@</span><strong>{{item.Document.UploaderUsername}}</strong></span>
+							<span class="request" ng-show="item.requester">Information requested by: {{item.Document.FOIRequester}}</span>
+						</div>
+						<div class="tags">
+						  <div>{{ }}</div>
+							<span ng-repeat="tag in item.Document.Tags" class="label label-default">
+								<span class="glyphicon glyphicon-tag"></span> {{tag}}</span>
+						</div>
 					</div>
-					<div class="tags">
-					  <div>{{ }}</div>
-						<span ng-repeat="tag in item.Document.Tags" class="label label-default">
-							<span class="glyphicon glyphicon-tag"></span> {{tag}}</span>
+				</div>
+				
+				<div class="annotation col-lg-8" ng-repeat="annotation in item.Annotations">
+					<div class="col-lg-1">
+						<div class="author-thumbnail" style="background-color:{{document.UploaderUsername.Color}} !important"></div>
 					</div>
-				</div>
-			</div>
-			
-			<div class="annotation col-lg-8" ng-repeat="annotation in item.Annotations">
-				<div class="col-lg-1">
-					<div class="author-thumbnail" style="background-color:#888"></div>
-				</div>
-				<div class="col-lg-11">
-					<p class="author-name">Annotation by <span style="color:{{ annotation.Color }}">@</span> {{ annotation.AnnotatorUsername }}<br><p>
-					<p class="author-date">{{annotation.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
-					<div class="row"><img src="/crop/{{annotation.CropId}}"></div>
-					<div class="intro col-lg-11">{{annotation.AnnotationText}}</div>
-				</div>
+					<div class="col-lg-11">
+						<p class="author-name">Annotation by <span style="color:{{ annotation.Color }}">@</span> {{ annotation.AnnotatorUsername }}<br><p>
+						<p class="author-date">{{annotation.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
+						<div class="row"><img src="/crop/{{annotation.CropId}}"></div>
+						<div class="intro col-lg-11">{{annotation.AnnotationText}}</div>
+					</div>
+				</div>	
 			</div>	
-		</div>	
-		
+		</div>
 	</div>		
 </div>
