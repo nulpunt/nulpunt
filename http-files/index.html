@@ -1,7 +1,7 @@
 <!doctype html>
 <html ng-app="nulpunt" >
 	<head>
-		<title>Nulpunt - towards a democracy without secrects</title>
+		<title>Nulpunt - Democracy without secrets</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 		<!-- Bootstrap -->
@@ -75,8 +75,8 @@
 						  <a class="btn menu-top" ng-show="account.username" href="/#/profile">Profile</a>
 						  <a class="btn menu-top" ng-show="account.username" href="/#/inbox">Inbox</a>
 						  <a class="btn menu-top" ng-show="account.username" href="/#/bookmarks">Show Bookmarks</a>
-							<a ng-hide="account.username" class="btn pull-right" ng-click="loginFactory.showLogin()">Sign in</a>
-							<a ng-show="account.username" class="btn pull-right" ng-click="loginFactory.signOut()">Sign out</a>
+							<a ng-hide="account.username" class="btn pull-right uppercase" ng-click="loginFactory.showLogin()">Sign in</a>
+							<a ng-show="account.username" class="btn pull-right uppercase" ng-click="loginFactory.signOut()">Sign out</a>
 						
 					</div>
 				</div>

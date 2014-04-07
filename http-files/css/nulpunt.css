@@ -68,7 +68,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 h1, h2 {
 	margin-top: 0px;
-	margin-bottom: 20px;
+	margin-bottom: 10px;
 }
 
 h3 {
@@ -95,6 +95,19 @@ h3 {
 		padding: 14px;
 		font-size: 12px; 
 		overflow: hidden;
+}
+.trending-annotation {
+		background-color: #FFF;
+		padding: 10px;
+		font-size: 12px; 
+		overflow: hidden;
+		border-top: #DDD 10px solid;
+		border-bottom-left-radius: 3px;
+		border-bottom-right-radius: 3px;
+}
+.trending-title {
+	font-size: 16px;
+	font-weight: 400;
 }
 .annotateview-signin {
 margin-bottom: 4px;
@@ -133,7 +146,7 @@ margin-bottom: 4px;
 .intro, .np-bookmark, .subtitle-bookmarks-view {
 	font-size: 16px;
 	color: #888;
-	line-height: 24px;
+	line-height: 22px;
 }
 
 .navbar {
@@ -202,10 +215,10 @@ margin-bottom: 4px;
 	overflow-y: hidden;
 }
 .masthead-bottom{
-	    -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
-        -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
-        box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
-        padding: 12px 0px 10px 0px;
+    -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
+    padding: 12px 0px 10px 0px;
 }
 .nav>li>a {
 	position: relative;
@@ -259,7 +272,7 @@ margin-bottom: 4px;
 
 div.np-tagline {
 	background-color: #000;
-	width: 300px;
+	width: 30%;
 	margin-left: auto;
 	margin-right: auto;
 	height: 35px;
@@ -553,7 +566,7 @@ div.np-tagline p {
 }
 
 .about-nulpunt{
-	padding: 30px 0 20px 0;
+	padding: 19px 0 11px 0;
 }
 
 .uppercase {
@@ -618,12 +631,21 @@ margin-top: 15px;
 	border: 0;
 	border-radius: 3px;
 }
+.current-position {
+	margin-bottom: -10px;
+}
 .img-thumbnail {
 	background-color:#DDD;
 	min-height: 50px;
 	width: auto;
 	border-radius: 0px;
+	margin-top: 5px;
+	margin-right: -5px;
 }
+.tags {
+	margin-top: 2px;
+}
+
 .doc-tag-row {
 margin-bottom: -40px;
 }
@@ -653,7 +675,7 @@ margin-left: -30px;
 	background-color:#888;
 }
 .author-name {
-	font-size: 14px;
+	font-size: 16px;
 	font-weight: bold;
 }
 
@@ -662,7 +684,13 @@ margin-left: -30px;
 }
 .trending-art {
 	background-color: #DDD;
-	padding: 12px 10px 15px 12px;
+	padding: 5px 10px 10px 10px;
+}
+.trending-annotation-author-text {
+	font-size: 14px;
+	color: #666;
+	line-height: 16px;
+	padding-bottom: 10px;
 }
 .trending-columns {
 margin-left: 15px;
@@ -690,4 +718,20 @@ margin-right: 5px;
 .text-center{
 	text-align: center;
 	padding: 10px;
+}
+
+.extend {
+	padding-left: 0px;
+	padding-right: 0px;
+}
+.shadow-line{
+	-webkit-box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.1);
+}
+.no-gutter-left{
+	margin-left: -15px;
+}
+.no-gutter-right{
+	margin-right: -15px;
 }

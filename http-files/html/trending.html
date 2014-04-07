@@ -1,22 +1,15 @@
 <div class="masthead about-nulpunt">
 	<div class="container">
 		<div class="row">
-			<div class="col-lg-6">
-				<h1 class="uppercase">Towards a democracy without secrets.</h1>
+			<div class="col-lg-6 col-md-6 col-sm-6">
+				<h1 class="uppercase">Democracy without secrets</h1>
 				<p class="intro">0. is an online platform for gathering government and policy documents. 0. makes documents available for annotation and sharing through social media in order to follow and control government.</p>
 			</div>
 				
-			<div class="col-lg-3 col-lg-offset-3">
+			<div class="col-lg-5 col-lg-offset-1 col-md-5 col-md-offset-1 col-sm-5 col-sm-offset-1">
 				<div>
-					<a ng-hide="account.username" ng-class="getClass('/register')" class="btn pull-right" href="/#/register">Create an account</a>
-					<h1 ng-hide="account.username" class="uppercase signup-text">New to 0.?</h1>					
-				</div>
-				<div>
-					<ul class="list-unstyled features" ng-hide="account.username">
-						<li><span class="glyphicon glyphicon-align-left"></span> Highlight</li>
-						<li><span class="glyphicon glyphicon-pencil"></span> Annotate</li>
-						<li><span class="glyphicon glyphicon-flash"></span> Amplify</li>
-					</ul>
+					<a ng-hide="account.username" ng-class="getClass('/register')" class="btn pull-right uppercase" href="/#/register">Sign up</a>
+					<h1 ng-hide="account.username" class="uppercase pull-right signup-text">New to 0.? Sign up here</h1>					
 				</div>
 				<!--<ul class="list-unstyled features">
 					<li><span class="glyphicon glyphicon-align-left"></span> Highlight</li>
@@ -30,9 +23,9 @@
 <div class="container trending">
 	<!-- trending template -->
 	<div class="row">
-		<div class="col-lg-12">
+		<div class="col-lg-12 col-md-12 col-sm-12">
 			<!--<a class="btn pull-right" href="/#/documents/">More documents</a>-->
-			<h1 class="uppercase">Current</h1>
+			<h1 class="uppercase current-position">Current</h1>
 		</div>
 	</div>
 	<div class="container">
@@ -40,10 +33,10 @@
 			<!-- first trending document --> 
 			<div ng-repeat="item in trending" class="row trending-item">
 				
-				<div class="col-lg-4 trending-art">
-					<div class="col-lg-3 img-thumbnail"></div>
-					<div class="col-lg-9">
-						<a href="/#/document/{{item.Document.ID}}"><h3>{{item.Document.Title}} <!--<span class="label document-type">{{item.Document.PageCount}} pages , {{item.Document.Category}}</span>--></h3></a>
+				<div class="col-lg-4 col-md-4 col-sm-4 trending-art shadow-line">
+					<div class="col-lg-2 col-md-2 col-sm-2 img-thumbnail"></div>
+					<div class="col-lg-10 col-md-10 col-sm-10">
+						<a class="trending-title" href="/#/document/{{item.Document.ID}}">{{item.Document.Title}} <!--<span class="label document-type">{{item.Document.PageCount}} pages , {{item.Document.Category}}</span>--></a>
 						<!--<div class="document-description">
 							<p>{{item.Document.Summary}}</p>
 						</div>-->
@@ -61,18 +54,19 @@
 						</div>
 					</div>
 				</div>
-				
-				<div class="annotation col-lg-8" ng-repeat="annotation in item.Annotations">
-					<div class="col-lg-1">
-						<div class="author-thumbnail" style="background-color:{{document.UploaderUsername.Color}} !important"></div>
-					</div>
-					<div class="col-lg-11">
-						<p class="author-name">Annotation by <span style="color:{{ annotation.Color }}">@</span> {{ annotation.AnnotatorUsername }}<br><p>
-						<p class="author-date">{{annotation.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
-						<div class="row"><img src="/crop/{{annotation.CropId}}"></div>
-						<div class="intro col-lg-11">{{annotation.AnnotationText}}</div>
-					</div>
-				</div>	
+				<div class="col-lg-8 col-md-8 col-sm-8 extend">
+					<div class="trending-annotation shadow-line" ng-repeat="annotation in item.Annotations">
+						<div class="col-lg-1 col-md-1 extend no-gutter-right">
+							<div class="author-thumbnail" style="background-color:{{document.UploaderUsername.Color}} !important"></div>
+						</div>
+						<div class="col-lg-11 col-md-11 no-gutter-left">
+							<p class="author-name"><span style="color:{{ annotation.Color }}">@</span>{{ annotation.AnnotatorUsername }}<br><p>
+							<p class="author-date">{{annotation.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
+							<div class="col-lg-10 col-md-10 col-lg-offset-1 col-md-offset-1 extend"><img src="/crop/{{annotation.CropId}}"></div>
+							<div class="col-lg-11 col-md-11 extend trending-annotation-author-text">{{annotation.AnnotationText}}</div>
+						</div>
+					</div>	
+				</div>
 			</div>	
 		</div>
 	</div>		
