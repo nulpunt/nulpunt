@@ -69,7 +69,7 @@
 					<div class="col-lg-11">
 						<p class="author-name">Annotation by <span style="color:{{ annotation.Color }}">@</span> {{ annotation.AnnotatorUsername }}<br><p>
 						<p class="author-date">{{annotation.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
-						<div class="row"><img src="/crop/{{annotation.CropId}}"></div>
+						<div class="row"><a href="/#/document/{{annotation.DocumentID}}?page={{annotation.Locations[0].PageNumber}}"><img src="/crop/{{annotation.CropId}}"></a></div>
 						<div class="intro col-lg-11">{{annotation.AnnotationText}}</div>
 					</div>
 				</div>	

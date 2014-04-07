@@ -313,7 +313,7 @@ nulpunt.controller("DocumentsByTagsCtrl", function ($scope, $http, ProfileServic
 
 nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal, $window, LoginFactory) {
 	$scope.currentPage = {
-		number: 1,
+		number: $routeParams.page || 1,
 		data: {},
 	};
 
