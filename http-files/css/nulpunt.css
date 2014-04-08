@@ -320,7 +320,7 @@ div.np-tagline p {
 	display: block;
 	float: left;
 	padding: 3px 5px;
-	background-color: #333;
+	background-color: #000;
 	margin-right: 5px;
 	margin-bottom: 5px;
 	border-radius: 4px;
@@ -609,7 +609,7 @@ body.modal-open {
 	padding: 10px 4px;
 }
 .register-page {
-padding-top: 50px;
+padding-top: 25px;
 }
 
 .signup-h1{
@@ -617,10 +617,10 @@ padding-top: 50px;
 }
 .signup-form{
 	margin-left: 0px;
-	margin-top: 50px;
+	margin-top: 25px;
 }
 .signup-color-selection{
-	margin-top: 40px;
+	margin-top: 25px;
 }
 .signup-create-account-btn {
 margin-top: 15px;
@@ -648,7 +648,7 @@ margin-top: 15px;
 }
 
 .doc-tag-row {
-margin-bottom: -40px;
+margin-bottom: -30px;
 }
 small {
 	font-weight: 400;
@@ -777,7 +777,10 @@ padding-left: 3px;
 .menu-rechts-no-icon {
 	margin-top: 16px !important;
 }
-
+.btn-icon {
+height: 15px;
+margin-bottom: 2px;
+}
 #Inbox {
 margin-top: 2px;
 }
@@ -786,6 +789,9 @@ margin-top: 0px;
 }
 #Bookmarks {
 margin-top: 2px;
+}
+.register-countdown {
+margin-bottom: 70px;
 }
 #Profile {
 margin-top: 1px;

@@ -1,7 +1,43 @@
-<h1>Inbox</h1>
+<div class="masthead documents">
+	<div class="container">
+		<div class="metadata-doc">
+			<div class="row">	
+				<h1>Inbox</h1>
 
-<p>This pages shows the documents that match any of the tags you've subscribe to in your <a class="btn" href="/#/profile">Profile</a>.</p>
-<p>
+				<p class="intro">This pages shows the documents that match any of the tags you've subscribe to in your <a class="btn" href="/#/profile">Profile</a>.</p>
+
+					<div class="doc-tag-row">
+					<p class="intro">Click on the tags to see all related documents</p>
+				</div>
+			</div>
+		</div>
+	</div>
+		<!-- show tag-cloud -->
+	<div class="subnav">
+		<div class="masthead-bottom">
+			<div class="container">
+				<div class="row">
+					<div ng-controller="AdminTagsCtrl">
+						<ul class="list-unstyled">
+							<li class="np-document-tag" ng-class="isElement(searchTags, tag.Tag)" ng-repeat="tag in tags">
+								<div class="TagSearchButton"  ng-click="TagSearch(searchTags, tag.Tag)">
+									<span class="glyphicon glyphicon-tag"></span> {{tag.Tag}}
+								</div>
+							</li>
+						</ul>
+					</div><!-- ng-controller="AdminTagsCtrl" -->
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container">
+	<div class="row">
+		<div class="col-lg-12">
+			<h1></h1>
+		</div>
+	</div>
     <div ng-controller="ProfileCtrl">
 		<!-- UGLY  HACK. 
 			ProfileCntr returns a list with a single profile.
@@ -30,4 +66,4 @@
 		</div> <!-- ng-controller="DocumentsByTagsCtrl" -->
 	    </div> <!-- ng-repeat="profile in profiles" -->
 	</div> <!-- ng-controller="ProfileCtrl" -->
-</p>
+</div>

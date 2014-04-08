@@ -15,13 +15,19 @@
 			<div class="container">
 				<div class="row">
 					<div ng-controller="AdminTagsCtrl">
-						<ul class="list-unstyled">
-							<li class="np-document-tag" ng-class="isElement(searchTags, tag.Tag)" ng-repeat="tag in tags">
-								<div class="TagSearchButton"  ng-click="TagSearch(searchTags, tag.Tag)">
-									<span class="glyphicon glyphicon-tag"></span> {{tag.Tag}}
-								</div>
-							</li>
-						</ul>
+						<div class="form-group">
+			            	<div class="row">
+				                <div class="col-lg-8" ng-controller="AdminTagsCtrl">
+				                    <ul class="list-unstyled">
+				                        <li class="np-document-tag" ng-class="isSelectedTag(selectedTags, tag.Tag)" ng-repeat="tag in tags">
+				                            <div class="TagSearchButton"  ng-click="toggleTag(selectedTags, tag.Tag)">
+				                                <span class="glyphicon glyphicon-tag"></span> {{tag.Tag}}
+				                            </div>
+				                        </li>
+				                    </ul>
+				                </div>
+				            </div>
+			            </div>
 					</div><!-- ng-controller="AdminTagsCtrl" -->
 				</div>
 			</div>

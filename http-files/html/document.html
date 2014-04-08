@@ -186,7 +186,7 @@
 					<ul class="nav nav-pills">
 						<li><span class="btn" ng-click="bookmark(document.ID)">Bookmark</span></li>
 						<li class="dropdown">
-					        <a id="drop4" class="btn btn-dropdown" role="button" data-toggle="dropdown"><span class="glyphicon glyphicon-flash"></span> Amplify <b class="caret"></b></a>
+					        <a id="drop4" class="btn btn-dropdown" role="button" data-toggle="dropdown"><img class="btn-icon" src="img/Amplify.png" /> Amplify <b class="caret"></b></a>
 					        <ul id="menu1" class="dropdown-menu" role="menu" aria-labelledby="drop4">
 	                            <li role="presentation" class="dropdown-header">Amplify through:</li>
 	                            <li role="presentation" class="divider"></li>
@@ -198,7 +198,7 @@
 	                            <li role="presentation"><a ng-click="shareVK()" href="" class="amplify-item">VK</a></li>
 					        </ul>
 					      </li>
-						<li><a class="btn" ng-href="/download-original/{{document.ID}}/{{document.UploadFilename}}" target="_blank"><i class="fa fa-download"></i> Download original</a></li>
+						<li><a class="btn" ng-href="/download-original/{{document.ID}}/{{document.UploadFilename}}" target="_blank"><img class="btn-icon" src="img/download.png" />  Download original</a></li>
 					</ul>
 				</div>
 			</div>
@@ -253,7 +253,7 @@
 				<div class="annotate-alert">
 						<div ng-hide="account.username" >
 							<!-- we have a highlight but no auth, let user auth -->
-							To annotate or comment, please sign in first. <a class="btn annotateview-signin" ng-click="loginFactory.showLogin()">Sign in</a>
+							To annotate or comment, please sign in first. <a class="btn uppercase annotateview-signin" ng-click="loginFactory.showLogin()">Sign in</a>
 						</div> <!-- ng-hide="account.username" -->
 				</div>
 				<p ng-show="account.username">Highlight the document on the left to create an annotation.</p>
