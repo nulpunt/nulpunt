@@ -100,16 +100,16 @@
 								<div class="menu-top pull-right">
 									Bookmarks
 								</div>
-							</a>						
-							<a ng-show="account.username" class="btn pull-right uppercase menu-rechts-no-icon" ng-click="loginFactory.signOut()">Sign out</a>
-							<a class="btn pull-right uppercase menu-top" ng-show="account.username" href="/#/profile">
+							</a>		
+							<a class="btn menu-top" ng-show="account.username" href="/#/profile">
 								<div class="pull-left">
 									<img id="Profile" class="svg" src="img/nulpunt-icon-profile.svg" />
 								</div>
-								<div class="btn pull-right uppercase menu-rechts-icon">
+								<div class="menu-top pull-right">
 									Profile
 								</div>
-							</a>
+							</a>				
+							<a ng-show="account.username" class="btn pull-right uppercase menu-rechts-no-icon" ng-click="loginFactory.signOut()">Sign out</a>
 							<a class="btn pull-right uppercase menu-rechts-no-icon" ng-show="account.username" href="/#/documents">Search Documents</a>
 						</div>
 					</div>
