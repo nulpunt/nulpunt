@@ -68,7 +68,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 h1, h2 {
 	margin-top: 0px;
-	margin-bottom: 20px;
+	margin-bottom: 10px;
 }
 
 h3 {
@@ -95,6 +95,19 @@ h3 {
 		padding: 14px;
 		font-size: 12px; 
 		overflow: hidden;
+}
+.trending-annotation {
+		background-color: #FFF;
+		padding: 10px;
+		font-size: 12px; 
+		overflow: hidden;
+		border-top: #DDD 10px solid;
+		border-bottom-left-radius: 3px;
+		border-bottom-right-radius: 3px;
+}
+.trending-title {
+	font-size: 16px;
+	font-weight: 400;
 }
 .annotateview-signin {
 margin-bottom: 4px;
@@ -133,11 +146,12 @@ margin-bottom: 4px;
 .intro, .np-bookmark, .subtitle-bookmarks-view {
 	font-size: 16px;
 	color: #888;
-	line-height: 24px;
+	line-height: 22px;
 }
 
 .navbar {
 	margin-bottom:0px;
+	border: 0;
 }
 .navbar .btn {
 	margin-top: 8px;
@@ -187,7 +201,7 @@ margin-bottom: 4px;
         margin: 50px 0 15px 0;
 }
 .metadata-doc{
-	margin: 20px 0 10px 0;
+	margin: 15px 0 10px 0;
 }
 .annotator-metadata{
 	margin-bottom: 20px;
@@ -202,10 +216,10 @@ margin-bottom: 4px;
 	overflow-y: hidden;
 }
 .masthead-bottom{
-	    -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
-        -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
-        box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
-        padding: 12px 0px 10px 0px;
+    -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
+    padding: 12px 0px 10px 0px;
 }
 .nav>li>a {
 	position: relative;
@@ -223,12 +237,12 @@ margin-bottom: 4px;
         background-color: white;
 }
 .navbar-line{
-	    -webkit-box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.2);
-        -moz-box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.2);
-        box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.2);
+	    -webkit-box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2);
+        -moz-box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2);
+        box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2);
 }
 .document-description{
-	margin-top: -10px;
+	margin-top: -5px;
 }
 .document-description-taglist{
 	margin-top: 0px;
@@ -243,6 +257,9 @@ margin-bottom: 4px;
 
 .tags-metadata  {
 	margin-top: 12px;
+}
+.tag-row{
+	margin-top: 3px;
 }
 
 /* old to delete */
@@ -259,7 +276,7 @@ margin-bottom: 4px;
 
 div.np-tagline {
 	background-color: #000;
-	width: 300px;
+	width: 30%;
 	margin-left: auto;
 	margin-right: auto;
 	height: 35px;
@@ -303,7 +320,7 @@ div.np-tagline p {
 	display: block;
 	float: left;
 	padding: 3px 5px;
-	background-color: #333;
+	background-color: #000;
 	margin-right: 5px;
 	margin-bottom: 5px;
 	border-radius: 4px;
@@ -338,9 +355,6 @@ div.np-tagline p {
 .np-remove-padding-lr {
 	padding-left: 0;
 	padding-right: 0;
-}
-.nav-pills {
-margin-left: -6px;
 }
 
 .nav-tabs {
@@ -553,7 +567,7 @@ div.np-tagline p {
 }
 
 .about-nulpunt{
-	padding: 30px 0 20px 0;
+	padding: 19px 0 11px 0;
 }
 
 .uppercase {
@@ -595,7 +609,7 @@ body.modal-open {
 	padding: 10px 4px;
 }
 .register-page {
-padding-top: 50px;
+padding-top: 25px;
 }
 
 .signup-h1{
@@ -603,10 +617,10 @@ padding-top: 50px;
 }
 .signup-form{
 	margin-left: 0px;
-	margin-top: 50px;
+	margin-top: 25px;
 }
 .signup-color-selection{
-	margin-top: 40px;
+	margin-top: 25px;
 }
 .signup-create-account-btn {
 margin-top: 15px;
@@ -618,14 +632,23 @@ margin-top: 15px;
 	border: 0;
 	border-radius: 3px;
 }
+.current-position {
+	margin-bottom: -10px;
+}
 .img-thumbnail {
 	background-color:#DDD;
 	min-height: 50px;
 	width: auto;
 	border-radius: 0px;
+	margin-top: 5px;
+	margin-right: -5px;
 }
+.tags {
+	margin-top: 2px;
+}
+
 .doc-tag-row {
-margin-bottom: -40px;
+margin-bottom: -30px;
 }
 small {
 	font-weight: 400;
@@ -653,22 +676,40 @@ margin-left: -30px;
 	background-color:#888;
 }
 .author-name {
-	font-size: 14px;
+	font-size: 16px;
 	font-weight: bold;
 }
-
+.annotation-doc-title{
+	margin-top: -10px;
+}
 .author-date {
 	font-size: 10px;
 }
+.author-date-pos {
+	 margin-top: -5px;
+}
 .trending-art {
 	background-color: #DDD;
-	padding: 12px 10px 15px 12px;
+	padding: 5px 10px 10px 10px;
+}
+.trending-author-name-pos{
+	margin-top: -6px;
+}
+.trending-annotation-author-text {
+	font-size: 14px;
+	color: #666;
+	line-height: 16px;
+	padding-bottom: 10px;
 }
 .trending-columns {
 margin-left: 15px;
 }
 .btn.menu-top {
 margin-right: 5px;
+}
+.menu-top{
+	font-size: 16px;
+	margin-top: 10px !important;
 }
 .indent{
 	margin-left: 15px;
@@ -690,4 +731,68 @@ margin-right: 5px;
 .text-center{
 	text-align: center;
 	padding: 10px;
+}
+
+.extend {
+	padding-left: 0px;
+	padding-right: 0px;
+}
+.shadow-line{
+	-webkit-box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.1);
+}
+.shadow-top-line{
+	-webkit-box-shadow: 0px -1px 1px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0px -1px 1px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px -1px 1px rgba(0, 0, 0, 0.1);
+}
+.no-gutter-left{
+	margin-left: -15px;
+}
+.no-gutter-right{
+	margin-right: -15px;
+}
+.no-padding-right{
+	padding-right: 0px;
+}
+/*menubalk*/
+.menubar-login{
+	background-color: #000;
+}
+.menu-logo{
+	height:40px;
+}
+.menu-top {
+	font-size: 16px;
+	padding-top: 8px !important;
+	height: 40px;
+	overflow: hidden;
+	margin-top: 0 !important;
+}
+.menu-rechts-icon {
+margin-top: 8px !important;
+padding-left: 3px;
+}
+.menu-rechts-no-icon {
+	margin-top: 16px !important;
+}
+.btn-icon {
+height: 15px;
+margin-bottom: 2px;
+}
+#Inbox {
+margin-top: 2px;
+}
+#Current {
+margin-top: 0px;
+}
+#Bookmarks {
+margin-top: 2px;
+}
+.register-countdown {
+margin-bottom: 70px;
+}
+#Profile {
+margin-top: 1px;
 }

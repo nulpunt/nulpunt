@@ -2,7 +2,7 @@
 	<div ng-show="done" class="alert" >
 		<h1>Welcome to 0.</h1><br/>
 		Your account '{{username}}' was successfully registered.<br/>
-		You can now sign in to annotate and comment <a class="btn annotateview-signin" ng-click="loginFactory.showLogin()">Sign in</a>
+		You can now sign in to annotate and comment <a class="btn uppercase annotateview-signin" ng-click="loginFactory.showLogin()">Sign in</a>
 		<!--  You can now sign in. -->
 	</div>
 
@@ -13,72 +13,103 @@
 	</div>
 
 	<div ng-hide="done||error" >
-		<h1 class="uppercase signup-h1">Sign up for 0.</h1>
-		<p>Congratulations for making the first step toward a democracy without secrets.</p>
-		<div class="signup-form">
-			<form ng-submit="submit()" role="form" class="form-horizontal">
-			<div class="form-group">
-				<div class="col-md-6">
-					<label for="registerUsername" class="control-label sr-only" >Choose a Username</label>
-					<input type="text" class="form-control" id="registerUsername" placeholder="Choose a Username" required ng-model="username" >
+		<div class="row">
+			<div class="col-lg-10 col-md-10">
+				<h1 class="uppercase signup-h1">Sign up for 0.</h1>
+				<p>Congratulations for making the first step toward a democracy without secrets.</p>
+				<div class="signup-form">
+					<form ng-submit="submit()" role="form" class="form-horizontal">
+						<div class="form-group">
+							<div class="col-lg-6 col-md-6">
+								<label for="registerUsername" class="control-label sr-only" >Choose a Username</label>
+								<input type="text" class="form-control" id="registerUsername" placeholder="Choose a Username" required ng-model="username" >
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-lg-6 col-md-6">
+								<label for="registerEmail" class="control-label sr-only" >Enter your E-mail</label>
+								<input type="text" class="form-control" id="registerEmail" placeholder="E-mail" ng-model="email" >
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-lg-6 col-md-6">
+								<label for="registerPassword" class="control-label sr-only" >Choose a Password</label>
+								<input type="password" class="form-control" id="registerPassword" placeholder="Choose a Password" required ng-model="password" >
+								<br />
+								<label for="registerPasswordRepeat" class="control-label sr-only">Verify your Password</label>
+								<input type="password" class="form-control" id="registerPasswordRepeat" placeholder="Verify your Password" required ng-model="passwordRepeat" >
+							</div>
+							<div class="col-lg-4 col-md-4">
+								<div class="help-form">You cannot change your password once you created it. Nor can we retrieve the password in case you forget it. The reason for this is that 0. saves your password by encrypting it on the server. See <a href="/#/about">About</a> for more information.</div>
+							</div>
+						</div>
+						<div class="form-group signup-color-selection">
+							<div class="col-lg-2 col-md-2">
+								<label for="color" class="control-label sr-only" >Choose a Color</label>
+								<input type="text" id="colorSelector" class="form-control demo" data-inline="true" value="#4fc8db" placeholder="Choose a Color" ng-model="color">
+							</div>
+							<div class=" col-lg-2 col-lg-offset-1 col-md-2 col-md-offset-1 extend">
+								<div class="color-preview" style="display:block; background-color:{{ color }}">
+									This is how your text selection will look. Choose wisely.
+								</div>
+							</div>
+							<div class="col-lg-offset-1 col-lg-4 col-md-offset-1 col-md-4">
+								<div class="help-form">Use the selector to choose your highlighting color. This color will be used to highlight your annotations within documents.</div>
+							</div>
+			
+						</div>
+						<div class="col-lg-9 col-md-9">
+							<div class="form-group">
+				                <h3>Subscribe to tags</h3>
+				                <p>Click on the tags you are interested in to subscribe to them.</p>
+				            </div>
+							
+				            <div class="form-group">
+				            	<div class="row">
+					                <div class="col-lg-8 col-md-8" ng-controller="AdminTagsCtrl">
+					                    <ul class="list-unstyled">
+					                        <li class="np-document-tag" ng-class="isSelectedTag(selectedTags, tag.Tag)" ng-repeat="tag in tags">
+					                            <div class="TagSearchButton"  ng-click="toggleTag(selectedTags, tag.Tag)">
+					                                <span class="glyphicon glyphicon-tag"></span> {{tag.Tag}}
+					                            </div>
+					                        </li>
+					                    </ul>
+					                </div>
+					            </div>
+				            </div>
+							<div class="form-group">
+								<div class="col-lg-6 col-md-6 extend signup-create-account-btn">
+									<button type="submit" class="btn btn-default btn-block btn-lg uppercase">Create an account</button>
+								</div>
+							</div>
+						</div>
+			           
+					</form>
 				</div>
-
-				<div class="col-md-offset-5 col-md-1">
+			</div>
+			<div class="col-lg-2 col-md-2">
+				<div class="register-countdown">
+					<img src="img/register5.png">
+				</div>
+				<div class="register-countdown">
 					<img src="img/register4.png">
 				</div>
-			</div>
-			<div class="form-group">
-				<div class="col-md-6">
-					<label for="registerEmail" class="control-label sr-only" >Enter your E-mail</label>
-					<input type="text" class="form-control" id="registerEmail" placeholder="E-mail" ng-model="email" >
-				</div>
-
-				<div class="col-md-offset-5 col-md-1">
+				<div class="register-countdown">
 					<img src="img/register3.png">
 				</div>
-			</div>
-			<div class="form-group">
-				<div class="col-md-6">
-					<label for="registerPassword" class="control-label sr-only" >Choose a Password</label>
-					<input type="password" class="form-control" id="registerPassword" placeholder="Choose a Password" required ng-model="password" >
-					<br />
-					<label for="registerPasswordRepeat" class="control-label sr-only">Verify your Password</label>
-					<input type="password" class="form-control" id="registerPasswordRepeat" placeholder="Verify your Password" required ng-model="passwordRepeat" >
-				</div>
-				<div class="col-md-4">
-					<div class="help-form">You cannot change your password once you created it. Nor can we retrieve the password in case you forget it. The reason for this is that 0. saves your password by encrypting it on the server. See <a href="/#/about">About</a> for more information.</div>
-				</div>
-				<div class="col-md-offset-1 col-md-1">
+				<div class="register-countdown">
 					<img src="img/register2.png">
 				</div>
-			</div>
-			<div class="form-group signup-color-selection">
-				<div class="col-md-2">
-					<label for="color" class="control-label sr-only" >Choose a Color</label>
-					<input type="text" id="colorSelector" class="form-control demo" data-inline="true" value="#4fc8db" placeholder="Choose a Color" ng-model="color">
-				</div>
-				<div class=" col-md-3">
-					<div class="color-preview" style="display:block; background-color:{{ color }}">
-						This is how your text selection will look. Choose wisely.
-					</div>
-				</div>
-				<div class="col-md-offset-1 col-md-4">
-					<div class="help-form">Use the selector to choose your highlighting color. This color will be used to highlight your annotations within documents.</div>
-				</div>
-				<div class="col-md-offset-1 col-md-1">
+				<div class="register-countdown">
 					<img src="img/register1.png">
 				</div>
-			</div>
-			<div class="form-group">
-				<div class="col-md-6 signup-create-account-btn">
-					<button type="submit" class="btn btn-default btn-block btn-lg">Create an account</button>
-				</div>
-				<div class="col-md-offset-5 col-md-1">
+				<div class="register-countdown">
 					<img src="img/register0.png">
 				</div>
 			</div>
-		</form>
 		</div>
+		
+
 	</div>
 </div>
 <script type="text/javascript">
