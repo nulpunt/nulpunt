@@ -4,45 +4,4 @@
 			<div class="row">	
 				<h1 class="uppercase">Inbox</h1>
 
-				<p class="intro">These documents relate to the topics you are subscribed to. You can change your subsciption in your <a class="btn" href="/#/profile">Profile</a>. For more documents see also <a class="btn" href="/#/documents">Search Documents</a></p>
-
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="container">
-	<div class="row">
-		<div class="col-lg-12">
-			<h1></h1>
-		</div>
-	</div>
-    <div ng-controller="ProfileCtrl">
-		<!-- UGLY  HACK. 
-			ProfileCntr returns a list with a single profile.
-			We use the ng-repeat "profile in profiles" to make it clear to angular that
-			DocumentsByTagsCntr below needs the Tags from ProfileCtrl!!!
-		-->
-
-	<div ng-repeat="profile in profiles">
-	    <div ng-controller="DocumentsByTagsCtrl">
-	        <div ng-repeat="document in documents" class="row np-row np-document" ng-class-even="'np-row-even'">
-		    <div class="col-lg-8">
-
-			<h2><a href="/#/document/{{ document.ID }}">{{ document.Title }}</a> - <small>  {{ document.Category }}</small></h2>
-			<div class="document-description-taglist">
-				<p>{{document.Summary}}</p>
-			</div>
-			<div class="document-metadata">
-				<span class="source">Source: {{document.Source}} on {{document.OriginalDate | date:'dd MMMM yyyy, hh:mm'}} ({{ document.Country }})</span>
-				<span class="upload">Uploaded on <strong>{{document.UploadDate | date:'dd MMMM yyyy, hh:mm'}}</strong> by <span style="color:{{document.UploaderUsername.Color}}">@</span><span>{{document.UploaderUsername}}</span></span>
-				<!-- <span class="language">Language: {{ document.Language }}</span> -->
-			</div>
-			<div class="tags-metadata">
-				<span ng-repeat="tag in document.Tags.sort()" class="np-document-tag"><span class="glyphicon glyphicon-tag"></span> {{ tag }}</span>
-			</div>
-		    </div>
-		</div> <!-- ng-controller="DocumentsByTagsCtrl" -->
-	    </div> <!-- ng-repeat="profile in profiles" -->
-	</div> <!-- ng-controller="ProfileCtrl" -->
-</div>
+				<p class="intro">These documents relate to the topics you are subscribed to. You can change your subsciption in your <a class="btn" href="/#/profile">Profile</a>.<br> For more documents 
