@@ -12,6 +12,7 @@ func registerAccountHandlerFunc(w http.ResponseWriter, r *http.Request) {
 		Email    string `json:"email"`
 		Password string `json:"password"`
 		Color    string `json:"color"`
+		Tags     []string `json:"tags"`
 	}
 
 	type outDataType struct {
@@ -45,6 +46,16 @@ func registerAccountHandlerFunc(w http.ResponseWriter, r *http.Request) {
 		log.Printf("error creating an account: %s\n", err)
 		outData.Error = "A server error occured."
 		return
+	}
+
+	// Now create a Profile with the selected Tags
+	profile := newProfile()
+	profile.Username = inData.Username
+	profile.Tags = inData.Tags
+	err = upsertProfile(profile)
+	if err != nil {
+		log.Printf("error creating a profile for account (%s): %s\n", inData.Username, err)
+		// don't signal an error, as we have created an account succesfully, above.
 	}
 
 	// all done
