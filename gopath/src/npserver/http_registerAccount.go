@@ -8,10 +8,10 @@ import (
 
 func registerAccountHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	type inDataType struct {
-		Username string `json:"username"`
-		Email    string `json:"email"`
-		Password string `json:"password"`
-		Color    string `json:"color"`
+		Username string   `json:"username"`
+		Email    string   `json:"email"`
+		Password string   `json:"password"`
+		Color    string   `json:"color"`
 		Tags     []string `json:"tags"`
 	}
 
