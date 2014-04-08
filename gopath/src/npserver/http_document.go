@@ -206,7 +206,7 @@ func getDocumentsByTagsHandler(rw http.ResponseWriter, req *http.Request) {
 
 		// create the selector
 
-		docs, err := getDocuments(bson.M{"tags": bson.M{"$in": params.Tags}})
+		docs, err := getOrderedDocuments(bson.M{"tags": bson.M{"$in": params.Tags}, "published": true}, "-uploadDate")
 		if err != nil {
 			log.Printf("GetDocuments error %#v\n", err)
 			http.Error(rw, "GetDocuments error", http.StatusNotFound) // 404

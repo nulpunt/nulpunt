@@ -64,7 +64,7 @@
 							<p class="annotation-doc-title trending-title"> <span class="ionicons ion-ios7-arrow-thin-right"</span> {{item.Document.Title}}</p>
 							<p class="author-date author-date-pos">{{annotation.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
 							<div class="col-lg-10 col-md-10 col-lg-offset-1 col-md-offset-1 extend">
-								<a class="trending-title" href="/#/document/{{item.Document.ID}}">
+								<a class="trending-title" href="/#/document/{{annotation.DocumentID}}?page={{annotation.Locations[0].PageNumber}}">
 									<img src="/crop/{{annotation.CropId}}">
 								</a>
 							</div>

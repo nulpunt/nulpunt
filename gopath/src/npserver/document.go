@@ -29,10 +29,19 @@ func getDocument(selection interface{}) (*Document, error) {
 }
 
 // getDocuments gets all documents based upon the specified selection.
-// Selection must lead to a unique document. Otherwise, results are undefined
 func getDocuments(selection interface{}) ([]Document, error) {
 	docs := []Document{}
 	err := colDocuments.Find(selection).All(&docs)
+	if err != nil {
+		return nil, err
+	}
+	return docs, nil
+}
+
+// getDocuments gets all documents based upon the specified selection.
+func getOrderedDocuments(selection interface{}, order string) ([]Document, error) {
+	docs := []Document{}
+	err := colDocuments.Find(selection).Sort(order).All(&docs)
 	if err != nil {
 		return nil, err
 	}
