@@ -62,7 +62,11 @@
 						<div class="col-lg-11 col-md-11 no-gutter-left">
 							<p class="author-name"><span style="color:{{ annotation.Color }}">@</span>{{ annotation.AnnotatorUsername }}<br><p>
 							<p class="author-date">{{annotation.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
-							<div class="col-lg-10 col-md-10 col-lg-offset-1 col-md-offset-1 extend"><img src="/crop/{{annotation.CropId}}"></div>
+							<div class="col-lg-10 col-md-10 col-lg-offset-1 col-md-offset-1 extend">
+								<a class="trending-title" href="/#/document/{{item.Document.ID}}">{{item.Document.Title}}
+									<img src="/crop/{{annotation.CropId}}">
+								</a>
+							</div>
 							<div class="col-lg-11 col-md-11 extend trending-annotation-author-text">{{annotation.AnnotationText}}</div>
 						</div>
 					</div>	

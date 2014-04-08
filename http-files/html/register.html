@@ -69,9 +69,28 @@
 					<img src="img/register1.png">
 				</div>
 			</div>
+			            <div class="form-group">
+			                <h3>Subscribe to tags</h3>
+			                <p>Click on the tags you are interested in to subscribe to them.</p>
+			            </div>
+			
+			            <div class="form-group">
+			            	<div class="row">
+				                <div class="col-lg-8" ng-controller="AdminTagsCtrl">
+				                    <ul class="list-unstyled">
+				                        <li class="np-document-tag" ng-class="isSelectedTag(selectedTags, tag.Tag)" ng-repeat="tag in tags">
+				                            <div class="TagSearchButton"  ng-click="toggleTag(selectedTags, tag.Tag)">
+				                                <span class="glyphicon glyphicon-tag"></span> {{tag.Tag}}
+				                            </div>
+				                        </li>
+				                    </ul>
+				                </div>
+				            </div>
+			            </div>
+
 			<div class="form-group">
 				<div class="col-md-6 signup-create-account-btn">
-					<button type="submit" class="btn btn-default btn-block btn-lg">Create an account</button>
+					<button type="submit" class="btn btn-default btn-block btn-lg uppercase">Create an account</button>
 				</div>
 				<div class="col-md-offset-5 col-md-1">
 					<img src="img/register0.png">

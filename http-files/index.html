@@ -69,17 +69,52 @@
 					<a class="navbar-brand" href="/#/" style="display:block; background-color:{{ account.color }}"><img id="np-logo" class="svg" src="img/np-logo_alpha.svg" /></a>			
 				</div> <!-- "navbar-header -->
 				
-				<div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'">
-					<div class="container">
-						
-						  <a class="btn menu-top" ng-show="account.username" href="/#/profile">Profile</a>
-						  <a class="btn menu-top" ng-show="account.username" href="/#/inbox">Inbox</a>
-						  <a class="btn menu-top" ng-show="account.username" href="/#/bookmarks">Show Bookmarks</a>
-							<a ng-hide="account.username" class="btn pull-right uppercase" ng-click="loginFactory.showLogin()">Sign in</a>
-							<a ng-show="account.username" class="btn pull-right uppercase" ng-click="loginFactory.signOut()">Sign out</a>
-						
+				<div class="collapse navbar-collapse" ng-hide="account.username" ng-class="!navCollapsed && 'in'">
+					<div class="container" ng-hide="account.username">
+						<a ng-hide="account.username" class="btn pull-right uppercase" ng-click="loginFactory.showLogin()">Sign in</a>
+					</div>
+				</div>				
+				<div class="collapse navbar-collapse menubar-login" ng-show="account.username" ng-class="!navCollapsed && 'in'">
+					<div class="container extend">
+						<div class="row">
+							<a class="btn menu-top" ng-show="account.username" href="/#/">
+								<div class="pull-left">
+									<img id="Current" class="svg" src="img/nulpunt-icon-current.svg" />
+								</div>
+								<div class="menu-top pull-right">
+									Current
+								</div>
+							</a>
+							<a class="btn menu-top" ng-show="account.username" href="/#/inbox">
+								<div class="pull-left">
+									<img id="Inbox" class="svg" src="img/nulpunt-icon-inbox.svg" />
+								</div>
+								<div class="menu-top pull-right">
+									Inbox
+								</div>
+							</a>
+							<a class="btn menu-top" ng-show="account.username" href="/#/bookmarks">
+								<div class="pull-left">
+									<img id="Bookmarks" class="svg" src="img/nulpunt-icon-bookmarks.svg" />
+								</div>
+								<div class="menu-top pull-right">
+									Bookmarks
+								</div>
+							</a>						
+							<a ng-show="account.username" class="btn pull-right uppercase menu-rechts-no-icon" ng-click="loginFactory.signOut()">Sign out</a>
+							<a class="btn pull-right uppercase menu-top" ng-show="account.username" href="/#/profile">
+								<div class="pull-left">
+									<img id="Profile" class="svg" src="img/nulpunt-icon-profile.svg" />
+								</div>
+								<div class="btn pull-right uppercase menu-rechts-icon">
+									Profile
+								</div>
+							</a>
+							<a class="btn pull-right uppercase menu-rechts-no-icon" ng-show="account.username" href="/#/documents">Search Documents</a>
+						</div>
 					</div>
 				</div>
+
 			</div> <!-- navbar static top -->
 		</div> <!-- NavBarCtrl -->
 

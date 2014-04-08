@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="35px"
+	 height="35px" viewBox="0 0 1024 1024" xml:space="preserve">
+<g id="Profile">
+	<g>
+		
+			<line fill="#FFFFFF" stroke="#000000" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" x1="512" y1="512" x2="512" y2="512"/>
+		
+			<line fill="#FFFFFF" stroke="#000000" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" x1="512" y1="512" x2="512" y2="512"/>
+		<circle fill="#FFFFFF" cx="320" cy="256" r="64"/>
+		<circle fill="#FFFFFF" cx="223" cy="576" r="64"/>
+		<circle fill="#FFFFFF" cx="384" cy="736" r="64"/>
+		<circle fill="#FFFFFF" cx="640" cy="736" r="64"/>
+		<circle fill="#FFFFFF" cx="768" cy="448" r="64"/>
+		<circle fill="#FFFFFF" cx="512" cy="288" r="64"/>
+		<circle fill="#FFFFFF" cx="736" cy="192" r="64"/>
+		<path fill="#FFFFFF" d="M468.1738,426.6025l-78.3154-104.8281c-7.3311,7.7815-15.9429,14.3406-25.4961,19.3398l78.1943,104.6665
+			C449.9341,438.0474,458.5874,431.542,468.1738,426.6025z"/>
+		<path fill="#FFFFFF" d="M672.2861,455.436l-72.3447,18.0862c4.2305,9.6304,6.9287,20.0796,7.7725,31.0417l72.3447-18.0862
+			C675.8281,476.8474,673.1299,466.3982,672.2861,455.436z"/>
+		<path fill="#FFFFFF" d="M694.8311,278.7126c-9.7451-4.6458-18.5879-10.887-26.1914-18.3838L553.168,425.2871
+			c9.7461,4.6458,18.5889,10.8872,26.1924,18.3838L694.8311,278.7126z"/>
+		<path fill="#FFFFFF" d="M528,417.3408v-34.6816C522.7949,383.5364,517.4512,384,512,384c-5.4507,0-10.7949-0.4636-16-1.3408
+			v34.6816c5.2051-0.8772,10.5493-1.3408,16-1.3408C517.4512,416,522.7949,416.4636,528,417.3408z"/>
+		<path fill="#FFFFFF" d="M417.0732,645.8726c10.1685,3.7432,19.5332,9.1621,27.7603,15.9182l34.0933-59.6633
+			c-10.1689-3.7434-19.5332-9.1621-27.7603-15.9185L417.0732,645.8726z"/>
+		<path fill="#FFFFFF" d="M312.0103,540.0518c3.9448,9.7327,6.3413,20.2517,6.8735,31.2534l104.1895-23.1533
+			c-3.9678-9.7249-6.3916-20.2378-6.9487-31.2366L312.0103,540.0518z"/>
+		<path fill="#FFFFFF" d="M579.167,661.7908c8.2266-6.7561,17.5908-12.1748,27.7598-15.9182l-34.0938-59.6633
+			c-8.2266,6.7561-17.5908,12.1748-27.7598,15.9182L579.167,661.7908z"/>
+		<circle fill="#FFFFFF" cx="512" cy="512" r="64"/>
+	</g>
+</g>
+</svg>

@@ -698,6 +698,10 @@ margin-left: 15px;
 .btn.menu-top {
 margin-right: 5px;
 }
+.menu-top{
+	font-size: 16px;
+	margin-top: 10px !important;
+}
 .indent{
 	margin-left: 15px;
 }
@@ -729,9 +733,49 @@ margin-right: 5px;
     -moz-box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.1);
     box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.1);
 }
+.shadow-top-line{
+	-webkit-box-shadow: 0px -1px 1px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0px -1px 1px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px -1px 1px rgba(0, 0, 0, 0.1);
+}
 .no-gutter-left{
 	margin-left: -15px;
 }
 .no-gutter-right{
 	margin-right: -15px;
+}
+
+/*menubalk*/
+.menubar-login{
+	background-color: #000;
+}
+.menu-logo{
+	height:40px;
+}
+.menu-top {
+	font-size: 16px;
+	padding-top: 8px !important;
+	height: 40px;
+	overflow: hidden;
+	margin-top: 0 !important;
+}
+.menu-rechts-icon {
+margin-top: 8px !important;
+padding-left: 3px;
+}
+.menu-rechts-no-icon {
+	margin-top: 16px !important;
+}
+
+#Inbox {
+margin-top: 2px;
+}
+#Current {
+margin-top: 0px;
+}
+#Bookmarks {
+margin-top: 2px;
+}
+#Profile {
+margin: 1px -5px 0 0;
 }
