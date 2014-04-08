@@ -60,10 +60,11 @@
 							<div class="author-thumbnail" style="background-color:{{document.UploaderUsername.Color}} !important"></div>
 						</div>
 						<div class="col-lg-11 col-md-11 no-gutter-left">
-							<p class="author-name"><span style="color:{{ annotation.Color }}">@</span>{{ annotation.AnnotatorUsername }}<br><p>
-							<p class="author-date">{{annotation.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
+							<p class="author-name trending-author-name-pos"><span style="color:{{ annotation.Color }}">@</span>{{ annotation.AnnotatorUsername }}<br><p>
+							<p class="annotation-doc-title trending-title"> <span class="ionicons ion-ios7-arrow-thin-right"</span> {{item.Document.Title}}</p>
+							<p class="author-date author-date-pos">{{annotation.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
 							<div class="col-lg-10 col-md-10 col-lg-offset-1 col-md-offset-1 extend">
-								<a class="trending-title" href="/#/document/{{item.Document.ID}}">{{item.Document.Title}}
+								<a class="trending-title" href="/#/document/{{item.Document.ID}}">
 									<img src="/crop/{{annotation.CropId}}">
 								</a>
 							</div>

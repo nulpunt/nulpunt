@@ -201,7 +201,7 @@ margin-bottom: 4px;
         margin: 50px 0 15px 0;
 }
 .metadata-doc{
-	margin: 20px 0 10px 0;
+	margin: 15px 0 10px 0;
 }
 .annotator-metadata{
 	margin-bottom: 20px;
@@ -242,7 +242,7 @@ margin-bottom: 4px;
         box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.2);
 }
 .document-description{
-	margin-top: -10px;
+	margin-top: -5px;
 }
 .document-description-taglist{
 	margin-top: 0px;
@@ -257,6 +257,9 @@ margin-bottom: 4px;
 
 .tags-metadata  {
 	margin-top: 12px;
+}
+.tag-row{
+	margin-top: 3px;
 }
 
 /* old to delete */
@@ -352,9 +355,6 @@ div.np-tagline p {
 .np-remove-padding-lr {
 	padding-left: 0;
 	padding-right: 0;
-}
-.nav-pills {
-margin-left: -6px;
 }
 
 .nav-tabs {
@@ -679,13 +679,21 @@ margin-left: -30px;
 	font-size: 16px;
 	font-weight: bold;
 }
-
+.annotation-doc-title{
+	margin-top: -10px;
+}
 .author-date {
 	font-size: 10px;
+}
+.author-date-pos {
+	 margin-top: -5px;
 }
 .trending-art {
 	background-color: #DDD;
 	padding: 5px 10px 10px 10px;
+}
+.trending-author-name-pos{
+	margin-top: -6px;
 }
 .trending-annotation-author-text {
 	font-size: 14px;
@@ -745,7 +753,9 @@ margin-right: 5px;
 .no-gutter-right{
 	margin-right: -15px;
 }
-
+.no-padding-right{
+	padding-right: 0px;
+}
 /*menubalk*/
 .menubar-login{
 	background-color: #000;
