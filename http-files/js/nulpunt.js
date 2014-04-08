@@ -193,17 +193,6 @@ nulpunt.controller("OverviewCtrl", function($scope){
 nulpunt.controller("DashboardCtrl", function($scope, $http, SearchDocumentService) {
 	$scope.documents = [];
 	$scope.searchTags = [];
-	// TODO MARKED FOR REMOVAL
-	// // Don't show anything at page load
-	// // Leave it in for when we will default on the users' profile.
-	// $http({method: "POST", url: "/service/getDocuments", data: {} }).
-	// success(function(data) {
-	// 	console.log(data);
-	// 	$scope.documents = data.documents;
-	// }).
-	// error(function(error) {
-	//     console.log('error retrieving raw documents: ', error);
-	// });
 
 	// Tagsearch gets the tag to add or remove.
 	$scope.TagSearch = function(tags, tag) {
@@ -275,10 +264,6 @@ nulpunt.controller("DocumentsByTagsCtrl", function ($scope, $http, ProfileServic
 	
 	// Tagsearch gets the tag to add or remove.
 	$scope.TagSearch = function(tags, tag) {
-		// TODO MARKED FOR REMOVAL
-		//console.log("TagSearch has: ", profile_tags, tag)
-		// TODO MARKED FOR REMOVAL
-		//var tags = profile_tags.filter(function(x) {return true}); // copy into new array to make it idempotent.
 		var index = tags.indexOf(tag)
 		if (index > -1) {
 			// found it, remove from tags list
@@ -287,8 +272,6 @@ nulpunt.controller("DocumentsByTagsCtrl", function ($scope, $http, ProfileServic
 			// not in there, add it
 			tags.push(tag);
 		};
-		// TODO MARKED FOR REMOVAL
-		//console.log("TagSearch has: ", profile_tags, tag, " -> ", tags)
 		SearchDocumentService.searchDocuments(tags).then(
 			function(data) {
 				console.log("TagSearch got from SearchDoc promise: ", data);
@@ -810,6 +793,58 @@ nulpunt.controller("ProfileCtrl", function($scope, $http, $routeParams) {
 	}
 });
 
+
+// TagCloudCtrl
+nulpunt.controller("TagCloudCtrl", function($scope, $http, $routeParams, TagService) {
+
+    // Set this variable in the outer controller where you want to have access to tags selected by the user.
+    // $scope.selectedTags = [];
+    // The use this variable in the isSelectedTag() and toggleTag() functions
+
+	TagService.getTags().then(
+		function(data) {
+			console.log("TagCloudCtrl received data: ", data);
+			$scope.tags = data.tags;
+		},
+		function(error) {
+			console.log(error);
+		}
+	);
+
+    $scope.isSelectedTag = function(tags, tag) {
+        if(tags == undefined) {
+            return false;
+        }
+        var index = tags.indexOf(tag);
+        if (index == -1) {
+            return "np-notselected";
+        }
+        else {
+            return "np-selected";
+        }
+    }
+
+    $scope.toggleTag = function(tags, tag) {
+	if (tags == undefined) {
+	    console.log("create a var named $scope.selectedTags in the outer scope of your TagCloudCtrl");
+	    return;
+	}
+        var index = tags.indexOf(tag);
+        if (index > -1) {
+            // Found it, remove from selectedTags
+            tags.splice(index, 1);
+	    // $(this).closest('input[type=checkbox]').prop('checked', false);
+        }
+        else {
+            // Add it
+            tags.push(tag);
+	    // $(this).closest('input[type=checkbox]').prop('checked', true);
+        }
+        console.log(tags);
+    }
+});
+
+
 // BookmarksCtrl
 nulpunt.controller("BookmarksCtrl", function($scope, $http) {
 	$scope.done = false;
@@ -853,20 +888,21 @@ nulpunt.controller('ColophonCtrl', function($scope, $location) {
 // RegisterCtrl (TODO) checks registration input and sends the registration request
 nulpunt.controller("RegisterCtrl", function($scope, $rootScope, $http) {
 	// TODO: check input on-change (passwords match etc. etc.)
-
-	// submit sends registration request to the server
+        $scope.selectedTags = []; // This will collect the tags set by the TagCloudCtrl
+ 
+ 	// submit sends registration request to the server
 	$scope.submit = function() {
 		$http({method: 'POST', url: '/service/session/registerAccount', data: {
 			username: $scope.username,
 			email: $scope.email,
 			password: $scope.password,
-			color: $scope.color
+		        color: $scope.color,
+		        tags: $scope.selectedTags
 		}}).
 		success(function(data, status, headers, config) {
 			if(data.success) {
 				// set error to null in case of previous error
 				$scope.error = null;
-				// registration is done
 				$scope.done = true;
 			} else {
 				$scope.error = data.error;
