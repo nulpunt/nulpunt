@@ -44,7 +44,10 @@
 							<span class="date-document-source">Date <strong>{{item.Document.OriginalDate | date:'dd MMMM yyyy'}}</strong></span>
 							<span class="source">Source: {{item.Document.Source}}, ({{item.Document.Country}}) </span>
 							<span class="upload">Uploaded on <strong>{{item.Document.UploadDate | date:'dd MMMM yyyy'}}</strong></span>
-							<span class="uploader">Uploaded by <span style="color:{{item.Document.UploaderUsername.Color}}">@</span><strong>{{item.Document.UploaderUsername}}</strong></span>
+							<span class="uploader">Uploaded by 
+							  <!-- <span style="color:{{item.Document.UploaderUsername.Color}}">@</span> -->
+							  <span>@</span><strong>{{item.Document.UploaderUsername}}</strong>
+							</span>
 							<span class="request" ng-show="item.requester">Information requested by: {{item.Document.FOIRequester}}</span>
 						</div>
 						<div class="tags">
@@ -57,7 +60,7 @@
 				<div class="col-lg-8 col-md-8 col-sm-8 extend">
 					<div class="trending-annotation shadow-line" ng-repeat="annotation in item.Annotations">
 						<div class="col-lg-1 col-md-1 extend no-gutter-right">
-							<div class="author-thumbnail" style="background-color:{{document.UploaderUsername.Color}} !important"></div>
+							<div class="author-thumbnail" style="background-color:{{annotation.Color}} !important"></div>
 						</div>
 						<div class="col-lg-11 col-md-11 no-gutter-left">
 							<p class="author-name trending-author-name-pos"><span style="color:{{ annotation.Color }}">@</span>{{ annotation.AnnotatorUsername }}<br><p>
