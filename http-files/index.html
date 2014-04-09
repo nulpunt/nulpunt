@@ -67,7 +67,7 @@
 					</button>
 					
 					<!-- nulpunt logo -->
-					<a class="navbar-brand" href="/#/" style="display:block; background-color:{{ account.color }}"><img id="np-logo" class="svg" src="img/np-logo_alpha.svg" /></a>			
+					<a class="navbar-brand" href="/#/" style="display:block; background-color:#ffffff;"><img id="np-logo" class="svg" src="img/np-logo_alpha.svg" /></a>
 				</div> <!-- "navbar-header -->
 				
 				<div class="collapse navbar-collapse" ng-hide="account.username" ng-class="!navCollapsed && 'in'">
@@ -77,6 +77,7 @@
 					</div>
 				</div>				
 				<div class="collapse navbar-collapse menubar-login" ng-show="account.username" ng-class="!navCollapsed && 'in'">
+                    <div class="np-account-color pull-right" style="background-color: {{ account.color }};"></div>
 					<div class="container extend">
 						<div class="row">
 							<a class="btn menu-top" ng-show="account.username" href="/#/">
@@ -110,8 +111,8 @@
 								<div class="menu-top pull-right">
 									Profile
 								</div>
-							</a>				
-							<a ng-show="account.username" class="btn pull-right uppercase menu-rechts-no-icon" ng-click="loginFactory.signOut()">Sign out</a>
+							</a>
+                            <a ng-show="account.username" class="btn pull-right uppercase menu-rechts-no-icon" ng-click="loginFactory.signOut()">Sign out</a>
 							<a class="btn pull-right uppercase menu-rechts-no-icon" href="/#/documents">Search Documents</a>
 						</div>
 					</div>
