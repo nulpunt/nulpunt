@@ -13,7 +13,7 @@
 
 	<div ng-hide="done||error" >
 		<div class="row">
-			<div class="col-lg-10 col-md-10">
+			<div class="col-lg-11 col-md-11">
 				<h1 class="uppercase signup-h1">Sign up for 0.</h1>
 				<!--<p>Congratulations for making the first step toward a democracy without secrets.</p>-->
 				<div class="signup-form">
@@ -23,7 +23,13 @@
 								<label for="registerUsername" class="control-label sr-only" >Choose a Username</label>
 								<input type="text" class="form-control" id="registerUsername" placeholder="Choose a Username" required ng-model="username" >
 							</div>
+							<div class="col-lg-2 col-lg-offset-4 col-md-2">
+								<div class="register-countdown">
+									<img src="img/register5.png">
+								</div>
+							</div>
 						</div>
+						
 						<div class="form-group">
 							<div class="col-lg-6 col-md-6">
 								<label for="registerEmail" class="control-label sr-only" >Enter your E-mail</label>
@@ -32,7 +38,13 @@
 							<div class="col-lg-4 col-md-4">
 								<div class="help-form">Providing an e-mail address is optional</div>
 							</div>
+							<div class="col-lg-2 col-md-2">
+								<div class="register-countdown">
+									<img src="img/register4.png">
+								</div>
+							</div>
 						</div>
+						
 						<div class="form-group">
 							<div class="col-lg-6 col-md-6">
 								<label for="registerPassword" class="control-label sr-only" >Choose a Password</label>
@@ -44,8 +56,14 @@
 							<div class="col-lg-4 col-md-4">
 								<div class="help-form">Please choose your password wisely. Because 0. uses client side encryption we cannot offer password retrieval in the case you forget your password. For more information see <a href="/#/about">About</a></div>
 							</div>
+							<div class="col-lg-2 col-md-2">
+								<div class="register-countdown">
+									<img src="img/register3.png">
+								</div>
+							</div>
 						</div>
-						<div class="form-group signup-color-selection">
+						
+						<div class="form-group signup-color-selection"> 
 							<div class="col-lg-2 col-md-2">
 								<label for="colorSelector" class="control-label sr-only" >Choose a Color</label>
 								<input type="text" id="colorSelector" class="form-control demo" data-inline="true" value="#4fc8db" placeholder="Choose a Color" ng-model="color">
@@ -58,60 +76,52 @@
 							<div class="col-lg-offset-1 col-lg-4 col-md-offset-1 col-md-4">
 								<div class="help-form">Select your highlighting color. This color will be used to highlight your selections within documents. The color cannot be changed once chosen.</div>
 							</div>
-			
-						</div>
-						<div class="col-lg-9 col-md-9">
-							<div class="form-group">
-				                <h3>Subscribe to topics of your interest.</h3> <!--help-form??-->
-				                <p>Select topics of your interest. Documents corresponding to these topics will be gathered in your inbox.</p>
-				            </div>
-							
-				            <div class="form-group">
-				            	<div class="row">
-					                <div class="col-lg-8 col-md-8" ng-controller="TagCloudCtrl">
-					                    <ul class="list-unstyled">
-					                        <li class="np-document-tag" ng-class="isSelectedTag(selectedTags, tag.Tag)" ng-repeat="tag in tags">
-					                            <div class="TagSearchButton"  ng-click="toggleTag(selectedTags, tag.Tag)">
-					                                <span class="glyphicon glyphicon-tag"></span> {{tag.Tag}}
-					                            </div>
-					                        </li>
-					                    </ul>
-					                </div>
-					            </div>
-				            </div>
-							<div class="form-group">
-								<div class="col-lg-6 col-md-6 extend signup-create-account-btn">
-									<button type="submit" class="btn btn-default btn-block btn-lg uppercase">Create account</button>
+							<div class="col-lg-2 col-md-2">
+								<div class="register-countdown">
+									<img src="img/register2.png">
 								</div>
 							</div>
+			
 						</div>
+						
+				            <div class="form-group">
+				            
+				                <div class="col-lg-6 col-md-6" ng-controller="TagCloudCtrl">
+				                    <ul class="list-unstyled">
+				                        <li class="np-document-tag" ng-class="isSelectedTag(selectedTags, tag.Tag)" ng-repeat="tag in tags">
+				                            <div class="TagSearchButton"  ng-click="toggleTag(selectedTags, tag.Tag)">
+				                                <span class="glyphicon glyphicon-tag"></span> {{tag.Tag}}
+				                            </div>
+				                        </li>
+				                    </ul>
+				                </div>
+				                <div class="col-lg-4 col-md-4">
+									<div class="help-form">Select topics of your interest. Documents corresponding to these topics will be gathered in your inbox.
+			           			 	</div>
+					            </div>
+					            <div class="col-lg-2 col-md-2">
+									<div class="register-countdown">
+									<img src="img/register1.png">
+									</div>
+								</div>
+							</div>
+				         
+							<div class="form-group">
+								<div class="col-lg-6 col-md-6 signup-create-account-btn">
+									<button type="submit" class="btn btn-default btn-block btn-lg uppercase">Create account</button>
+								</div>
+								<div class="col-lg-2 col-lg-offset-4 col-md-2 col-md-offset-4">
+									<div class="register-countdown">
+										<img src="img/register0.png">
+									</div>
+								</div>
+							</div>
 			           
 					</form>
-				</div>
-			</div>
-			<div class="col-lg-2 col-md-2">
-				<div class="register-countdown">
-					<img src="img/register5.png">
-				</div>
-				<div class="register-countdown">
-					<img src="img/register4.png">
-				</div>
-				<div class="register-countdown">
-					<img src="img/register3.png">
-				</div>
-				<div class="register-countdown">
-					<img src="img/register2.png">
-				</div>
-				<div class="register-countdown">
-					<img src="img/register1.png">
-				</div>
-				<div class="register-countdown">
-					<img src="img/register0.png">
+				
 				</div>
 			</div>
 		</div>
-		
-
 	</div>
 </div>
 <script type="text/javascript">
