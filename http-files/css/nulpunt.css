@@ -109,6 +109,14 @@ h3 {
 	font-size: 16px;
 	font-weight: 400;
 }
+.trending-thumbnail {
+    width: 75px;
+    float: left;
+    padding-right: 5px;
+}
+.trending-thumbnail img {
+    width: 100%;
+}
 .annotateview-signin {
 margin-bottom: 4px;
 }

@@ -34,10 +34,11 @@
 			<div ng-repeat="item in trending" class="row trending-item">
 				
 				<div class="col-lg-4 col-md-4 col-sm-4 trending-art shadow-line">
-					<div class="col-lg-2 col-md-2 col-sm-2 img-thumbnail">
-						<a class="trending-title" href="/#/document/{{item.Document.ID}}"><img src="img/document.png" height="100" width="75"/></a>
+					<!--<div class="col-lg-2 col-md-2 col-sm-2 img-thumbnail">
+						<a class="trending-title" href="/#/document/{{item.Document.ID}}"><img src="img/document.png" /></a>
 					</div>
-					<div class="col-lg-10 col-md-10 col-sm-10">
+					<div class="col-lg-10 col-md-10 col-sm-10">-->
+                    <a class="trending-thumbnail" href="/#/document/{{item.Document.ID}}"><img src="img/document.png" /></a>
 						<a class="trending-title" href="/#/document/{{item.Document.ID}}">{{item.Document.Title}} <!--<span class="label document-type">{{item.Document.PageCount}} pages , {{item.Document.Category}}</span>--></a>
 						<!--<div class="document-description">
 							<p>{{item.Document.Summary}}</p>
@@ -57,7 +58,7 @@
 							<span ng-repeat="tag in item.Document.Tags" class="label label-default">
 								<span class="glyphicon glyphicon-tag"></span> {{tag}}</span>
 						</div>
-					</div>
+					<!--</div>-->
 				</div>
 				<div class="col-lg-8 col-md-8 col-sm-8 extend">
 					<div class="trending-annotation shadow-line" ng-repeat="annotation in item.Annotations">
