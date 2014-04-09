@@ -886,7 +886,7 @@ nulpunt.controller('ColophonCtrl', function($scope, $location) {
 });
 
 // RegisterCtrl (TODO) checks registration input and sends the registration request
-nulpunt.controller("RegisterCtrl", function($scope, $rootScope, $http) {
+nulpunt.controller("RegisterCtrl", function($scope, $rootScope, $http, AccountAuthService) {
 	// TODO: check input on-change (passwords match etc. etc.)
         $scope.selectedTags = []; // This will collect the tags set by the TagCloudCtrl
  
@@ -904,6 +904,21 @@ nulpunt.controller("RegisterCtrl", function($scope, $rootScope, $http) {
 				// set error to null in case of previous error
 				$scope.error = null;
 				$scope.done = true;
+			    // autologin
+			    var prom = AccountAuthService.authenticate($scope.username, $scope.password);
+			    prom.then(
+				function() {
+				    $scope.error = "";
+				    $scope.success = true;
+				},
+				function(error) {
+				    if(error == "") {
+					// no success, but also no error: credentials are wrong. Should not happen
+					$scope.wrong = true;
+				    } else {
+					$scope.error = error;
+				    }})
+			    // registration went wrong, show error
 			} else {
 				$scope.error = data.error;
 			}
