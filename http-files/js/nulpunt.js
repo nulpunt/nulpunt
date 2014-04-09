@@ -328,14 +328,28 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
 		//console.log("filter annotations on page: ", pageNr);
 		//console.log("annotatations in scope: ", $scope.annotations);
 		annotations = _.filter($scope.annotations, function(ann) {
-		    return _.some(ann.Locations, function(loc) { 
+		    return _.some(ann.Locations, function(loc) {
 				//console.log("found: ", loc);
 				return loc.PageNumber == pageNr;
 		    })
 		})
 		//console.log("returning: ", annotations);
 		return annotations
-    }
+    };
+
+    $scope.annotators = function() {
+        var usernames = [];
+        var annotators = [];
+
+        _.each($scope.annotations, function(ann) {
+            if(!_.contains(usernames, ann.AnnotatorUsername)) {
+                usernames.push(ann.AnnotatorUsername);
+                annotators.push(ann);
+            }
+        });
+
+        return annotators;
+    };
 
     function clearHighlights() {
 		document.getElementById("cvPage").width = 0;

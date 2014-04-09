@@ -146,7 +146,7 @@
 							Annotating this document
 						</div>
 						<div>
-							<span class="author-name" ng-repeat="annotation in annotationsOnPage(currentPage.number)"><span style="color:{{ annotation.Color }}">@</span>{{ annotation.AnnotatorUsername }} </span>
+							<span class="author-name" ng-repeat="annotation in annotators()"><span style="color:{{ annotation.Color }}">@</span>{{ annotation.AnnotatorUsername }} </span>
 						</div>
 					</div>
 					<div class="tags-metadata">
