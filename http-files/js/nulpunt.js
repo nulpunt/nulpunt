@@ -600,6 +600,34 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
     $scope.shareLinkedIn = function () {
         $window.open('http://www.linkedin.com/shareArticle?mini=true&url='+encodeURIComponent($scope.twitter.url)+'&title='+encodeURIComponent($scope.twitter.text),'das','location=no,links=no,scrollbars=no,toolbar=no,width=600,height=500');
     }
+    $scope.shareAnnotation = function(id, service) {
+        var annotation = _.find($scope.annotations, function(ann) {
+            return ann.ID == id;
+        });
+
+        var text = annotation.AnnotatorUsername + ": \"" + annotation.AnnotationText + "\"";
+
+        switch(service) {
+            case 'twitter':
+                $window.open('https://twitter.com/share?url='+encodeURIComponent($scope.twitter.url)+'&text='+encodeURIComponent(text)+'&hashtags=nulpunt','das','location=no,links=no,scrollbars=no,toolbar=no,width=750,height=300');
+                break;
+            case 'diaspora':
+                $window.open('http://sharetodiaspora.github.io/?url='+encodeURIComponent($scope.twitter.url)+'&title='+encodeURIComponent(text),'das','location=no,links=no,scrollbars=no,toolbar=no,width=620,height=550');
+                break;
+            case 'googleplus':
+                $window.open('https://plus.google.com/share?url='+encodeURIComponent($scope.twitter.url)+'&title=title&text=text&message=message','das','location=no,links=no,scrollbars=no,toolbar=no,width=520,height=500');
+                break;
+            case 'reddit':
+                $window.open('http://www.reddit.com/submit?url='+encodeURIComponent($scope.twitter.url)+'&title='+encodeURIComponent(text),'das','location=no,links=no,scrollbars=no,toolbar=no,width=850,height=550');
+                break;
+            case 'vk':
+                $window.open('https://vk.com/share.php?url='+encodeURIComponent($scope.twitter.url)+'&title='+encodeURIComponent(text),'das','location=no,links=no,scrollbars=no,toolbar=no,width=550,height=375');
+                break;
+            case 'linkedin':
+                $window.open('http://www.linkedin.com/shareArticle?mini=true&url='+encodeURIComponent($scope.twitter.url)+'&title='+encodeURIComponent(text),'das','location=no,links=no,scrollbars=no,toolbar=no,width=600,height=500');
+                break;
+        }
+    };
 
     // add a bookmark
 	$scope.bookmark = function(documentId) {
