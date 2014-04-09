@@ -65,7 +65,7 @@
 		border-radius: 2px;
 		padding: 10px;
 		margin: 20px 0px;
-		overflow: hidden;
+		/*overflow: hidden;*/
 	}
 
 	.author-box {
@@ -146,7 +146,7 @@
 							Annotating this document
 						</div>
 						<div>
-							<span class="author-name" ng-repeat="annotation in annotationsOnPage(currentPage.number)"><span style="color:{{ annotation.Color }}">@</span>{{ annotation.AnnotatorUsername }} </span>
+							<span class="author-name" ng-repeat="annotation in annotators()"><span style="color:{{ annotation.Color }}">@</span>{{ annotation.AnnotatorUsername }} </span>
 						</div>
 					</div>
 					<div class="tags-metadata">
@@ -261,7 +261,20 @@
 			<div class="annotationView">
 				<div id="annotation_{{annotation.ID}}" class="annotation" ng-repeat="annotation in annotationsOnPage(currentPage.number)" ng-mouseover="activateHighlight(annotation.ID)" ng-mouseleave="deactivateHighlight()">
 					<!-- <p class="np-document-description">{{ annotation.Annotation }}</p> -->
-					<div class="author-box">
+                    <div class="dropdown pull-right">
+                        <a id="drop4" class="btn btn-dropdown" role="button" data-toggle="dropdown"><img class="btn-icon" src="img/Amplify.png" /> Amplify <b class="caret"></b></a>
+                        <ul id="menu1" class="dropdown-menu" role="menu" aria-labelledby="drop4" style="z-index:999;">
+                            <li role="presentation" class="dropdown-header">Amplify through:</li>
+                            <li role="presentation" class="divider"></li>
+                            <li role="presentation"><a ng-click="shareAnnotation(annotation.ID, 'diaspora')" href="" class="amplify-item">Diaspora</a></li>
+                            <li role="presentation"><a ng-click="shareAnnotation(annotation.ID, 'googleplus')" href="" class="amplify-item">Google+</a></li>
+                            <li role="presentation"><a ng-click="shareAnnotation(annotation.ID, 'linkedin')" href="" class="amplify-item">LinkedIn</a></li>
+                            <li role="presentation"><a ng-click="shareAnnotation(annotation.ID, 'reddit')" href="" class="amplify-item">Reddit</a></li>
+                            <li role="presentation"><a ng-click="shareAnnotation(annotation.ID, 'twitter')" href="" class="amplify-item">Twitter</a></li>
+                            <li role="presentation"><a ng-click="shareAnnotation(annotation.ID, 'vk')" href="" class="amplify-item">VK</a></li>
+                        </ul>
+                    </div>
+                    <div class="author-box">
 						<div class="author-thumbnail" style="background-color:{{ annotation.Color}}"></div>
 						<p class="author-name"><span style="color:{{ annotation.Color }}">@</span> {{ annotation.AnnotatorUsername }}<br><p>
 						<p class="author-date">{{annotation.CreateDate | date:'dd MMMM yyyy, HH:mm'}}</p>
@@ -286,8 +299,8 @@
 						prompt the log in modal with an explanatory message -->
 						<div ng-controller="CommentSubmitCtrl">
 							<!-- when logged in and press the comment-button, show the form -->
-							<div ng-hide="showForm" class="btn" ng-click="showForm=true">Add a Comment</div>
-							<form ng-show="showForm" ng-submit="submit()" role="form" class="form-horizontal">
+                            <div ng-hide="showForm" class="btn" ng-click="showForm=true">Add a Comment</div>
+							<form ng-show="showForm" ng-submit="submit()" role="form" class="form-horizontal" autocomplete="off">
 								<div class="form-group">
 									<div class="col-lg-9 col-md-9">
 										<textarea class="form-control" id="comment-text" placeholder="Comment text" ng-model="commentText"></textarea>

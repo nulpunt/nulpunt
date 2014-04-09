@@ -328,14 +328,28 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
 		//console.log("filter annotations on page: ", pageNr);
 		//console.log("annotatations in scope: ", $scope.annotations);
 		annotations = _.filter($scope.annotations, function(ann) {
-		    return _.some(ann.Locations, function(loc) { 
+		    return _.some(ann.Locations, function(loc) {
 				//console.log("found: ", loc);
 				return loc.PageNumber == pageNr;
 		    })
 		})
 		//console.log("returning: ", annotations);
 		return annotations
-    }
+    };
+
+    $scope.annotators = function() {
+        var usernames = [];
+        var annotators = [];
+
+        _.each($scope.annotations, function(ann) {
+            if(!_.contains(usernames, ann.AnnotatorUsername)) {
+                usernames.push(ann.AnnotatorUsername);
+                annotators.push(ann);
+            }
+        });
+
+        return annotators;
+    };
 
     function clearHighlights() {
 		document.getElementById("cvPage").width = 0;
@@ -586,6 +600,34 @@ nulpunt.controller("DocumentCtrl", function($scope, $http, $routeParams, $modal,
     $scope.shareLinkedIn = function () {
         $window.open('http://www.linkedin.com/shareArticle?mini=true&url='+encodeURIComponent($scope.twitter.url)+'&title='+encodeURIComponent($scope.twitter.text),'das','location=no,links=no,scrollbars=no,toolbar=no,width=600,height=500');
     }
+    $scope.shareAnnotation = function(id, service) {
+        var annotation = _.find($scope.annotations, function(ann) {
+            return ann.ID == id;
+        });
+
+        var text = annotation.AnnotatorUsername + ": \"" + annotation.AnnotationText + "\"";
+
+        switch(service) {
+            case 'twitter':
+                $window.open('https://twitter.com/share?url='+encodeURIComponent($scope.twitter.url)+'&text='+encodeURIComponent(text)+'&hashtags=nulpunt','das','location=no,links=no,scrollbars=no,toolbar=no,width=750,height=300');
+                break;
+            case 'diaspora':
+                $window.open('http://sharetodiaspora.github.io/?url='+encodeURIComponent($scope.twitter.url)+'&title='+encodeURIComponent(text),'das','location=no,links=no,scrollbars=no,toolbar=no,width=620,height=550');
+                break;
+            case 'googleplus':
+                $window.open('https://plus.google.com/share?url='+encodeURIComponent($scope.twitter.url)+'&title=title&text=text&message=message','das','location=no,links=no,scrollbars=no,toolbar=no,width=520,height=500');
+                break;
+            case 'reddit':
+                $window.open('http://www.reddit.com/submit?url='+encodeURIComponent($scope.twitter.url)+'&title='+encodeURIComponent(text),'das','location=no,links=no,scrollbars=no,toolbar=no,width=850,height=550');
+                break;
+            case 'vk':
+                $window.open('https://vk.com/share.php?url='+encodeURIComponent($scope.twitter.url)+'&title='+encodeURIComponent(text),'das','location=no,links=no,scrollbars=no,toolbar=no,width=550,height=375');
+                break;
+            case 'linkedin':
+                $window.open('http://www.linkedin.com/shareArticle?mini=true&url='+encodeURIComponent($scope.twitter.url)+'&title='+encodeURIComponent(text),'das','location=no,links=no,scrollbars=no,toolbar=no,width=600,height=500');
+                break;
+        }
+    };
 
     // add a bookmark
 	$scope.bookmark = function(documentId) {
