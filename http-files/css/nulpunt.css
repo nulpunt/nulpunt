@@ -39,7 +39,7 @@ html {
 
 /*anchor styles*/
 a:link, a:visited, a:active {
-	   color: ;
+	   /*color: ;*/
 	   text-decoration: none;
 }
 a{
@@ -109,6 +109,14 @@ h3 {
 	font-size: 16px;
 	font-weight: 400;
 }
+.trending-thumbnail {
+    width: 75px;
+    float: left;
+    padding-right: 5px;
+}
+.trending-thumbnail img {
+    width: 100%;
+}
 .annotateview-signin {
 margin-bottom: 4px;
 }
@@ -153,9 +161,6 @@ margin-bottom: 4px;
 	margin-bottom:0px;
 	border: 0;
 }
-.navbar .btn {
-	margin-top: 8px;
-}
 .col-leftedge{
 	margin-left: -30px;
 }
@@ -170,6 +175,14 @@ margin-bottom: 4px;
 }
 .navbar .btn {
 	margin-top: 13px;
+    margin-left: 5px;
+}
+.navbar .np-account-color {
+    width: 50px;
+    height: 50px;
+    margin: 0 0 0 10px;
+    margin-right: -15px; /* Counter the 15px padding on the navbar */
+    padding: 0;
 }
 
 .fixed {
@@ -274,18 +287,6 @@ margin-bottom: 4px;
 	margin-top: 50px;
 }
 
-div.np-tagline {
-	background-color: #000;
-	width: 30%;
-	margin-left: auto;
-	margin-right: auto;
-	height: 35px;
-}
-div.np-tagline p {
-	color: #ffffff;
-	padding: 10px;
-	text-align: center;
-}
 
 .np-row {
 	background-color: #f2f0f2;
@@ -529,18 +530,26 @@ a.custom-tweet-button {
 }
 
 /* footer styling */
+div.np-tagline {
+    background-color: #000;
+    width: 30%;
+    margin-left: auto;
+    margin-right: auto;
+    height: 35px;
+}
 div.np-tagline p {
 	color: #ffffff;
 	padding-top: 5px;
 	text-align: center;
 	font-size: 11px;
-	letter-spacing: 1px;
+	letter-spacing: 0px;
 	font-weight: 100;
 }
 #np-footer .navbar-nav>li>a {
 	font-size: 8pt;
 	padding: 3px 25px;
 }
+
 
 
 .np-document-viewer-pagination {

@@ -10,9 +10,9 @@
 		<link href="css/datepicker.css" rel="stylesheet" >
 		<link href="css/nulpunt.css" rel="stylesheet" >
 		<link rel="stylesheet" href="css/font-awesome.min.css">
-		<link href="http://code.ionicframework.com/ionicons/1.4.1/css/ionicons.min.css" rel="stylesheet">
+		<link href="//code.ionicframework.com/ionicons/1.4.1/css/ionicons.min.css" rel="stylesheet">
 		<link rel="stylesheet" href="css/jquery.minicolors.css">
-		<link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:700italic,700|Roboto:300,500,300italic,500italic' rel='stylesheet' type='text/css'>
+		<link href='//fonts.googleapis.com/css?family=Roboto+Condensed:700italic,700|Roboto:300,500,300italic,500italic' rel='stylesheet' type='text/css'>
 
 		<script src="js/jquery.min.js" ></script>
 		<script>
@@ -67,15 +67,17 @@
 					</button>
 					
 					<!-- nulpunt logo -->
-					<a class="navbar-brand" href="/#/" style="display:block; background-color:{{ account.color }}"><img id="np-logo" class="svg" src="img/np-logo_alpha.svg" /></a>			
+					<a class="navbar-brand" href="/#/" style="display:block; background-color:#ffffff;"><img id="np-logo" class="svg" src="img/np-logo_alpha.svg" /></a>
 				</div> <!-- "navbar-header -->
 				
 				<div class="collapse navbar-collapse" ng-hide="account.username" ng-class="!navCollapsed && 'in'">
 					<div class="container" ng-hide="account.username">
 						<a ng-hide="account.username" class="btn pull-right uppercase" ng-click="loginFactory.showLogin()">Sign in</a>
+                        <a class="btn pull-right uppercase" href="/#/documents">Search Documents</a>
 					</div>
 				</div>				
 				<div class="collapse navbar-collapse menubar-login" ng-show="account.username" ng-class="!navCollapsed && 'in'">
+                    <div class="np-account-color pull-right" style="background-color: {{ account.color }};"></div>
 					<div class="container extend">
 						<div class="row">
 							<a class="btn menu-top" ng-show="account.username" href="/#/">
@@ -109,8 +111,8 @@
 								<div class="menu-top pull-right">
 									Profile
 								</div>
-							</a>				
-							<a ng-show="account.username" class="btn pull-right uppercase menu-rechts-no-icon" ng-click="loginFactory.signOut()">Sign out</a>
+							</a>
+                            <a ng-show="account.username" class="btn pull-right uppercase menu-rechts-no-icon" ng-click="loginFactory.signOut()">Sign out</a>
 							<a class="btn pull-right uppercase menu-rechts-no-icon" href="/#/documents">Search Documents</a>
 						</div>
 					</div>
@@ -150,13 +152,13 @@
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li>
-					<a href="http://facebook.com/">Facebook</a>
+					<a href="http://facebook.com/" target="_blank">Facebook</a>
 				</li>
 				<li>
-					<a href="http://twitter.com/0punt">Twitter</a>
+					<a href="http://twitter.com/0punt" target="_blank">Twitter</a>
 				</li>
 				<li>
-					<a href="http://github.com/nulpunt">GitHub</a>
+					<a href="http://github.com/nulpunt" target="_blank">GitHub</a>
 				</li>
 			</ul>
 			<div class="np-tagline">
