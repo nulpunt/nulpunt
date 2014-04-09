@@ -4,7 +4,7 @@
 			<div class="row">
 				<div class="col-lg-12 col-md-12">	
 					<div>
-				        <h1>Edit your profile</h1>
+				        <h1 class="uppercase">Settings</h1>
 				    </div>
 				
 				    <div ng-show="done" class="alert alert-success col-lg-8" >
@@ -22,7 +22,7 @@
 </div>
 <div class="container">
     <div class="row">
-	    <div class="col-lg-8 col-md-8">	
+	    <div class="col-lg-6 col-md-6">	
 	    	<div class="row">
 			    
 			</div>
@@ -30,46 +30,46 @@
 			    <div ng-repeat="profile in profiles">
 			        <form ng-submit="submit()" role="form" class="form-horizontal">
 			            <div class="form-group">
-			                <h3>Public profile</h3>
-			                <p>These settings are optional, but are visible to everyone!</p>
+			                <h3>Public Profile</h3>
+			                <p>These settings are optional. This information can be made visible for other users of 0.</p>
 			            </div>
 			
 			            <div class="form-group">
 			                <div class="col-lg-6 col-md-6 extend">
-			                    <input class="form-control" type="text" id="PublicName" ng-model="profile.PublicName" ng-value="profile.PublicName">
+			                    <input class="form-control" type="text" id="PublicName" ng-model="profile.PublicName" ng-value="profile.PublicName" placeholder="Public Name">
 			                </div>
-			                <label class="col-lg-2 col-md-2  pull-left" for="PublicName">
+			                <!--<label class="col-lg-2 col-md-2  pull-left" for="PublicName">
 			                    Public Name
-			                </label>
+			                </label>--> 
 			            </div>
 			
 			            <div class="form-group">
 			                <div class="col-lg-6 col-md-6 extend">
-			                    <input class="form-control" type="text" id="Location" ng-model="profile.Location" ng-value="profile.Location" placeholder="e.g. Amsterdam, NL">
+			                    <input class="form-control" type="text" id="Location" ng-model="profile.Location" ng-value="profile.Location" placeholder="Your location. e.g. Amsterdam, NL">
 			                </div>
-			                <label class="col-lg-2 col-md-2  pull-left" for="Location">
+			                <!--<label class="col-lg-2 col-md-2  pull-left" for="Location">
 			                    Location
-			                </label>
+			                </label>--> 
 			            </div>
 			
 			            <div class="form-group">
 			                <div class="col-lg-6 col-md-6 extend">
-			                    <input class="form-control" type="text" id="Website" ng-model="profile.Website" ng-value="profile.Website">
+			                    <input class="form-control" type="text" id="Website" ng-model="profile.Website" ng-value="profile.Website" placeholder="Your website">
 			                </div>
-			                <label class="col-lg-2 col-md-2  pull-left" for="Website">
+			               <!-- <label class="col-lg-2 col-md-2  pull-left" for="Website">
 			                    Website
-			                </label>
+			                </label>-->
 			            </div>
 			
 			            <div class="form-group">
 			                <div class="col-lg-6 col-md-6 extend">
-			                    <textarea class="form-control" rows="5" id="Bio" ng-model="profile.Bio">
+			                    <textarea class="form-control" rows="5" id="Bio" ng-model="profile.Bio" placeholder="A short bio of yourself">
 			                        {{profile.Bio}}
 			                    </textarea>
 			                </div>
-			                <label class="col-lg-2 col-md-2  pull-left" for="Bio">
+			                <!--<label class="col-lg-2 col-md-2  pull-left" for="Bio">
 			                    About me <br/><small>Here you can share a short bio about yourself</small>
-			                </label>
+			                </label>-->
 			            </div>
 			
 			            
@@ -80,7 +80,7 @@
 			            	<div class="row">
 				            	<div class="col-lg-12 col-md-12">
 					                <div class="submit-profile"> 
-					                    <button type="submit" class="btn col-lg-8 col-md-8 uppercase">Save</button>
+					                    <button type="submit" class="btn col-lg-6 col-md-6 uppercase">Save</button>
 					                </div>
 				                </div>
 				            </div>    
@@ -89,10 +89,10 @@
 			    </div>
 			</div>
 		</div>
-		<div class="col-lg-4 col-md-4">
+		<div class="col-lg-6 col-md-6">
 			<div class="form-group">
-			                <h3>Subscribe to tags</h3>
-			                <p>Click on the tags you are interested in to subscribe to them.</p>
+			                <h3>Subscribe to topics of your interest</h3>
+			                <p>Click on the tags to subscribe or unsubscribe to topics of your interest.<br>Documents corresponding the topics you have subscribed to will appear in your inbox.</p>
 			            </div>
 			<div class="form-group">
             	<div class="row">
