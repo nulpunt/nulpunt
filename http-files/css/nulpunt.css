@@ -39,7 +39,7 @@ html {
 
 /*anchor styles*/
 a:link, a:visited, a:active {
-	   color: ;
+	   /*color: ;*/
 	   text-decoration: none;
 }
 a{
@@ -153,9 +153,6 @@ margin-bottom: 4px;
 	margin-bottom:0px;
 	border: 0;
 }
-.navbar .btn {
-	margin-top: 8px;
-}
 .col-leftedge{
 	margin-left: -30px;
 }
@@ -170,6 +167,7 @@ margin-bottom: 4px;
 }
 .navbar .btn {
 	margin-top: 13px;
+    margin-left: 5px;
 }
 
 .fixed {
